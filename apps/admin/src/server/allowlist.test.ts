@@ -21,7 +21,7 @@ describe('resolveUpstream', () => {
   it('refuses everything else, including admin identity endpoints', () => {
     expect(resolve('GET', 'admins')).toBeUndefined();
     expect(resolve('GET', `admins/${ID}`)).toBeUndefined();
-    expect(resolve('PATCH', 'app-settings')).toBeUndefined();
+    expect(resolve('PUT', 'app-settings')).toBeUndefined(); // PATCH is allowed (settings screen)
     expect(resolve('PUT', `countries/${ID}`)).toBeUndefined();
     expect(resolve('DELETE', 'countries')).toBeUndefined();
     expect(resolve('GET', `countries/${ID}/cities`)).toBeUndefined();
@@ -38,5 +38,14 @@ describe('resolveUpstream', () => {
     expect(resolve('PATCH', `currencies/${ID}`)?.path).toBe(`/currencies/${ID}`);
     expect(resolve('DELETE', 'currencies')).toBeUndefined();
     expect(resolve('PUT', `currencies/${ID}`)).toBeUndefined();
+  });
+
+  it('allows reading and patching the settings singleton only', () => {
+    expect(resolve('GET', 'app-settings')?.path).toBe('/app-settings');
+    expect(resolve('PATCH', 'app-settings', 'x=1')?.query.toString()).toBe('');
+    expect(resolve('PUT', 'app-settings')).toBeUndefined();
+    expect(resolve('DELETE', 'app-settings')).toBeUndefined();
+    expect(resolve('POST', 'app-settings')).toBeUndefined();
+    expect(resolve('GET', `app-settings/${ID}`)).toBeUndefined();
   });
 });

@@ -53,29 +53,35 @@ export function CityFormDialog({
   });
   const { errors, isSubmitting } = form.formState;
 
-  const onSubmit = form.handleSubmit(async (values) => {
-    setAlert({ messages: [] });
-    try {
-      if (city) {
-        const changes = Object.fromEntries(
-          Object.entries(values).filter(([key, value]) => city[key as keyof CityValues] !== value),
-        );
-        if (Object.keys(changes).length === 0) {
-          setAlert({ messages: [tc('noChanges')] });
-          return;
+  const onSubmit = form.handleSubmit(
+    async (values) => {
+      setAlert({ messages: [] });
+      try {
+        if (city) {
+          const changes = Object.fromEntries(
+            Object.entries(values).filter(
+              ([key, value]) => city[key as keyof CityValues] !== value,
+            ),
+          );
+          if (Object.keys(changes).length === 0) {
+            setAlert({ messages: [tc('noChanges')] });
+            return;
+          }
+          const result = await update.mutateAsync({ id: city.id, body: changes });
+          notify(t('updated', { name: result.data.name }));
+        } else {
+          const result = await create.mutateAsync(values);
+          notify(t('created', { name: result.data.name }));
         }
-        const result = await update.mutateAsync({ id: city.id, body: changes });
-        notify(t('updated', { name: result.data.name }));
-      } else {
-        const result = await create.mutateAsync(values);
-        notify(t('created', { name: result.data.name }));
+        onClose();
+      } catch (error) {
+        const result = applyServerErrors(error, form.setError, ['name', 'country']);
+        setAlert({ messages: result.messages, requestId: result.requestId });
       }
-      onClose();
-    } catch (error) {
-      const result = applyServerErrors(error, form.setError, ['name', 'country']);
-      setAlert({ messages: result.messages, requestId: result.requestId });
-    }
-  });
+    },
+    // A new attempt that fails client validation must not keep the previous message.
+    () => setAlert({ messages: [] }),
+  );
 
   return (
     <Dialog

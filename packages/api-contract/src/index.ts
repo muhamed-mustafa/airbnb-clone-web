@@ -1,5 +1,6 @@
 export * from './errors';
 export type {
+  AppSettingsResponseDto,
   CityResponseDto,
   CountryResponseDto,
   CreateCityDto,

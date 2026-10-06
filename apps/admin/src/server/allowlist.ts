@@ -7,7 +7,7 @@
 type Method = 'GET' | 'POST' | 'PATCH' | 'DELETE';
 
 interface Rule {
-  resource: 'countries' | 'cities' | 'currencies';
+  resource: 'countries' | 'cities' | 'currencies' | 'app-settings';
   withId: boolean;
   methods: readonly Method[];
   query: readonly string[];
@@ -38,6 +38,8 @@ const RULES: readonly Rule[] = [
   },
   { resource: 'currencies', withId: false, methods: ['POST'], query: [] },
   { resource: 'currencies', withId: true, methods: ['GET', 'PATCH', 'DELETE'], query: [] },
+  // Singleton: read and partial update only.
+  { resource: 'app-settings', withId: false, methods: ['GET', 'PATCH'], query: [] },
 ];
 
 const MONGO_ID = /^[a-f0-9]{24}$/i;

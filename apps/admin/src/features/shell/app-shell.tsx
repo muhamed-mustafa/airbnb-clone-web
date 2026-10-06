@@ -22,6 +22,10 @@ const NAV_GROUPS = [
     key: 'referenceData',
     items: [{ href: '/catalog/currencies', key: 'currencies' }],
   },
+  {
+    key: 'settings',
+    items: [{ href: '/settings/pricing', key: 'pricingSettings' }],
+  },
 ] as const;
 
 function Navigation({ onNavigate }: { onNavigate?: () => void }) {

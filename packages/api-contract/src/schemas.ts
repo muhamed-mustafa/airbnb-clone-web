@@ -7,4 +7,5 @@ export {
   zCurrenciesCreateBody,
   zCurrenciesUpdateBody,
   zLoginAdminDtoWritable,
+  zUpsertAppSettingsDto,
 } from './generated/zod.gen';

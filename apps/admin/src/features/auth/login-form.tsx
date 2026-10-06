@@ -26,22 +26,26 @@ export function LoginForm({ next }: { next: string }) {
   });
   const { errors, isSubmitting } = form.formState;
 
-  const onSubmit = form.handleSubmit(async (values) => {
-    setAlert({ messages: [] });
-    try {
-      await bffFetch('/bff/session', { method: 'POST', body: values });
-      // Full navigation: the new session cookie must be read by the server on the next page.
-      window.location.assign(next);
-    } catch (error) {
-      const result = applyServerErrors(error, form.setError, ['email', 'password']);
-      setAlert({ messages: result.messages, requestId: result.requestId });
-      // Wrong credentials: keep the email, clear only the password.
-      if (result.appError?.kind === 'invalid_credentials') {
-        form.resetField('password');
-        form.setFocus('password');
+  const onSubmit = form.handleSubmit(
+    async (values) => {
+      setAlert({ messages: [] });
+      try {
+        await bffFetch('/bff/session', { method: 'POST', body: values });
+        // Full navigation: the new session cookie must be read by the server on the next page.
+        window.location.assign(next);
+      } catch (error) {
+        const result = applyServerErrors(error, form.setError, ['email', 'password']);
+        setAlert({ messages: result.messages, requestId: result.requestId });
+        // Wrong credentials: keep the email, clear only the password.
+        if (result.appError?.kind === 'invalid_credentials') {
+          form.resetField('password');
+          form.setFocus('password');
+        }
       }
-    }
-  });
+    },
+    // A new attempt that fails client validation must not keep the previous message.
+    () => setAlert({ messages: [] }),
+  );
 
   return (
     <form noValidate onSubmit={onSubmit} className="grid gap-4">

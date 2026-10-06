@@ -58,6 +58,15 @@ test.describe('accessibility', () => {
     await expect(page.getByText('هذا الحقل مطلوب.').first()).toBeVisible();
     await expectNoAxeViolations(page, 'currency dialog with errors');
     await page.keyboard.press('Escape');
+
+    await page.goto('/settings/pricing');
+    await expect(page.getByLabel('نسبة الضريبة (٪)')).toBeVisible();
+    await expectNoAxeViolations(page, 'pricing settings');
+    await expectNoHorizontalScroll(page);
+    await page.getByLabel('نسبة الضريبة (٪)').fill('99');
+    await page.getByRole('button', { name: 'حفظ' }).click();
+    await expect(page.getByText('أدخل رقمًا لا يزيد عن 25.')).toBeVisible();
+    await expectNoAxeViolations(page, 'pricing settings with an error');
   });
 
   test('keyboard only: add a country and get focus back where it started', async ({

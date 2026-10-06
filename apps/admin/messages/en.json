@@ -11,7 +11,9 @@
     "openMenu": "Open menu",
     "closeMenu": "Close menu",
     "referenceData": "Reference data",
-    "currencies": "Currencies"
+    "currencies": "Currencies",
+    "settings": "Settings",
+    "pricingSettings": "Pricing settings"
   },
   "account": {
     "signOut": "Sign out of this browser",
@@ -142,6 +144,18 @@
     "deleteConfirm": "Delete currency",
     "deleted": "{name} deleted."
   },
+  "pricingSettings": {
+    "title": "Pricing settings",
+    "intro": "Values used to calculate prices once the booking flow exists.",
+    "storedOnly": "These values are only stored for now. No booking or pricing flow uses them yet, so changing them does not change any price today.",
+    "vatField": "VAT rate (%)",
+    "vatHint": "From 0 to 25, with at most 2 decimals. 14 means 14%.",
+    "saved": "Pricing settings saved.",
+    "notConfigured": "Pricing settings have not been saved yet. Fill in any field and save it.",
+    "storedValues": "Currently saved: VAT rate {vatRate} · Minimum price {minPrice}",
+    "minPriceField": "Minimum price",
+    "minPriceHint": "A number of 0 or more, with at most 2 decimals."
+  },
   "validation": {
     "required": "This field is required.",
     "tooShort": "Enter at least {min} characters.",
@@ -149,7 +163,10 @@
     "exactLength": "Enter exactly {length} characters.",
     "email": "Enter a valid email, like name@example.com.",
     "invalid": "This value isn't valid.",
-    "latinLetters": "Use Latin letters only (A–Z)."
+    "latinLetters": "Use Latin letters only (A–Z).",
+    "numberMin": "Enter a number of at least {min}.",
+    "numberMax": "Enter a number of at most {max}.",
+    "decimalNumber": "Enter a number with at most {maxDecimals} decimals, like 14 or 14.5."
   },
   "errors": {
     "summary": "Check the highlighted fields.",
@@ -208,6 +225,9 @@
     "currencies": {
       "CURRENCY_ALREADY_EXISTS": "A currency with this name or code already exists.",
       "CURRENCY_NOT_FOUND": "This currency no longer exists."
+    },
+    "app-settings": {
+      "APP_SETTINGS_NOT_FOUND": "Pricing settings have not been saved yet."
     }
   }
 }

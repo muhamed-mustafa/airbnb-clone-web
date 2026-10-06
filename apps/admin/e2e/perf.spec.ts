@@ -24,6 +24,7 @@ async function measure(page: Page, path: string) {
     const cls = vitals.cls;
     return {
       jsKB: Math.round(js.reduce((sum, entry) => sum + entry.encodedBodySize, 0) / 1024),
+      jsFiles: js.map((entry) => new URL(entry.name).pathname.split('/').pop()),
       fontKB: Math.round(fonts.reduce((sum, entry) => sum + entry.encodedBodySize, 0) / 1024),
       lcpMs: lcp === undefined ? null : Math.round(lcp),
       cls: Number(cls.toFixed(3)),
@@ -67,6 +68,7 @@ test('lab metrics', async ({ page, browserName }, testInfo) => {
   results[`${project} /locations/countries`] = await measure(page, '/locations/countries');
   results[`${project} /locations/cities`] = await measure(page, '/locations/cities');
   results[`${project} /catalog/currencies`] = await measure(page, '/catalog/currencies');
+  results[`${project} /settings/pricing`] = await measure(page, '/settings/pricing');
   writeFileSync(OUT.replace('.json', `-${project}.json`), JSON.stringify(results, null, 2));
   console.log(project, results);
 });

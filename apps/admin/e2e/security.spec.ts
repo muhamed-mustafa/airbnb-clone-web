@@ -50,7 +50,8 @@ test.describe('BFF protections', () => {
   test('the proxy is an allowlist and drops unknown query parameters', async ({ page }) => {
     for (const path of [
       '/bff/api/admins',
-      '/bff/api/app-settings',
+      '/bff/api/users',
+      '/bff/api/app-settings/x',
       '/bff/api/auth/me',
       '/bff/api/countries/x/y',
     ]) {

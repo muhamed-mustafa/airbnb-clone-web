@@ -85,6 +85,17 @@ test('capture review screens', async ({ page }, testInfo) => {
   await shot(page, project, 'ar-currency-conflict');
   await page.keyboard.press('Escape');
 
+  await page.goto('/settings/pricing');
+  await page.getByLabel('نسبة الضريبة (٪)').fill('14');
+  await page.getByLabel('الحد الأدنى للسعر').fill('500');
+  await page.getByRole('button', { name: 'حفظ' }).click();
+  await expect(page.getByText(/المحفوظ حاليًا/)).toContainText('500');
+  await shot(page, project, 'ar-pricing-settings');
+  await page.getByLabel('الحد الأدنى للسعر').fill('-5');
+  await page.getByRole('button', { name: 'حفظ' }).click();
+  await expect(page.getByLabel('الحد الأدنى للسعر')).toHaveAttribute('aria-invalid', 'true');
+  await shot(page, project, 'ar-pricing-settings-error');
+
   if (project === 'mobile') {
     await page.getByRole('button', { name: 'فتح القائمة' }).click();
     await expect(page.getByRole('dialog')).toBeVisible();
@@ -99,4 +110,7 @@ test('capture review screens', async ({ page }, testInfo) => {
   await page.goto('/catalog/currencies');
   await expect(page.getByRole('heading', { name: 'Currencies', exact: true })).toBeVisible();
   await shot(page, project, 'en-currencies');
+  await page.goto('/settings/pricing');
+  await expect(page.getByLabel('VAT rate (%)')).toBeVisible();
+  await shot(page, project, 'en-pricing-settings');
 });
