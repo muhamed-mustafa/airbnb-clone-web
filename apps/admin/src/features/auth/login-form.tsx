@@ -5,7 +5,7 @@ import { zLoginAdminDtoWritable } from '@stays/api-contract/schemas';
 import { useTranslations } from 'next-intl';
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
-import type { z } from 'zod';
+import type * as z from 'zod/mini';
 import { bffFetch } from '@/lib/bff-client';
 import { useApplyServerErrors, useZodErrorMap } from '@/lib/form-errors';
 import { Button } from '@/ui/button';

@@ -4,7 +4,7 @@ import type { AppError } from '@stays/api-contract';
 import { useTranslations } from 'next-intl';
 import { useCallback } from 'react';
 import type { FieldValues, Path, UseFormSetError } from 'react-hook-form';
-import type { z } from 'zod';
+import type * as z from 'zod/mini';
 import { isBffError } from './bff-client';
 import { supportRequestId, useErrorText } from './error-text';
 

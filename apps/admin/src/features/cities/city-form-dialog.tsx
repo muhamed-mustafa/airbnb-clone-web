@@ -1,11 +1,9 @@
 'use client';
 
 import { zodResolver } from '@hookform/resolvers/zod';
-import { zCitiesCreateBody } from '@stays/api-contract/schemas';
 import { useTranslations } from 'next-intl';
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
-import { z } from 'zod';
 import type { Country } from '@/features/countries/api';
 import { useApplyServerErrors, useZodErrorMap } from '@/lib/form-errors';
 import { Button } from '@/ui/button';
@@ -14,13 +12,7 @@ import { SelectField, TextField } from '@/ui/field';
 import { FormAlert } from '@/ui/states';
 import { useToast } from '@/ui/toast';
 import { useCreateCity, useUpdateCity, type City } from './api';
-
-const citySchema = z.object({
-  name: z.string().trim().pipe(zCitiesCreateBody.shape.name),
-  country: z.string().min(1).pipe(zCitiesCreateBody.shape.country),
-});
-type CityInput = z.input<typeof citySchema>;
-type CityValues = z.output<typeof citySchema>;
+import { citySchema, type CityInput, type CityValues } from './schema';
 
 interface CityFormDialogProps {
   city?: City;

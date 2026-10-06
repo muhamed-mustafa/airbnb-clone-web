@@ -1,5 +1,5 @@
 import { zUpsertAppSettingsDto } from '@stays/api-contract/schemas';
-import { z } from 'zod';
+import * as z from 'zod/mini';
 
 const EASTERN_ARABIC_DIGITS = /[٠-٩]/g;
 const PERSIAN_DIGITS = /[۰-۹]/g;
@@ -25,8 +25,9 @@ export function normalizeDecimalInput(value: string): string {
  * fields, so parsing a body with it would silently add the other field. Bodies are built
  * by hand from the changed fields only.
  */
-const vatRateNumber = zUpsertAppSettingsDto.shape.vatRate.unwrap().unwrap();
-const minPriceNumber = zUpsertAppSettingsDto.shape.minPrice.unwrap().unwrap();
+// default(optional(number)) → number
+const vatRateNumber = zUpsertAppSettingsDto.shape.vatRate.def.innerType.def.innerType;
+const minPriceNumber = zUpsertAppSettingsDto.shape.minPrice.def.innerType.def.innerType;
 
 /**
  * At most two decimals: enforced by the backend DTO (`IsNumber({ maxDecimalPlaces: 2 })`)
@@ -36,17 +37,19 @@ const minPriceNumber = zUpsertAppSettingsDto.shape.minPrice.unwrap().unwrap();
 const DECIMAL = /^-?\d+(\.\d{1,2})?$/;
 
 /** A decimal text field. Empty means "not given" when `required` is false. */
-function decimalField(number: z.ZodNumber, required: boolean) {
-  const parsed = z
-    .string()
-    .transform(normalizeDecimalInput)
-    .pipe(
-      z.string().refine((text) => text === '' || DECIMAL.test(text), {
-        params: { i18n: 'decimalNumber', maxDecimals: 2 },
-      }),
-    )
-    .transform((text) => (text === '' ? undefined : Number(text)));
-  return required ? parsed.pipe(number) : parsed.pipe(number.optional());
+function decimalField(number: z.ZodMiniNumber<number>, required: boolean) {
+  const parsed = z.pipe(
+    z.pipe(
+      z.pipe(z.string(), z.transform(normalizeDecimalInput)),
+      z.string().check(
+        z.refine((text) => text === '' || DECIMAL.test(text), {
+          params: { i18n: 'decimalNumber', maxDecimals: 2 },
+        }),
+      ),
+    ),
+    z.transform((text: string) => (text === '' ? undefined : Number(text))),
+  );
+  return required ? z.pipe(parsed, number) : z.pipe(parsed, z.optional(number));
 }
 
 /**
