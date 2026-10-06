@@ -40,7 +40,8 @@ export default defineConfig({
     { name: 'mobile', use: { ...devices['Pixel 7'] } },
   ],
   webServer: {
-    command: 'pnpm exec next build && pnpm exec next start --port 4100',
+    // E2E_SKIP_BUILD=1 reuses an existing production build, e.g. for repeated stability runs.
+    command: `${process.env.E2E_SKIP_BUILD ? '' : 'pnpm exec next build && '}pnpm exec next start --port 4100`,
     url: `${ADMIN_URL}/login`,
     reuseExistingServer: false,
     timeout: 240_000,

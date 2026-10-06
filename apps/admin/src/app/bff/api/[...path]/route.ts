@@ -1,9 +1,9 @@
 import { randomUUID } from 'node:crypto';
 import type { NextRequest } from 'next/server';
-import { resolveUpstream } from '@/server/allowlist';
+import { resolveUpstream, type UpstreamTarget } from '@/server/allowlist';
 import { callBackend } from '@/server/backend';
 import { readJsonBody, rejectCrossSite, requestLocale } from '@/server/request';
-import { backendResponse, localError, refreshProblemResponse } from '@/server/responses';
+import { localError, proxiedResponse, refreshProblemResponse } from '@/server/responses';
 import { callWithSession, type SessionCallOutcome } from '@/server/session-call';
 
 interface Context {
@@ -38,20 +38,14 @@ async function proxy(request: NextRequest, context: Context) {
       locale: requestLocale(request),
     }),
   );
-  return call.commit(toResponse(call.outcome, requestId));
+  return call.commit(toResponse(call.outcome, requestId, target));
 }
 
-function toResponse(outcome: SessionCallOutcome, requestId: string) {
+function toResponse(outcome: SessionCallOutcome, requestId: string, target: UpstreamTarget) {
   switch (outcome.type) {
     case 'upstream':
-      return outcome.result.ok
-        ? backendResponse(
-            outcome.result.status,
-            outcome.result.body,
-            requestId,
-            outcome.result.retryAfterSeconds,
-          )
-        : localError(outcome.result.kind, requestId);
+      if (!outcome.result.ok) return localError(outcome.result.kind, requestId);
+      return proxiedResponse(outcome.result, requestId, target.responseFields);
     case 'refresh_unavailable':
     case 'refresh_failed':
       return refreshProblemResponse(outcome, requestId);

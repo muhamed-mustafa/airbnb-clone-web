@@ -13,7 +13,9 @@
     "referenceData": "Reference data",
     "currencies": "Currencies",
     "settings": "Settings",
-    "pricingSettings": "Pricing settings"
+    "pricingSettings": "Pricing settings",
+    "team": "Team",
+    "admins": "Admin team"
   },
   "account": {
     "signOut": "Sign out of this browser",
@@ -156,6 +158,32 @@
     "minPriceField": "Minimum price",
     "minPriceHint": "A number of 0 or more, with at most 2 decimals."
   },
+  "admins": {
+    "title": "Admin team",
+    "count": "{count, plural, =0 {No admins} one {# admin} other {# admins}}",
+    "readOnlyNote": "View only. Adding, editing or deactivating admins is not available in the API yet.",
+    "searchName": "Search by name",
+    "searchNameHint": "At least 2 characters",
+    "searchEmail": "Email",
+    "searchEmailHint": "Type the full address; this is an exact match",
+    "filterRole": "Role",
+    "allRoles": "All roles",
+    "superAdmin": "Super admin",
+    "admin": "Admin",
+    "columnName": "Name",
+    "columnEmail": "Email",
+    "columnRole": "Role",
+    "view": "View",
+    "you": "you",
+    "noResultsTitle": "No results",
+    "noResultsBody": "No admin matches this search.",
+    "backToList": "Back to the admin team",
+    "detailIntro": "Account details as the API returns them. View only.",
+    "accountId": "Account ID",
+    "superAdminNote": "“Super admin” is stored on the account but does not change permissions today: all admins have the same permissions.",
+    "notFoundTitle": "Admin not found",
+    "notFoundBody": "The account may have been deleted, or the link is wrong."
+  },
   "validation": {
     "required": "This field is required.",
     "tooShort": "Enter at least {min} characters.",
@@ -228,6 +256,9 @@
     },
     "app-settings": {
       "APP_SETTINGS_NOT_FOUND": "Pricing settings have not been saved yet."
+    },
+    "admins": {
+      "ADMIN_NOT_FOUND": "This admin no longer exists."
     }
   }
 }

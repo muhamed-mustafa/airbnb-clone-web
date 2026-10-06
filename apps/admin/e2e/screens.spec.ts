@@ -1,6 +1,7 @@
 import { mkdirSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
 import type { Page } from '@playwright/test';
+import { insertAdmins } from './support/e2e-db';
 import { expect, seed, setLocale, signIn, test } from './support/fixtures';
 
 // Review screenshots for the phase report. Run alone on a fresh e2e database:
@@ -44,6 +45,15 @@ test('capture review screens', async ({ page }, testInfo) => {
     ]) {
       await seed('/currencies', { name, currencyCode });
     }
+    await insertAdmins([
+      { name: 'سارة الحربي', email: 'sara.alharbi@example.com', isSuperAdmin: false },
+      { name: 'Omar Khaled', email: 'omar.khaled@example.com', isSuperAdmin: false },
+      {
+        name: 'منى عبد الرحمن السيد',
+        email: 'mona.abdelrahman.elsayed@example.com',
+        isSuperAdmin: true,
+      },
+    ]);
   }
 
   await page.goto('/login');
@@ -96,6 +106,13 @@ test('capture review screens', async ({ page }, testInfo) => {
   await expect(page.getByLabel('الحد الأدنى للسعر')).toHaveAttribute('aria-invalid', 'true');
   await shot(page, project, 'ar-pricing-settings-error');
 
+  await page.goto('/team/admins');
+  await expect(page.getByText('(أنت)').filter({ visible: true })).toBeVisible();
+  await shot(page, project, 'ar-admins');
+  await page.getByRole('link', { name: /^عرض / }).filter({ visible: true }).first().click();
+  await expect(page.getByText('معرّف الحساب')).toBeVisible();
+  await shot(page, project, 'ar-admin-detail');
+
   if (project === 'mobile') {
     await page.getByRole('button', { name: 'فتح القائمة' }).click();
     await expect(page.getByRole('dialog')).toBeVisible();
@@ -113,4 +130,7 @@ test('capture review screens', async ({ page }, testInfo) => {
   await page.goto('/settings/pricing');
   await expect(page.getByLabel('VAT rate (%)')).toBeVisible();
   await shot(page, project, 'en-pricing-settings');
+  await page.goto('/team/admins');
+  await expect(page.getByRole('heading', { name: 'Admin team', exact: true })).toBeVisible();
+  await shot(page, project, 'en-admins');
 });

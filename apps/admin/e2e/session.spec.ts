@@ -43,6 +43,10 @@ test.describe('session refresh', () => {
     browser,
   }) => {
     await signIn(page);
+    // Backend tokens carry no unique id and `iat` is in whole seconds, so two sign-ins of the
+    // same account within one second get the same refresh token and neither invalidates the
+    // other (report D12; this made the test fail 2 of 20 runs). Sign in elsewhere a second later.
+    await page.waitForTimeout(1_100);
     // Another browser signs in with the same account: the backend keeps one refresh token
     // per account (report L1), so this browser's refresh token is now invalid.
     const other = await browser.newContext();

@@ -23,6 +23,10 @@ const NAV_GROUPS = [
     items: [{ href: '/catalog/currencies', key: 'currencies' }],
   },
   {
+    key: 'team',
+    items: [{ href: '/team/admins', key: 'admins' }],
+  },
+  {
     key: 'settings',
     items: [{ href: '/settings/pricing', key: 'pricingSettings' }],
   },

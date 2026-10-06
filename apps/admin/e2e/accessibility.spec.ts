@@ -67,6 +67,17 @@ test.describe('accessibility', () => {
     await page.getByRole('button', { name: 'حفظ' }).click();
     await expect(page.getByText('أدخل رقمًا لا يزيد عن 25.')).toBeVisible();
     await expectNoAxeViolations(page, 'pricing settings with an error');
+
+    await page.goto('/team/admins');
+    await expect(page.getByRole('heading', { name: 'فريق الإدارة', exact: true })).toBeVisible();
+    await expect(
+      page.getByRole('link', { name: /^عرض / }).filter({ visible: true }).first(),
+    ).toBeVisible();
+    await expectNoAxeViolations(page, 'admin team');
+    await expectNoHorizontalScroll(page);
+    await page.getByRole('link', { name: /^عرض / }).filter({ visible: true }).first().click();
+    await expect(page.getByText('معرّف الحساب')).toBeVisible();
+    await expectNoAxeViolations(page, 'admin detail');
   });
 
   test('keyboard only: add a country and get focus back where it started', async ({

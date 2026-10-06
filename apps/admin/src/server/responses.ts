@@ -6,6 +6,7 @@ import {
   type BffErrorBody,
 } from '@stays/api-contract';
 import { NextResponse } from 'next/server';
+import { projectResponse, type ResponseShape } from './allowlist';
 
 const STATUS_BY_KIND: Partial<Record<AppErrorKind, number>> = {
   session_expired: 401,
@@ -60,6 +61,24 @@ export function refreshProblemResponse(
           retryAfterSeconds: outcome.retryAfterSeconds,
         }),
       });
+}
+
+/**
+ * Response for a backend reply on an allowlisted route. With a response shape, success bodies
+ * are rebuilt from the shape's fields only; anything that does not match it becomes a 502 and
+ * the raw body never leaves the BFF (an unexpected shape could carry fields such as a hash).
+ */
+export function proxiedResponse(
+  result: { status: number; body: unknown; retryAfterSeconds?: number },
+  requestId: string,
+  shape?: ResponseShape,
+): NextResponse {
+  if (shape && result.status >= 200 && result.status < 300) {
+    const projected = projectResponse(result.body, shape);
+    if (projected === undefined) return localError('server', requestId, { status: 502 });
+    return backendResponse(result.status, projected, requestId);
+  }
+  return backendResponse(result.status, result.body, requestId, result.retryAfterSeconds);
 }
 
 /** Pass a backend response through: success bodies verbatim, errors normalized. */

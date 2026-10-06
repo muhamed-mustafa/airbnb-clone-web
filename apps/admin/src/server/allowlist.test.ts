@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { resolveUpstream } from './allowlist';
+import { projectResponse, resolveUpstream } from './allowlist';
 
 const ID = '6aba3245612a916798f259ee';
 const resolve = (method: string, path: string, search = '') =>
@@ -19,8 +19,10 @@ describe('resolveUpstream', () => {
   });
 
   it('refuses everything else, including admin identity endpoints', () => {
-    expect(resolve('GET', 'admins')).toBeUndefined();
-    expect(resolve('GET', `admins/${ID}`)).toBeUndefined();
+    // Admin accounts are read-only: every write is refused.
+    expect(resolve('POST', 'admins')).toBeUndefined();
+    expect(resolve('PATCH', `admins/${ID}`)).toBeUndefined();
+    expect(resolve('DELETE', `admins/${ID}`)).toBeUndefined();
     expect(resolve('PUT', 'app-settings')).toBeUndefined(); // PATCH is allowed (settings screen)
     expect(resolve('PUT', `countries/${ID}`)).toBeUndefined();
     expect(resolve('DELETE', 'countries')).toBeUndefined();
@@ -47,5 +49,96 @@ describe('resolveUpstream', () => {
     expect(resolve('DELETE', 'app-settings')).toBeUndefined();
     expect(resolve('POST', 'app-settings')).toBeUndefined();
     expect(resolve('GET', `app-settings/${ID}`)).toBeUndefined();
+  });
+
+  it('allows reading admins with the documented filters, projected to safe fields', () => {
+    const list = resolve(
+      'GET',
+      'admins',
+      'name=sa&email=a@b.co&isSuperAdmin=true&password=x&page=2',
+    );
+    expect(list?.path).toBe('/admins');
+    expect(list?.query.toString()).toBe('page=2&name=sa&email=a%40b.co&isSuperAdmin=true');
+    expect(list?.responseFields).toEqual({
+      id: 'string',
+      name: 'string',
+      email: 'string',
+      isSuperAdmin: 'boolean',
+    });
+    expect(resolve('GET', `admins/${ID}`)?.responseFields).toEqual(list?.responseFields);
+  });
+});
+
+describe('projectResponse', () => {
+  const FIELDS = resolveUpstream('GET', ['admins'], new URLSearchParams())!.responseFields!;
+  // The shape GET /admins really returns today (report D11): entities with the hash.
+  const leaked = {
+    id: ID,
+    name: 'E2E Admin',
+    email: 'e2e-admin@example.com',
+    password: '$argon2id$v=19$m=65536,t=3,p=4$abc',
+    isSuperAdmin: true,
+  };
+
+  it('drops the password hash and any unknown field from lists, keeping meta', () => {
+    const meta = {
+      page: 1,
+      limit: 20,
+      total: 1,
+      totalPages: 1,
+      hasNextPage: false,
+      hasPreviousPage: false,
+    };
+    const projected = projectResponse({ data: [{ ...leaked, extra: 1 }], meta }, FIELDS);
+    expect(projected).toEqual({
+      data: [{ id: ID, name: 'E2E Admin', email: 'e2e-admin@example.com', isSuperAdmin: true }],
+      meta,
+    });
+    expect(JSON.stringify(projected)).not.toContain('argon2');
+  });
+
+  it('projects a single item', () => {
+    expect(projectResponse({ data: leaked }, FIELDS)).toEqual({
+      data: { id: ID, name: 'E2E Admin', email: 'e2e-admin@example.com', isSuperAdmin: true },
+    });
+  });
+
+  it('fails closed on unexpected shapes', () => {
+    expect(projectResponse(null, FIELDS)).toBeUndefined();
+    expect(projectResponse('text', FIELDS)).toBeUndefined();
+    expect(projectResponse({ items: [leaked] }, FIELDS)).toBeUndefined();
+    expect(projectResponse({ data: [leaked, 'x'] }, FIELDS)).toBeUndefined();
+  });
+
+  const admin = {
+    id: ID,
+    name: 'E2E Admin',
+    email: 'e2e-admin@example.com',
+    isSuperAdmin: false,
+  };
+  const without = (field: keyof typeof admin) =>
+    Object.fromEntries(Object.entries(admin).filter(([key]) => key !== field));
+  const invalidItems: [string, unknown][] = [
+    ['an empty item', {}],
+    ...(['id', 'name', 'email', 'isSuperAdmin'] as const).map((field): [string, unknown] => [
+      `no ${field}`,
+      without(field),
+    ]),
+    ['a numeric id', { ...admin, id: 42 }],
+    ['a null name', { ...admin, name: null }],
+    ['an email object', { ...admin, email: { address: 'a@b.co' } }],
+    ['isSuperAdmin as a string', { ...admin, isSuperAdmin: 'true' }],
+    ['isSuperAdmin as a number', { ...admin, isSuperAdmin: 1 }],
+    ['an inherited field', Object.assign(Object.create({ id: ID }), without('id'))],
+  ];
+
+  it.each(invalidItems)('fails closed on %s, in a list or alone', (_label, item) => {
+    expect(projectResponse({ data: [item] }, FIELDS)).toBeUndefined();
+    expect(projectResponse({ data: [admin, item] }, FIELDS)).toBeUndefined();
+    expect(projectResponse({ data: item }, FIELDS)).toBeUndefined();
+  });
+
+  it('a valid item still passes with exactly the four fields', () => {
+    expect(projectResponse({ data: [admin] }, FIELDS)).toEqual({ data: [admin] });
   });
 });

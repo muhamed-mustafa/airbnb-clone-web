@@ -69,6 +69,7 @@ test('lab metrics', async ({ page, browserName }, testInfo) => {
   results[`${project} /locations/cities`] = await measure(page, '/locations/cities');
   results[`${project} /catalog/currencies`] = await measure(page, '/catalog/currencies');
   results[`${project} /settings/pricing`] = await measure(page, '/settings/pricing');
+  results[`${project} /team/admins`] = await measure(page, '/team/admins');
   writeFileSync(OUT.replace('.json', `-${project}.json`), JSON.stringify(results, null, 2));
   console.log(project, results);
 });

@@ -2,33 +2,17 @@ import { spawn } from 'node:child_process';
 import { randomBytes } from 'node:crypto';
 import { createWriteStream } from 'node:fs';
 import { join } from 'node:path';
-import { MongoClient } from 'mongodb';
 // @ts-expect-error -- plain ESM helper without type declarations
 import { prepareBackend } from './backend/prepare-backend.mjs';
 import { E2E_BACKEND_URL, E2E_DATABASE } from './support/constants';
+import { withE2eDatabase } from './support/e2e-db';
 
 const MONGO_URI =
   process.env.E2E_MONGO_URI ?? `mongodb://localhost:27017/${E2E_DATABASE}?replicaSet=rs0`;
 
-/**
- * Wipe the e2e database only after proving, on the live connection, that it really is
- * `airbnb-clone-e2e`. Any other name (a typo, an env override) stops the run.
- */
+/** Wipe the e2e database; withE2eDatabase proves its name first. */
 async function resetDatabase() {
-  const client = new MongoClient(MONGO_URI, { serverSelectionTimeoutMS: 5000 });
-  await client.connect();
-  try {
-    const db = client.db();
-    const stats = await db.command({ dbStats: 1 });
-    if (db.databaseName !== E2E_DATABASE || stats.db !== E2E_DATABASE) {
-      throw new Error(
-        `[e2e] refusing to wipe database "${db.databaseName}" (server reports "${String(stats.db)}"); expected exactly "${E2E_DATABASE}"`,
-      );
-    }
-    await db.dropDatabase();
-  } finally {
-    await client.close();
-  }
+  await withE2eDatabase((db) => db.dropDatabase());
 }
 
 async function waitFor(url: string, timeoutMs: number) {
