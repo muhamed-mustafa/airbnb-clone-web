@@ -1,11 +1,9 @@
 'use client';
 
 import { zodResolver } from '@hookform/resolvers/zod';
-import { zCountriesCreateBody } from '@stays/api-contract/schemas';
 import { useTranslations } from 'next-intl';
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
-import { z } from 'zod';
 import { useApplyServerErrors, useZodErrorMap } from '@/lib/form-errors';
 import { Button } from '@/ui/button';
 import { Dialog } from '@/ui/dialog';
@@ -13,14 +11,7 @@ import { TextField } from '@/ui/field';
 import { FormAlert } from '@/ui/states';
 import { useToast } from '@/ui/toast';
 import { useCreateCountry, useUpdateCountry, type Country } from './api';
-
-// Limits come from the OpenAPI contract; the form only trims/uppercases like the backend does.
-const countrySchema = z.object({
-  name: z.string().trim().pipe(zCountriesCreateBody.shape.name),
-  code: z.string().trim().toUpperCase().pipe(zCountriesCreateBody.shape.code),
-});
-type CountryInput = z.input<typeof countrySchema>;
-type CountryValues = z.output<typeof countrySchema>;
+import { countrySchema, type CountryInput, type CountryValues } from './schema';
 
 interface CountryFormDialogProps {
   country?: Country;

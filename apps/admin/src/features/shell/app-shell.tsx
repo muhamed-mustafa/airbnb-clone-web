@@ -10,34 +10,54 @@ import { Button } from '@/ui/button';
 import { CloseIcon, MenuIcon, SignOutIcon } from '@/ui/icons';
 import { LocaleSwitch } from './locale-switch';
 
-const NAV = [
-  { href: '/locations/countries', key: 'countries' },
-  { href: '/locations/cities', key: 'cities' },
+const NAV_GROUPS = [
+  {
+    key: 'locations',
+    items: [
+      { href: '/locations/countries', key: 'countries' },
+      { href: '/locations/cities', key: 'cities' },
+    ],
+  },
+  {
+    key: 'referenceData',
+    items: [{ href: '/catalog/currencies', key: 'currencies' }],
+  },
 ] as const;
 
 function Navigation({ onNavigate }: { onNavigate?: () => void }) {
   const t = useTranslations('nav');
   const pathname = usePathname();
   return (
-    <nav aria-label={t('label')} className="grid gap-1">
-      <p className="px-3 pb-1 text-xs font-semibold text-muted">{t('locations')}</p>
-      {NAV.map((item) => {
-        const current = pathname.startsWith(item.href);
-        return (
-          <Link
-            key={item.href}
-            href={item.href}
-            onClick={onNavigate}
-            aria-current={current ? 'page' : undefined}
-            className={[
-              'flex min-h-10 items-center rounded-md px-3 text-sm font-semibold pointer-coarse:min-h-11',
-              current ? 'bg-accent-tint text-accent' : 'text-ink hover:bg-sunken',
-            ].join(' ')}
-          >
-            {t(item.key)}
-          </Link>
-        );
-      })}
+    <nav aria-label={t('label')} className="grid gap-5">
+      {NAV_GROUPS.map((group) => (
+        <div
+          key={group.key}
+          role="group"
+          aria-labelledby={`nav-${group.key}`}
+          className="grid gap-1"
+        >
+          <p id={`nav-${group.key}`} className="px-3 pb-1 text-xs font-semibold text-muted">
+            {t(group.key)}
+          </p>
+          {group.items.map((item) => {
+            const current = pathname.startsWith(item.href);
+            return (
+              <Link
+                key={item.href}
+                href={item.href}
+                onClick={onNavigate}
+                aria-current={current ? 'page' : undefined}
+                className={[
+                  'flex min-h-10 items-center rounded-md px-3 text-sm font-semibold pointer-coarse:min-h-11',
+                  current ? 'bg-accent-tint text-accent' : 'text-ink hover:bg-sunken',
+                ].join(' ')}
+              >
+                {t(item.key)}
+              </Link>
+            );
+          })}
+        </div>
+      ))}
     </nav>
   );
 }

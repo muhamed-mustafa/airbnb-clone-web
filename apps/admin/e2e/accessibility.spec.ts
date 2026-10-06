@@ -48,6 +48,16 @@ test.describe('accessibility', () => {
     await expect(page.getByRole('heading', { name: 'المدن' })).toBeVisible();
     await expectNoAxeViolations(page, 'cities');
     await expectNoHorizontalScroll(page);
+
+    await page.goto('/catalog/currencies');
+    await expect(page.getByRole('heading', { name: 'العملات', exact: true })).toBeVisible();
+    await expectNoAxeViolations(page, 'currencies');
+    await expectNoHorizontalScroll(page);
+    await page.getByRole('button', { name: 'إضافة عملة' }).first().click();
+    await page.getByRole('dialog').getByRole('button', { name: 'حفظ' }).click();
+    await expect(page.getByText('هذا الحقل مطلوب.').first()).toBeVisible();
+    await expectNoAxeViolations(page, 'currency dialog with errors');
+    await page.keyboard.press('Escape');
   });
 
   test('keyboard only: add a country and get focus back where it started', async ({

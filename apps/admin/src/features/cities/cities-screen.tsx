@@ -80,7 +80,7 @@ function DeleteCityDialog({
 export function CitiesScreen() {
   const t = useTranslations('cities');
   const tc = useTranslations('common');
-  const { values, page, update, hasFilters } = useListParams(FILTER_KEYS);
+  const { values, page, update, clear, hasFilters, resetToken } = useListParams(FILTER_KEYS);
   const dialog = useDialog<DialogState>();
 
   const countries = useCountryOptions();
@@ -129,6 +129,7 @@ export function CitiesScreen() {
           ))}
         </SelectField>
         <FilterInput
+          resetToken={resetToken}
           label={t('searchName')}
           hint={t('searchNameHint')}
           value={values.name}
@@ -137,11 +138,7 @@ export function CitiesScreen() {
           maxLength={50}
         />
         {hasFilters && (
-          <Button
-            variant="ghost"
-            className="justify-self-start sm:mt-7"
-            onClick={() => update({ name: '', country: '' })}
-          >
+          <Button variant="ghost" className="justify-self-start sm:mt-7" onClick={clear}>
             {tc('clearFilters')}
           </Button>
         )}

@@ -9,7 +9,9 @@
     "countries": "الدول",
     "cities": "المدن",
     "openMenu": "فتح القائمة",
-    "closeMenu": "إغلاق القائمة"
+    "closeMenu": "إغلاق القائمة",
+    "referenceData": "البيانات المرجعية",
+    "currencies": "العملات"
   },
   "account": {
     "signOut": "تسجيل الخروج من هذا المتصفح",
@@ -113,13 +115,41 @@
     "deleteConfirm": "حذف المدينة",
     "deleted": "تم حذف {name}."
   },
+  "currencies": {
+    "title": "العملات",
+    "count": "{count, plural, =0 {لا توجد عملات} one {عملة واحدة} two {عملتان} few {# عملات} many {# عملة} other {# عملة}}",
+    "add": "إضافة عملة",
+    "searchName": "بحث بالاسم",
+    "searchNameHint": "3 أحرف على الأقل",
+    "searchCode": "الكود",
+    "searchCodeHint": "3 أحرف، مثل EGP",
+    "columnName": "الاسم",
+    "columnCode": "الكود",
+    "emptyTitle": "لا توجد عملات بعد",
+    "emptyBody": "أضف العملات التي ستُستخدم في المنصة.",
+    "noResultsTitle": "لا توجد نتائج",
+    "noResultsBody": "لا توجد عملة تطابق هذا البحث.",
+    "createTitle": "إضافة عملة",
+    "editTitle": "تعديل {name}",
+    "fieldName": "اسم العملة",
+    "fieldNameHint": "بين 3 و50 حرفًا.",
+    "fieldCode": "كود العملة",
+    "fieldCodeHint": "3 أحرف (ISO 4217)، مثل EGP.",
+    "created": "تمت إضافة {name}.",
+    "updated": "تم حفظ {name}.",
+    "deleteTitle": "حذف {name}؟",
+    "deleteBody": "لن تظهر العملة بعد الآن.",
+    "deleteConfirm": "حذف العملة",
+    "deleted": "تم حذف {name}."
+  },
   "validation": {
     "required": "هذا الحقل مطلوب.",
     "tooShort": "أدخل {min} أحرف على الأقل.",
     "tooLong": "أدخل {max} حرفًا كحد أقصى.",
     "exactLength": "أدخل {length} أحرف بالضبط.",
     "email": "أدخل بريدًا إلكترونيًا صحيحًا، مثل name@example.com.",
-    "invalid": "القيمة غير صحيحة."
+    "invalid": "القيمة غير صحيحة.",
+    "latinLetters": "استخدم حروفًا لاتينية فقط (A–Z)."
   },
   "errors": {
     "summary": "راجع الحقول المحددة.",
@@ -174,6 +204,10 @@
       "NOT_FOUND": "هذا العنصر غير موجود أو تم حذفه.",
       "FORBIDDEN": "لا تملك صلاحية لهذا الإجراء.",
       "UNAUTHORIZED": "انتهت الجلسة. سجّل الدخول مرة أخرى."
+    },
+    "currencies": {
+      "CURRENCY_ALREADY_EXISTS": "توجد عملة بنفس الاسم أو الكود بالفعل.",
+      "CURRENCY_NOT_FOUND": "هذه العملة لم تعد موجودة."
     }
   }
 }

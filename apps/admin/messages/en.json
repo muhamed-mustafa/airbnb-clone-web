@@ -9,7 +9,9 @@
     "countries": "Countries",
     "cities": "Cities",
     "openMenu": "Open menu",
-    "closeMenu": "Close menu"
+    "closeMenu": "Close menu",
+    "referenceData": "Reference data",
+    "currencies": "Currencies"
   },
   "account": {
     "signOut": "Sign out of this browser",
@@ -113,13 +115,41 @@
     "deleteConfirm": "Delete city",
     "deleted": "{name} deleted."
   },
+  "currencies": {
+    "title": "Currencies",
+    "count": "{count, plural, =0 {No currencies} one {# currency} other {# currencies}}",
+    "add": "Add currency",
+    "searchName": "Search by name",
+    "searchNameHint": "At least 3 characters",
+    "searchCode": "Code",
+    "searchCodeHint": "3 letters, e.g. EGP",
+    "columnName": "Name",
+    "columnCode": "Code",
+    "emptyTitle": "No currencies yet",
+    "emptyBody": "Add the currencies the platform will use.",
+    "noResultsTitle": "No results",
+    "noResultsBody": "No currency matches this search.",
+    "createTitle": "Add currency",
+    "editTitle": "Edit {name}",
+    "fieldName": "Currency name",
+    "fieldNameHint": "3 to 50 characters.",
+    "fieldCode": "Currency code",
+    "fieldCodeHint": "3 letters (ISO 4217), e.g. EGP.",
+    "created": "{name} added.",
+    "updated": "{name} saved.",
+    "deleteTitle": "Delete {name}?",
+    "deleteBody": "The currency will no longer be shown.",
+    "deleteConfirm": "Delete currency",
+    "deleted": "{name} deleted."
+  },
   "validation": {
     "required": "This field is required.",
     "tooShort": "Enter at least {min} characters.",
     "tooLong": "Enter at most {max} characters.",
     "exactLength": "Enter exactly {length} characters.",
     "email": "Enter a valid email, like name@example.com.",
-    "invalid": "This value isn't valid."
+    "invalid": "This value isn't valid.",
+    "latinLetters": "Use Latin letters only (A–Z)."
   },
   "errors": {
     "summary": "Check the highlighted fields.",
@@ -174,6 +204,10 @@
       "NOT_FOUND": "This item doesn't exist or was deleted.",
       "FORBIDDEN": "You don't have permission to do this.",
       "UNAUTHORIZED": "Your session ended. Sign in again."
+    },
+    "currencies": {
+      "CURRENCY_ALREADY_EXISTS": "A currency with this name or code already exists.",
+      "CURRENCY_NOT_FOUND": "This currency no longer exists."
     }
   }
 }

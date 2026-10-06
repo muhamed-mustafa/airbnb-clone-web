@@ -36,6 +36,9 @@ test.describe('countries', () => {
     await dialog.getByRole('button', { name: 'حفظ' }).click();
     await expect(dialog.getByText('أدخل 3 أحرف على الأقل.')).toBeVisible();
     await expect(dialog.getByText('أدخل 2 أحرف بالضبط.')).toBeVisible();
+    await dialog.getByLabel('كود الدولة').fill('1a');
+    await dialog.getByRole('button', { name: 'حفظ' }).click();
+    await expect(dialog.getByText('استخدم حروفًا لاتينية فقط (A–Z).')).toBeVisible();
 
     // Duplicate code on create: the backend gives no field (D2), so the message is form-level.
     const name = unique('New land');

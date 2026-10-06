@@ -4,5 +4,7 @@ export {
   zCitiesUpdateBody,
   zCountriesCreateBody,
   zCountriesUpdateBody,
+  zCurrenciesCreateBody,
+  zCurrenciesUpdateBody,
   zLoginAdminDtoWritable,
 } from './generated/zod.gen';

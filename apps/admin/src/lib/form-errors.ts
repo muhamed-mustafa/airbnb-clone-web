@@ -27,7 +27,9 @@ export function useZodErrorMap() {
             ? t('exactLength', { length: Number(issue.maximum) })
             : t('tooLong', { max: Number(issue.maximum) });
         case 'invalid_format':
-          return issue.format === 'email' ? t('email') : t('invalid');
+          if (issue.format === 'email') return t('email');
+          // The only pattern used in forms today: codes made of Latin letters.
+          return issue.format === 'regex' ? t('latinLetters') : t('invalid');
         default:
           return t('invalid');
       }

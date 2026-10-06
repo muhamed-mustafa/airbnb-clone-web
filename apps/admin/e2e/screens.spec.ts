@@ -34,6 +34,16 @@ test('capture review screens', async ({ page }, testInfo) => {
     }
     for (const name of ['Riyadh', 'Jeddah', 'العُلا'])
       await seed('/cities', { name, country: saudi.id });
+    for (const [name, currencyCode] of [
+      ['Egyptian Pound', 'EGP'],
+      ['Saudi Riyal', 'SAR'],
+      ['UAE Dirham', 'AED'],
+      ['US Dollar', 'USD'],
+      ['درهم مغربي', 'MAD'],
+      ['Bosnia and Herzegovina Convertible Mark', 'BAM'],
+    ]) {
+      await seed('/currencies', { name, currencyCode });
+    }
   }
 
   await page.goto('/login');
@@ -64,6 +74,17 @@ test('capture review screens', async ({ page }, testInfo) => {
   await expect(page.getByText('Cairo').filter({ visible: true })).toBeVisible();
   await shot(page, project, 'ar-cities');
 
+  await page.goto('/catalog/currencies');
+  await expect(page.getByText('Egyptian Pound').filter({ visible: true })).toBeVisible();
+  await shot(page, project, 'ar-currencies');
+  await page.getByRole('button', { name: 'إضافة عملة' }).first().click();
+  await page.getByRole('dialog').getByLabel('اسم العملة').fill('Egyptian Pound');
+  await page.getByRole('dialog').getByLabel('كود العملة').fill('egp');
+  await page.getByRole('dialog').getByRole('button', { name: 'حفظ' }).click();
+  await expect(page.getByRole('dialog').getByRole('alert')).toBeVisible();
+  await shot(page, project, 'ar-currency-conflict');
+  await page.keyboard.press('Escape');
+
   if (project === 'mobile') {
     await page.getByRole('button', { name: 'فتح القائمة' }).click();
     await expect(page.getByRole('dialog')).toBeVisible();
@@ -75,4 +96,7 @@ test('capture review screens', async ({ page }, testInfo) => {
   await page.goto('/locations/countries');
   await expect(page.getByRole('heading', { name: 'Countries' })).toBeVisible();
   await shot(page, project, 'en-countries');
+  await page.goto('/catalog/currencies');
+  await expect(page.getByRole('heading', { name: 'Currencies', exact: true })).toBeVisible();
+  await shot(page, project, 'en-currencies');
 });

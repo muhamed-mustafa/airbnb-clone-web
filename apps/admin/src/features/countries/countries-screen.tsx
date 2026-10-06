@@ -27,7 +27,7 @@ type DialogState =
 export function CountriesScreen() {
   const t = useTranslations('countries');
   const tc = useTranslations('common');
-  const { values, page, update, hasFilters } = useListParams(FILTER_KEYS);
+  const { values, page, update, clear, hasFilters, resetToken } = useListParams(FILTER_KEYS);
   const dialog = useDialog<DialogState>();
 
   const query = useCountries({ page, name: values.name, code: values.code });
@@ -54,6 +54,7 @@ export function CountriesScreen() {
 
       <search className="grid grid-cols-[minmax(0,1fr)_7rem] items-start gap-3 sm:grid-cols-[minmax(0,20rem)_8rem_auto]">
         <FilterInput
+          resetToken={resetToken}
           label={t('searchName')}
           hint={t('searchNameHint')}
           value={values.name}
@@ -62,6 +63,7 @@ export function CountriesScreen() {
           maxLength={50}
         />
         <FilterInput
+          resetToken={resetToken}
           label={t('searchCode')}
           hint={t('searchCodeHint')}
           value={values.code}
@@ -76,7 +78,7 @@ export function CountriesScreen() {
           <Button
             variant="ghost"
             className="col-span-full justify-self-start sm:col-span-1 sm:mt-7"
-            onClick={() => update({ name: '', code: '' })}
+            onClick={clear}
           >
             {tc('clearFilters')}
           </Button>

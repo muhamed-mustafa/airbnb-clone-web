@@ -30,4 +30,13 @@ describe('resolveUpstream', () => {
   it('drops empty query values instead of sending them', () => {
     expect(resolve('GET', 'cities', 'name=&country=')?.query.toString()).toBe('');
   });
+
+  it('allows currencies with their own query parameters only', () => {
+    const target = resolve('GET', 'currencies', 'currencyCode=EGP&code=EG&name=pound&country=x');
+    expect(target?.path).toBe('/currencies');
+    expect(target?.query.toString()).toBe('name=pound&currencyCode=EGP');
+    expect(resolve('PATCH', `currencies/${ID}`)?.path).toBe(`/currencies/${ID}`);
+    expect(resolve('DELETE', 'currencies')).toBeUndefined();
+    expect(resolve('PUT', `currencies/${ID}`)).toBeUndefined();
+  });
 });

@@ -17,11 +17,15 @@ export default defineConfig({
   fullyParallel: false,
   timeout: 60_000,
   expect: { timeout: 10_000 },
-  // The JSON report keeps failures of every run (test-results/ is cleared by the next run).
+  // One JSON report per run, in its own folder: the HTML reporter wipes playwright-report/
+  // and the next run wipes test-results/, so neither can hold the evidence of a failure.
   reporter: [
     ['list'],
     ['html', { open: 'never' }],
-    ['json', { outputFile: `playwright-report/results-${Date.now()}.json` }],
+    [
+      'json',
+      { outputFile: `test-reports/e2e-${new Date().toISOString().replace(/[:.]/g, '-')}.json` },
+    ],
   ],
   use: {
     baseURL: ADMIN_URL,

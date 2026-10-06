@@ -7,7 +7,7 @@
 type Method = 'GET' | 'POST' | 'PATCH' | 'DELETE';
 
 interface Rule {
-  resource: 'countries' | 'cities';
+  resource: 'countries' | 'cities' | 'currencies';
   withId: boolean;
   methods: readonly Method[];
   query: readonly string[];
@@ -30,6 +30,14 @@ const RULES: readonly Rule[] = [
   },
   { resource: 'cities', withId: false, methods: ['POST'], query: [] },
   { resource: 'cities', withId: true, methods: ['GET', 'PATCH', 'DELETE'], query: [] },
+  {
+    resource: 'currencies',
+    withId: false,
+    methods: ['GET'],
+    query: ['page', 'limit', 'name', 'currencyCode'],
+  },
+  { resource: 'currencies', withId: false, methods: ['POST'], query: [] },
+  { resource: 'currencies', withId: true, methods: ['GET', 'PATCH', 'DELETE'], query: [] },
 ];
 
 const MONGO_ID = /^[a-f0-9]{24}$/i;

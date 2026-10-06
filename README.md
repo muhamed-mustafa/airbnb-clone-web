@@ -4,7 +4,7 @@ Frontends for the stays platform. Talks to the NestJS API in `../airbnb-clone-ap
 
 | Package                 | What it is                                                                           |
 | ----------------------- | ------------------------------------------------------------------------------------ |
-| `apps/admin`            | Admin panel (Next.js). Phase 1: sign-in, countries, cities.                          |
+| `apps/admin`            | Admin panel (Next.js). Sign-in, countries, cities, currencies.                       |
 | `packages/api-contract` | Types and Zod schemas generated from the backend OpenAPI, plus the error normalizer. |
 
 `apps/web` (customer site) is not started; it waits for the listings, pricing, availability and booking contract.
@@ -44,6 +44,7 @@ connection that its name is exactly `airbnb-clone-e2e`. Change the commit with `
 Optional:
 
 ```bash
+# Every e2e run also writes apps/admin/test-reports/e2e-<timestamp>.json (kept across runs).
 CAPTURE_SCREENS=1 pnpm --filter @stays/admin exec playwright test e2e/screens.spec.ts
 MEASURE_PERF=1 pnpm --filter @stays/admin exec playwright test e2e/perf.spec.ts
 ```

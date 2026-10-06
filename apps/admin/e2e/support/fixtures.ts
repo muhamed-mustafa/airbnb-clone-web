@@ -24,17 +24,25 @@ export async function signIn(page: Page, next = '/locations/countries') {
 /** Unique, readable test data (no collisions across runs on the same database). */
 export const unique = (prefix: string) => `${prefix} ${randomBytes(3).toString('hex')}`;
 
-const usedCodes = new Set<string>();
-export function uniqueCode(): string {
+// Codes already taken (loaded from the e2e backend per worker) or reserved for screenshots.
+const usedCodes = new Set<string>(['EG', 'SA', 'AE', 'US', 'MA', 'VC']);
+const usedCurrencyCodes = new Set<string>(['EGP', 'SAR', 'AED', 'USD', 'MAD', 'BAM']);
+
+function uniqueLetters(length: number, used: Set<string>): string {
   const letters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
   for (;;) {
-    const code = `${letters[Math.floor(Math.random() * 26)]}${letters[Math.floor(Math.random() * 26)]}`;
-    if (!usedCodes.has(code) && !['EG', 'SA', 'AE', 'US'].includes(code)) {
-      usedCodes.add(code);
+    const code = Array.from({ length }, () => letters[Math.floor(Math.random() * 26)]).join('');
+    if (!used.has(code)) {
+      used.add(code);
       return code;
     }
   }
 }
+
+/** A country code (2 letters) not used in the e2e database. */
+export const uniqueCode = () => uniqueLetters(2, usedCodes);
+/** A currency code (3 letters) not used in the e2e database. */
+export const uniqueCurrencyCode = () => uniqueLetters(3, usedCurrencyCodes);
 
 /** Seed data straight on the e2e backend, independent of the UI under test. */
 export async function backendAdminToken(): Promise<string> {
@@ -66,17 +74,26 @@ export async function expectNoHorizontalScroll(page: Page) {
   expect(overflow, 'page must not scroll horizontally').toBeLessThanOrEqual(0);
 }
 
-/** Codes already in the e2e database, so generated codes never collide (workers can restart). */
-async function loadExistingCodes() {
+async function loadExisting(
+  path: string,
+  read: (item: Record<string, string>) => string,
+  used: Set<string>,
+) {
   for (let page = 1; ; page += 1) {
-    const response = await fetch(`${E2E_BACKEND_URL}/api/countries?page=${page}&limit=100`);
+    const response = await fetch(`${E2E_BACKEND_URL}/api/${path}?page=${page}&limit=100`);
     const body = (await response.json()) as {
-      data: { code: string }[];
+      data: Record<string, string>[];
       meta: { hasNextPage: boolean };
     };
-    body.data.forEach((country) => usedCodes.add(country.code));
+    body.data.forEach((item) => used.add(read(item)));
     if (!body.meta.hasNextPage) return;
   }
+}
+
+/** Codes already in the e2e database, so generated codes never collide (workers can restart). */
+async function loadExistingCodes() {
+  await loadExisting('countries', (country) => country.code!, usedCodes);
+  await loadExisting('currencies', (currency) => currency.currencyCode!, usedCurrencyCodes);
 }
 
 // eslint-disable-next-line @typescript-eslint/no-empty-object-type -- no test-scoped fixtures
