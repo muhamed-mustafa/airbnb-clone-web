@@ -1,0 +1,5343 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "Airbnb Clone API (merged)",
+    "version": "1.0.0",
+    "contact": {
+      "name": "Airbnb Clone API Support",
+      "url": "",
+      "email": "muhammedmostafa.dev@gmail.com"
+    },
+    "license": {
+      "name": "UNLICENSED",
+      "url": ""
+    }
+  },
+  "servers": [
+    {
+      "url": "http://localhost:3000",
+      "description": "Local development"
+    }
+  ],
+  "paths": {
+    "/api/auth/register": {
+      "post": {
+        "description": "Creates a new user account with the provided profile details and returns JWT access and refresh tokens.",
+        "operationId": "authRegister",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RegisterDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Account created successfully. Returns access and refresh tokens.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "data"
+                  ],
+                  "properties": {
+                    "data": {
+                      "$ref": "#/components/schemas/AuthResponseDto"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request — returned for validation failures or an invalid phone number for the given country code.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "oneOf": [
+                    {
+                      "$ref": "#/components/schemas/ValidationErrorsResponseDto"
+                    },
+                    {
+                      "$ref": "#/components/schemas/ApplicationErrorResponseDto"
+                    }
+                  ]
+                },
+                "examples": {
+                  "name": {
+                    "summary": "name ? required field",
+                    "value": {
+                      "errors": [
+                        {
+                          "code": "isNotEmpty",
+                          "field": "name",
+                          "message": "validation.isNotEmpty|{}"
+                        },
+                        {
+                          "code": "isString",
+                          "field": "name",
+                          "message": "validation.isString|{}"
+                        },
+                        {
+                          "code": "minLength",
+                          "field": "name",
+                          "message": "validation.minLength|{\"constraints\":[2]}"
+                        },
+                        {
+                          "code": "maxLength",
+                          "field": "name",
+                          "message": "validation.maxLength|{\"constraints\":[50]}"
+                        }
+                      ]
+                    }
+                  },
+                  "email": {
+                    "summary": "email ? required field",
+                    "value": {
+                      "errors": [
+                        {
+                          "code": "isEmail",
+                          "field": "email",
+                          "message": "validation.isEmail|{\"constraints\":[{\"allow_display_name\":false,\"allow_underscores\":false,\"require_display_name\":false,\"allow_utf8_local_part\":true,\"require_tld\":true,\"blacklisted_chars\":\"\",\"ignore_max_length\":false,\"host_blacklist\":[],\"host_whitelist\":[]}]}"
+                        },
+                        {
+                          "code": "isNotEmpty",
+                          "field": "email",
+                          "message": "validation.isNotEmpty|{}"
+                        },
+                        {
+                          "code": "isString",
+                          "field": "email",
+                          "message": "validation.isString|{}"
+                        }
+                      ]
+                    }
+                  },
+                  "countryCode": {
+                    "summary": "countryCode ? required field",
+                    "value": {
+                      "errors": [
+                        {
+                          "code": "isNotEmpty",
+                          "field": "countryCode",
+                          "message": "validation.isNotEmpty|{}"
+                        },
+                        {
+                          "code": "isString",
+                          "field": "countryCode",
+                          "message": "validation.isString|{}"
+                        }
+                      ]
+                    }
+                  },
+                  "phone": {
+                    "summary": "phone ? required field",
+                    "value": {
+                      "errors": [
+                        {
+                          "code": "isNotEmpty",
+                          "field": "phone",
+                          "message": "validation.isNotEmpty|{}"
+                        },
+                        {
+                          "code": "isString",
+                          "field": "phone",
+                          "message": "validation.isString|{}"
+                        }
+                      ]
+                    }
+                  },
+                  "password": {
+                    "summary": "password ? required field",
+                    "value": {
+                      "errors": [
+                        {
+                          "code": "isNotEmpty",
+                          "field": "password",
+                          "message": "validation.isNotEmpty|{}"
+                        },
+                        {
+                          "code": "isString",
+                          "field": "password",
+                          "message": "validation.isString|{}"
+                        },
+                        {
+                          "code": "minLength",
+                          "field": "password",
+                          "message": "validation.minLength|{\"constraints\":[8]}"
+                        },
+                        {
+                          "code": "maxLength",
+                          "field": "password",
+                          "message": "validation.maxLength|{\"constraints\":[128]}"
+                        }
+                      ]
+                    }
+                  },
+                  "invalidEmail": {
+                    "summary": "email ? invalid format",
+                    "value": {
+                      "errors": [
+                        {
+                          "code": "isEmail",
+                          "field": "email",
+                          "message": "validation.isEmail|{\"value\":\"invalid-email\",\"constraints\":[{\"allow_display_name\":false,\"allow_underscores\":false,\"require_display_name\":false,\"allow_utf8_local_part\":true,\"require_tld\":true,\"blacklisted_chars\":\"\",\"ignore_max_length\":false,\"host_blacklist\":[],\"host_whitelist\":[]}]}"
+                        }
+                      ]
+                    }
+                  },
+                  "unknownField": {
+                    "summary": "Unknown field",
+                    "value": {
+                      "errors": [
+                        {
+                          "code": "whitelistValidation",
+                          "field": "extra",
+                          "message": "property extra should not exist"
+                        }
+                      ]
+                    }
+                  },
+                  "invalidPhone": {
+                    "summary": "phone ? invalid for country code",
+                    "value": {
+                      "code": "INVALID_PHONE_NUMBER",
+                      "message": "Invalid phone number"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "A resource conflict occurred (e.g. duplicate email or phone).",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HttpErrorsResponseDto"
+                },
+                "examples": {
+                  "email": {
+                    "summary": "email ? already exists",
+                    "value": {
+                      "errors": [
+                        {
+                          "code": "auth.USER_ALREADY_EXISTS",
+                          "field": "email",
+                          "message": "User already exists"
+                        }
+                      ]
+                    }
+                  },
+                  "phone": {
+                    "summary": "phone ? already exists",
+                    "value": {
+                      "errors": [
+                        {
+                          "code": "auth.USER_ALREADY_EXISTS",
+                          "field": "phone",
+                          "message": "User already exists"
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "An unexpected server error occurred.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InternalErrorResponseDto"
+                },
+                "examples": {
+                  "unexpected": {
+                    "summary": "Unexpected server error",
+                    "value": {
+                      "errors": [
+                        {
+                          "message": "errors.internal_server_error"
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "summary": "Register a new user",
+        "tags": [
+          "Authentication"
+        ],
+        "x-docs-audience": "user",
+        "x-docs-order": 10,
+        "x-docs-public": true,
+        "x-docs-access": "Public",
+        "security": []
+      }
+    },
+    "/api/auth/login": {
+      "post": {
+        "description": "Validates user credentials and returns JWT access and refresh tokens for authenticated API access.",
+        "operationId": "authLogin",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/LoginDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Authentication successful. Returns access and refresh tokens.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "data"
+                  ],
+                  "properties": {
+                    "data": {
+                      "$ref": "#/components/schemas/AuthResponseDto"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Request validation failed. Returned when required fields are missing, formats are invalid, or unknown fields are present.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ValidationErrorsResponseDto"
+                },
+                "examples": {
+                  "email": {
+                    "summary": "email ? required field",
+                    "value": {
+                      "errors": [
+                        {
+                          "code": "isEmail",
+                          "field": "email",
+                          "message": "email must be an email"
+                        },
+                        {
+                          "code": "isNotEmpty",
+                          "field": "email",
+                          "message": "email should not be empty"
+                        }
+                      ]
+                    }
+                  },
+                  "password": {
+                    "summary": "password ? required field",
+                    "value": {
+                      "errors": [
+                        {
+                          "code": "isNotEmpty",
+                          "field": "password",
+                          "message": "password should not be empty"
+                        }
+                      ]
+                    }
+                  },
+                  "invalidEmail": {
+                    "summary": "email ? invalid format",
+                    "value": {
+                      "errors": [
+                        {
+                          "code": "isEmail",
+                          "field": "email",
+                          "message": "email must be an email"
+                        }
+                      ]
+                    }
+                  },
+                  "unknownField": {
+                    "summary": "Unknown field",
+                    "value": {
+                      "errors": [
+                        {
+                          "code": "whitelistValidation",
+                          "field": "extra",
+                          "message": "property extra should not exist"
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Authentication failed due to invalid email or password.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApplicationErrorResponseDto"
+                },
+                "examples": {
+                  "email": {
+                    "summary": "Incorrect email",
+                    "value": {
+                      "code": "INVALID_CREDENTIALS",
+                      "message": "Invalid credentials"
+                    }
+                  },
+                  "password": {
+                    "summary": "Incorrect password",
+                    "value": {
+                      "code": "INVALID_CREDENTIALS",
+                      "message": "Invalid credentials"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "An unexpected server error occurred.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InternalErrorResponseDto"
+                },
+                "examples": {
+                  "unexpected": {
+                    "summary": "Unexpected server error",
+                    "value": {
+                      "errors": [
+                        {
+                          "message": "errors.internal_server_error"
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "summary": "Login user",
+        "tags": [
+          "Authentication"
+        ],
+        "x-docs-audience": "user",
+        "x-docs-order": 20,
+        "x-docs-public": true,
+        "x-docs-access": "Public",
+        "security": []
+      }
+    },
+    "/api/countries": {
+      "post": {
+        "description": "Creates a country with a unique name and code.",
+        "operationId": "countriesCreate",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateCountryDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Country created successfully.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "data"
+                  ],
+                  "properties": {
+                    "data": {
+                      "$ref": "#/components/schemas/CountryResponseDto"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Request validation failed. Returned when required fields are missing, formats are invalid, or unknown fields are present.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ValidationErrorsResponseDto"
+                },
+                "examples": {
+                  "unknownField": {
+                    "summary": "Unknown request field",
+                    "value": {
+                      "errors": [
+                        {
+                          "code": "whitelistValidation",
+                          "field": "extra",
+                          "message": "property extra should not exist"
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Access token is missing, invalid, or expired."
+          },
+          "403": {
+            "description": "The authenticated role cannot access this operation."
+          },
+          "409": {
+            "description": "The country name or code is already in use.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "oneOf": [
+                    {
+                      "type": "object",
+                      "required": [
+                        "code",
+                        "message"
+                      ],
+                      "properties": {
+                        "code": {
+                          "type": "string"
+                        },
+                        "message": {
+                          "type": "string"
+                        }
+                      }
+                    },
+                    {
+                      "type": "object",
+                      "required": [
+                        "errors"
+                      ],
+                      "properties": {
+                        "errors": {
+                          "type": "array",
+                          "items": {
+                            "type": "object",
+                            "required": [
+                              "code",
+                              "message"
+                            ],
+                            "properties": {
+                              "code": {
+                                "type": "string"
+                              },
+                              "message": {
+                                "type": "string"
+                              },
+                              "field": {
+                                "type": "string",
+                                "enum": [
+                                  "name",
+                                  "code"
+                                ]
+                              }
+                            }
+                          }
+                        }
+                      }
+                    }
+                  ]
+                },
+                "examples": {
+                  "existingCountry": {
+                    "summary": "Duplicate detected before creation",
+                    "value": {
+                      "code": "COUNTRY_ALREADY_EXISTS",
+                      "message": "Country already exists."
+                    }
+                  },
+                  "duplicateName": {
+                    "summary": "Database name conflict",
+                    "value": {
+                      "errors": [
+                        {
+                          "code": "countries.COUNTRY_ALREADY_EXISTS",
+                          "field": "name",
+                          "message": "Country already exists."
+                        }
+                      ]
+                    }
+                  },
+                  "duplicateCode": {
+                    "summary": "Database code conflict",
+                    "value": {
+                      "errors": [
+                        {
+                          "code": "countries.COUNTRY_ALREADY_EXISTS",
+                          "field": "code",
+                          "message": "Country already exists."
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "An unexpected server error occurred.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InternalErrorResponseDto"
+                },
+                "examples": {
+                  "unexpected": {
+                    "summary": "Unexpected server error",
+                    "value": {
+                      "errors": [
+                        {
+                          "message": "errors.internal_server_error"
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "access-token": []
+          }
+        ],
+        "summary": "Create a country",
+        "tags": [
+          "Countries"
+        ],
+        "x-docs-order": 10,
+        "x-docs-roles": [
+          "admin"
+        ],
+        "x-docs-audience": "admin",
+        "x-docs-access": "Admin"
+      },
+      "get": {
+        "description": "Returns a paginated list of non-deleted countries. Name uses a literal, case-insensitive partial match; code uses an exact match.",
+        "operationId": "countriesFindAll",
+        "parameters": [
+          {
+            "name": "page",
+            "required": false,
+            "in": "query",
+            "description": "Page number.",
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "default": 1,
+              "example": 1,
+              "allOf": [
+                {
+                  "$ref": "#/components/schemas/Object"
+                }
+              ]
+            }
+          },
+          {
+            "name": "limit",
+            "required": false,
+            "in": "query",
+            "description": "Number of items per page.",
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 100,
+              "default": 10,
+              "example": 10,
+              "allOf": [
+                {
+                  "$ref": "#/components/schemas/Object"
+                }
+              ]
+            }
+          },
+          {
+            "name": "name",
+            "required": false,
+            "in": "query",
+            "description": "Partial country name.",
+            "schema": {
+              "minLength": 3,
+              "maxLength": 50,
+              "example": "egy",
+              "type": "string"
+            }
+          },
+          {
+            "name": "code",
+            "required": false,
+            "in": "query",
+            "description": "Exact country code.",
+            "schema": {
+              "minLength": 2,
+              "maxLength": 2,
+              "example": "EG",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Paginated list of matching countries.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/CountryResponseDto"
+                      }
+                    },
+                    "meta": {
+                      "type": "object",
+                      "properties": {
+                        "page": {
+                          "type": "integer",
+                          "example": 1
+                        },
+                        "limit": {
+                          "type": "integer",
+                          "example": 10
+                        },
+                        "total": {
+                          "type": "integer",
+                          "example": 25
+                        },
+                        "totalPages": {
+                          "type": "integer",
+                          "example": 3
+                        },
+                        "hasNextPage": {
+                          "type": "boolean",
+                          "example": true
+                        },
+                        "hasPreviousPage": {
+                          "type": "boolean",
+                          "example": false
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Request validation failed. Returned when required fields are missing, formats are invalid, or unknown fields are present.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ValidationErrorsResponseDto"
+                },
+                "examples": {
+                  "unknownField": {
+                    "summary": "Unknown request field",
+                    "value": {
+                      "errors": [
+                        {
+                          "code": "whitelistValidation",
+                          "field": "extra",
+                          "message": "property extra should not exist"
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "An unexpected server error occurred.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InternalErrorResponseDto"
+                },
+                "examples": {
+                  "unexpected": {
+                    "summary": "Unexpected server error",
+                    "value": {
+                      "errors": [
+                        {
+                          "message": "errors.internal_server_error"
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "summary": "List countries",
+        "tags": [
+          "Countries"
+        ],
+        "x-docs-order": 20,
+        "x-docs-public": true,
+        "x-docs-audience": "shared",
+        "x-docs-access": "Public",
+        "security": []
+      }
+    },
+    "/api/countries/{id}": {
+      "patch": {
+        "description": "Updates only the supplied name or code of a non-deleted country.",
+        "operationId": "countriesUpdate",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "description": "Country MongoDB ObjectId.",
+            "schema": {
+              "type": "string",
+              "pattern": "^[a-fA-F0-9]{24}$",
+              "example": "670d1234567890abcdef1234"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateCountryDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Country after the update.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "data"
+                  ],
+                  "properties": {
+                    "data": {
+                      "$ref": "#/components/schemas/CountryResponseDto"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Request validation failed. Returned when required fields are missing, formats are invalid, or unknown fields are present.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ValidationErrorsResponseDto"
+                },
+                "examples": {
+                  "unknownField": {
+                    "summary": "Unknown request field",
+                    "value": {
+                      "errors": [
+                        {
+                          "code": "whitelistValidation",
+                          "field": "extra",
+                          "message": "property extra should not exist"
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Access token is missing, invalid, or expired."
+          },
+          "403": {
+            "description": "The authenticated role cannot access this operation."
+          },
+          "404": {
+            "description": "The country does not exist or has been soft deleted.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "code",
+                    "message"
+                  ],
+                  "properties": {
+                    "code": {
+                      "type": "string"
+                    },
+                    "message": {
+                      "type": "string"
+                    }
+                  },
+                  "example": {
+                    "code": "COUNTRY_NOT_FOUND",
+                    "message": "Country not found."
+                  }
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "The country name or code is already in use.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "oneOf": [
+                    {
+                      "type": "object",
+                      "required": [
+                        "code",
+                        "message"
+                      ],
+                      "properties": {
+                        "code": {
+                          "type": "string"
+                        },
+                        "message": {
+                          "type": "string"
+                        }
+                      }
+                    },
+                    {
+                      "type": "object",
+                      "required": [
+                        "errors"
+                      ],
+                      "properties": {
+                        "errors": {
+                          "type": "array",
+                          "items": {
+                            "type": "object",
+                            "required": [
+                              "code",
+                              "message"
+                            ],
+                            "properties": {
+                              "code": {
+                                "type": "string"
+                              },
+                              "message": {
+                                "type": "string"
+                              },
+                              "field": {
+                                "type": "string",
+                                "enum": [
+                                  "name",
+                                  "code"
+                                ]
+                              }
+                            }
+                          }
+                        }
+                      }
+                    }
+                  ]
+                },
+                "examples": {
+                  "existingCountry": {
+                    "summary": "Duplicate detected before creation",
+                    "value": {
+                      "code": "COUNTRY_ALREADY_EXISTS",
+                      "message": "Country already exists."
+                    }
+                  },
+                  "duplicateName": {
+                    "summary": "Database name conflict",
+                    "value": {
+                      "errors": [
+                        {
+                          "code": "countries.COUNTRY_ALREADY_EXISTS",
+                          "field": "name",
+                          "message": "Country already exists."
+                        }
+                      ]
+                    }
+                  },
+                  "duplicateCode": {
+                    "summary": "Database code conflict",
+                    "value": {
+                      "errors": [
+                        {
+                          "code": "countries.COUNTRY_ALREADY_EXISTS",
+                          "field": "code",
+                          "message": "Country already exists."
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "An unexpected server error occurred.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InternalErrorResponseDto"
+                },
+                "examples": {
+                  "unexpected": {
+                    "summary": "Unexpected server error",
+                    "value": {
+                      "errors": [
+                        {
+                          "message": "errors.internal_server_error"
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "access-token": []
+          }
+        ],
+        "summary": "Update a country",
+        "tags": [
+          "Countries"
+        ],
+        "x-docs-order": 40,
+        "x-docs-roles": [
+          "admin"
+        ],
+        "x-docs-audience": "admin",
+        "x-docs-access": "Admin"
+      },
+      "delete": {
+        "description": "Soft deletes a country by setting isDeleted and deletedAt, and soft deletes all of its active cities the same way. No documents are removed.",
+        "operationId": "countriesDelete",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "description": "Country MongoDB ObjectId.",
+            "schema": {
+              "type": "string",
+              "pattern": "^[a-fA-F0-9]{24}$",
+              "example": "670d1234567890abcdef1234"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Country and its cities soft deleted successfully. No response body."
+          },
+          "400": {
+            "description": "Request validation failed. Returned when required fields are missing, formats are invalid, or unknown fields are present.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ValidationErrorsResponseDto"
+                },
+                "examples": {
+                  "unknownField": {
+                    "summary": "Unknown request field",
+                    "value": {
+                      "errors": [
+                        {
+                          "code": "whitelistValidation",
+                          "field": "extra",
+                          "message": "property extra should not exist"
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Access token is missing, invalid, or expired."
+          },
+          "403": {
+            "description": "The authenticated role cannot access this operation."
+          },
+          "404": {
+            "description": "The country does not exist or has been soft deleted.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "code",
+                    "message"
+                  ],
+                  "properties": {
+                    "code": {
+                      "type": "string"
+                    },
+                    "message": {
+                      "type": "string"
+                    }
+                  },
+                  "example": {
+                    "code": "COUNTRY_NOT_FOUND",
+                    "message": "Country not found."
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "An unexpected server error occurred.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InternalErrorResponseDto"
+                },
+                "examples": {
+                  "unexpected": {
+                    "summary": "Unexpected server error",
+                    "value": {
+                      "errors": [
+                        {
+                          "message": "errors.internal_server_error"
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "access-token": []
+          }
+        ],
+        "summary": "Delete a country",
+        "tags": [
+          "Countries"
+        ],
+        "x-docs-order": 50,
+        "x-docs-roles": [
+          "admin"
+        ],
+        "x-docs-audience": "admin",
+        "x-docs-access": "Admin"
+      },
+      "get": {
+        "description": "Returns a non-deleted country by its ID.",
+        "operationId": "countriesFindById",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "description": "Country MongoDB ObjectId.",
+            "schema": {
+              "type": "string",
+              "pattern": "^[a-fA-F0-9]{24}$",
+              "example": "670d1234567890abcdef1234"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Country found.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "data"
+                  ],
+                  "properties": {
+                    "data": {
+                      "$ref": "#/components/schemas/CountryResponseDto"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Request validation failed. Returned when required fields are missing, formats are invalid, or unknown fields are present.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ValidationErrorsResponseDto"
+                },
+                "examples": {
+                  "unknownField": {
+                    "summary": "Unknown request field",
+                    "value": {
+                      "errors": [
+                        {
+                          "code": "whitelistValidation",
+                          "field": "extra",
+                          "message": "property extra should not exist"
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "The country does not exist or has been soft deleted.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "code",
+                    "message"
+                  ],
+                  "properties": {
+                    "code": {
+                      "type": "string"
+                    },
+                    "message": {
+                      "type": "string"
+                    }
+                  },
+                  "example": {
+                    "code": "COUNTRY_NOT_FOUND",
+                    "message": "Country not found."
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "An unexpected server error occurred.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InternalErrorResponseDto"
+                },
+                "examples": {
+                  "unexpected": {
+                    "summary": "Unexpected server error",
+                    "value": {
+                      "errors": [
+                        {
+                          "message": "errors.internal_server_error"
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "summary": "Get a country",
+        "tags": [
+          "Countries"
+        ],
+        "x-docs-order": 30,
+        "x-docs-public": true,
+        "x-docs-audience": "shared",
+        "x-docs-access": "Public",
+        "security": []
+      }
+    },
+    "/api/cities": {
+      "post": {
+        "description": "Creates a city in an existing country. The name must be unique within that country.",
+        "operationId": "citiesCreate",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateCityDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "City created successfully.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "data"
+                  ],
+                  "properties": {
+                    "data": {
+                      "$ref": "#/components/schemas/CityResponseDto"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Request validation failed. Returned when required fields are missing, formats are invalid, or unknown fields are present.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ValidationErrorsResponseDto"
+                },
+                "examples": {
+                  "invalidMongoId": {
+                    "summary": "Invalid ObjectId",
+                    "value": {
+                      "errors": [
+                        {
+                          "code": "isMongoId",
+                          "field": "country",
+                          "message": "Please provide a valid Mongo ID"
+                        }
+                      ]
+                    }
+                  },
+                  "unknownField": {
+                    "summary": "Unknown request field",
+                    "value": {
+                      "errors": [
+                        {
+                          "code": "whitelistValidation",
+                          "field": "extra",
+                          "message": "property extra should not exist"
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Access token is missing, invalid, or expired."
+          },
+          "403": {
+            "description": "The authenticated role cannot access this operation."
+          },
+          "404": {
+            "description": "The referenced country does not exist or has been soft deleted.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "code",
+                    "message"
+                  ],
+                  "properties": {
+                    "code": {
+                      "type": "string"
+                    },
+                    "message": {
+                      "type": "string"
+                    }
+                  }
+                },
+                "examples": {
+                  "country": {
+                    "summary": "Referenced country not found",
+                    "value": {
+                      "code": "COUNTRY_NOT_FOUND",
+                      "message": "Country not found."
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "A city with this name already exists in the same country.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "oneOf": [
+                    {
+                      "type": "object",
+                      "required": [
+                        "code",
+                        "message"
+                      ],
+                      "properties": {
+                        "code": {
+                          "type": "string"
+                        },
+                        "message": {
+                          "type": "string"
+                        }
+                      }
+                    },
+                    {
+                      "type": "object",
+                      "required": [
+                        "errors"
+                      ],
+                      "properties": {
+                        "errors": {
+                          "type": "array",
+                          "items": {
+                            "type": "object",
+                            "required": [
+                              "code",
+                              "message"
+                            ],
+                            "properties": {
+                              "code": {
+                                "type": "string"
+                              },
+                              "message": {
+                                "type": "string"
+                              },
+                              "field": {
+                                "type": "string",
+                                "enum": [
+                                  "name"
+                                ]
+                              }
+                            }
+                          }
+                        }
+                      }
+                    }
+                  ]
+                },
+                "examples": {
+                  "existingCity": {
+                    "summary": "Duplicate detected before creation",
+                    "value": {
+                      "code": "CITY_ALREADY_EXISTS",
+                      "message": "A city with this name already exists in this country."
+                    }
+                  },
+                  "duplicateCity": {
+                    "summary": "Database { country, name } conflict",
+                    "value": {
+                      "errors": [
+                        {
+                          "code": "cities.CITY_ALREADY_EXISTS",
+                          "field": "name",
+                          "message": "A city with this name already exists in this country."
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "An unexpected server error occurred.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InternalErrorResponseDto"
+                },
+                "examples": {
+                  "unexpected": {
+                    "summary": "Unexpected server error",
+                    "value": {
+                      "errors": [
+                        {
+                          "message": "errors.internal_server_error"
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "access-token": []
+          }
+        ],
+        "summary": "Create a city",
+        "tags": [
+          "Cities"
+        ],
+        "x-docs-order": 10,
+        "x-docs-roles": [
+          "admin"
+        ],
+        "x-docs-audience": "admin",
+        "x-docs-access": "Admin"
+      },
+      "get": {
+        "description": "Returns a paginated list of non-deleted cities sorted by name. Name uses a literal, case-insensitive partial match; country uses an exact match.",
+        "operationId": "citiesFindAll",
+        "parameters": [
+          {
+            "name": "page",
+            "required": false,
+            "in": "query",
+            "description": "Page number.",
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "default": 1,
+              "example": 1,
+              "allOf": [
+                {
+                  "$ref": "#/components/schemas/Object"
+                }
+              ]
+            }
+          },
+          {
+            "name": "limit",
+            "required": false,
+            "in": "query",
+            "description": "Number of items per page.",
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 100,
+              "default": 10,
+              "example": 10,
+              "allOf": [
+                {
+                  "$ref": "#/components/schemas/Object"
+                }
+              ]
+            }
+          },
+          {
+            "name": "name",
+            "required": false,
+            "in": "query",
+            "description": "Partial city name.",
+            "schema": {
+              "minLength": 3,
+              "maxLength": 50,
+              "example": "cai",
+              "type": "string"
+            }
+          },
+          {
+            "name": "country",
+            "required": false,
+            "in": "query",
+            "description": "Exact country ID.",
+            "schema": {
+              "example": "670d1234567890abcdef1234",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Paginated list of matching cities.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/CityResponseDto"
+                      }
+                    },
+                    "meta": {
+                      "type": "object",
+                      "properties": {
+                        "page": {
+                          "type": "integer",
+                          "example": 1
+                        },
+                        "limit": {
+                          "type": "integer",
+                          "example": 10
+                        },
+                        "total": {
+                          "type": "integer",
+                          "example": 25
+                        },
+                        "totalPages": {
+                          "type": "integer",
+                          "example": 3
+                        },
+                        "hasNextPage": {
+                          "type": "boolean",
+                          "example": true
+                        },
+                        "hasPreviousPage": {
+                          "type": "boolean",
+                          "example": false
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Request validation failed. Returned when required fields are missing, formats are invalid, or unknown fields are present.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ValidationErrorsResponseDto"
+                },
+                "examples": {
+                  "invalidMongoId": {
+                    "summary": "Invalid ObjectId",
+                    "value": {
+                      "errors": [
+                        {
+                          "code": "isMongoId",
+                          "field": "country",
+                          "message": "Please provide a valid Mongo ID"
+                        }
+                      ]
+                    }
+                  },
+                  "unknownField": {
+                    "summary": "Unknown request field",
+                    "value": {
+                      "errors": [
+                        {
+                          "code": "whitelistValidation",
+                          "field": "extra",
+                          "message": "property extra should not exist"
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "An unexpected server error occurred.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InternalErrorResponseDto"
+                },
+                "examples": {
+                  "unexpected": {
+                    "summary": "Unexpected server error",
+                    "value": {
+                      "errors": [
+                        {
+                          "message": "errors.internal_server_error"
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "summary": "List cities",
+        "tags": [
+          "Cities"
+        ],
+        "x-docs-order": 20,
+        "x-docs-public": true,
+        "x-docs-audience": "shared",
+        "x-docs-access": "Public",
+        "security": []
+      }
+    },
+    "/api/cities/{id}": {
+      "patch": {
+        "description": "Updates only the supplied name or country of a non-deleted city. A new country must exist.",
+        "operationId": "citiesUpdate",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "description": "City MongoDB ObjectId.",
+            "schema": {
+              "type": "string",
+              "pattern": "^[a-fA-F0-9]{24}$",
+              "example": "670d1234567890abcdef5678"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateCityDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "City after the update.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "data"
+                  ],
+                  "properties": {
+                    "data": {
+                      "$ref": "#/components/schemas/CityResponseDto"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Request validation failed. Returned when required fields are missing, formats are invalid, or unknown fields are present.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ValidationErrorsResponseDto"
+                },
+                "examples": {
+                  "invalidMongoId": {
+                    "summary": "Invalid ObjectId",
+                    "value": {
+                      "errors": [
+                        {
+                          "code": "isMongoId",
+                          "field": "country",
+                          "message": "Please provide a valid Mongo ID"
+                        }
+                      ]
+                    }
+                  },
+                  "unknownField": {
+                    "summary": "Unknown request field",
+                    "value": {
+                      "errors": [
+                        {
+                          "code": "whitelistValidation",
+                          "field": "extra",
+                          "message": "property extra should not exist"
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Access token is missing, invalid, or expired."
+          },
+          "403": {
+            "description": "The authenticated role cannot access this operation."
+          },
+          "404": {
+            "description": "The city, or the referenced country, does not exist or has been soft deleted.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "code",
+                    "message"
+                  ],
+                  "properties": {
+                    "code": {
+                      "type": "string"
+                    },
+                    "message": {
+                      "type": "string"
+                    }
+                  }
+                },
+                "examples": {
+                  "city": {
+                    "summary": "City not found",
+                    "value": {
+                      "code": "CITY_NOT_FOUND",
+                      "message": "City not found."
+                    }
+                  },
+                  "country": {
+                    "summary": "Referenced country not found",
+                    "value": {
+                      "code": "COUNTRY_NOT_FOUND",
+                      "message": "Country not found."
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "A city with this name already exists in the same country.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "oneOf": [
+                    {
+                      "type": "object",
+                      "required": [
+                        "code",
+                        "message"
+                      ],
+                      "properties": {
+                        "code": {
+                          "type": "string"
+                        },
+                        "message": {
+                          "type": "string"
+                        }
+                      }
+                    },
+                    {
+                      "type": "object",
+                      "required": [
+                        "errors"
+                      ],
+                      "properties": {
+                        "errors": {
+                          "type": "array",
+                          "items": {
+                            "type": "object",
+                            "required": [
+                              "code",
+                              "message"
+                            ],
+                            "properties": {
+                              "code": {
+                                "type": "string"
+                              },
+                              "message": {
+                                "type": "string"
+                              },
+                              "field": {
+                                "type": "string",
+                                "enum": [
+                                  "name"
+                                ]
+                              }
+                            }
+                          }
+                        }
+                      }
+                    }
+                  ]
+                },
+                "examples": {
+                  "existingCity": {
+                    "summary": "Duplicate detected before creation",
+                    "value": {
+                      "code": "CITY_ALREADY_EXISTS",
+                      "message": "A city with this name already exists in this country."
+                    }
+                  },
+                  "duplicateCity": {
+                    "summary": "Database { country, name } conflict",
+                    "value": {
+                      "errors": [
+                        {
+                          "code": "cities.CITY_ALREADY_EXISTS",
+                          "field": "name",
+                          "message": "A city with this name already exists in this country."
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "An unexpected server error occurred.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InternalErrorResponseDto"
+                },
+                "examples": {
+                  "unexpected": {
+                    "summary": "Unexpected server error",
+                    "value": {
+                      "errors": [
+                        {
+                          "message": "errors.internal_server_error"
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "access-token": []
+          }
+        ],
+        "summary": "Update a city",
+        "tags": [
+          "Cities"
+        ],
+        "x-docs-order": 40,
+        "x-docs-roles": [
+          "admin"
+        ],
+        "x-docs-audience": "admin",
+        "x-docs-access": "Admin"
+      },
+      "delete": {
+        "description": "Soft deletes a city by setting isDeleted and deletedAt. The document remains stored.",
+        "operationId": "citiesDelete",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "description": "City MongoDB ObjectId.",
+            "schema": {
+              "type": "string",
+              "pattern": "^[a-fA-F0-9]{24}$",
+              "example": "670d1234567890abcdef5678"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "City soft deleted successfully. No response body."
+          },
+          "400": {
+            "description": "Request validation failed. Returned when required fields are missing, formats are invalid, or unknown fields are present.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ValidationErrorsResponseDto"
+                },
+                "examples": {
+                  "invalidMongoId": {
+                    "summary": "Invalid ObjectId",
+                    "value": {
+                      "errors": [
+                        {
+                          "code": "isMongoId",
+                          "field": "country",
+                          "message": "Please provide a valid Mongo ID"
+                        }
+                      ]
+                    }
+                  },
+                  "unknownField": {
+                    "summary": "Unknown request field",
+                    "value": {
+                      "errors": [
+                        {
+                          "code": "whitelistValidation",
+                          "field": "extra",
+                          "message": "property extra should not exist"
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Access token is missing, invalid, or expired."
+          },
+          "403": {
+            "description": "The authenticated role cannot access this operation."
+          },
+          "404": {
+            "description": "The city does not exist or has been soft deleted.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "code",
+                    "message"
+                  ],
+                  "properties": {
+                    "code": {
+                      "type": "string"
+                    },
+                    "message": {
+                      "type": "string"
+                    }
+                  }
+                },
+                "examples": {
+                  "city": {
+                    "summary": "City not found",
+                    "value": {
+                      "code": "CITY_NOT_FOUND",
+                      "message": "City not found."
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "An unexpected server error occurred.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InternalErrorResponseDto"
+                },
+                "examples": {
+                  "unexpected": {
+                    "summary": "Unexpected server error",
+                    "value": {
+                      "errors": [
+                        {
+                          "message": "errors.internal_server_error"
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "access-token": []
+          }
+        ],
+        "summary": "Delete a city",
+        "tags": [
+          "Cities"
+        ],
+        "x-docs-order": 50,
+        "x-docs-roles": [
+          "admin"
+        ],
+        "x-docs-audience": "admin",
+        "x-docs-access": "Admin"
+      },
+      "get": {
+        "description": "Returns a non-deleted city by its ID.",
+        "operationId": "citiesFindById",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "description": "City MongoDB ObjectId.",
+            "schema": {
+              "type": "string",
+              "pattern": "^[a-fA-F0-9]{24}$",
+              "example": "670d1234567890abcdef5678"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "City found.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "data"
+                  ],
+                  "properties": {
+                    "data": {
+                      "$ref": "#/components/schemas/CityResponseDto"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Request validation failed. Returned when required fields are missing, formats are invalid, or unknown fields are present.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ValidationErrorsResponseDto"
+                },
+                "examples": {
+                  "invalidMongoId": {
+                    "summary": "Invalid ObjectId",
+                    "value": {
+                      "errors": [
+                        {
+                          "code": "isMongoId",
+                          "field": "country",
+                          "message": "Please provide a valid Mongo ID"
+                        }
+                      ]
+                    }
+                  },
+                  "unknownField": {
+                    "summary": "Unknown request field",
+                    "value": {
+                      "errors": [
+                        {
+                          "code": "whitelistValidation",
+                          "field": "extra",
+                          "message": "property extra should not exist"
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "The city does not exist or has been soft deleted.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "code",
+                    "message"
+                  ],
+                  "properties": {
+                    "code": {
+                      "type": "string"
+                    },
+                    "message": {
+                      "type": "string"
+                    }
+                  }
+                },
+                "examples": {
+                  "city": {
+                    "summary": "City not found",
+                    "value": {
+                      "code": "CITY_NOT_FOUND",
+                      "message": "City not found."
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "An unexpected server error occurred.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InternalErrorResponseDto"
+                },
+                "examples": {
+                  "unexpected": {
+                    "summary": "Unexpected server error",
+                    "value": {
+                      "errors": [
+                        {
+                          "message": "errors.internal_server_error"
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "summary": "Get a city",
+        "tags": [
+          "Cities"
+        ],
+        "x-docs-order": 30,
+        "x-docs-public": true,
+        "x-docs-audience": "shared",
+        "x-docs-access": "Public",
+        "security": []
+      }
+    },
+    "/api/currencies": {
+      "post": {
+        "description": "Creates a currency with a unique name and code.",
+        "operationId": "currenciesCreate",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateCurrencyDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Currency created successfully.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "data"
+                  ],
+                  "properties": {
+                    "data": {
+                      "$ref": "#/components/schemas/CurrencyResponseDto"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Request validation failed. Returned when required fields are missing, formats are invalid, or unknown fields are present.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ValidationErrorsResponseDto"
+                },
+                "examples": {
+                  "unknownField": {
+                    "summary": "Unknown request field",
+                    "value": {
+                      "errors": [
+                        {
+                          "code": "whitelistValidation",
+                          "field": "extra",
+                          "message": "property extra should not exist"
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Access token is missing, invalid, or expired."
+          },
+          "403": {
+            "description": "The authenticated role cannot access this operation."
+          },
+          "409": {
+            "description": "The currency name or code is already in use.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "oneOf": [
+                    {
+                      "type": "object",
+                      "required": [
+                        "code",
+                        "message"
+                      ],
+                      "properties": {
+                        "code": {
+                          "type": "string"
+                        },
+                        "message": {
+                          "type": "string"
+                        }
+                      }
+                    },
+                    {
+                      "type": "object",
+                      "required": [
+                        "errors"
+                      ],
+                      "properties": {
+                        "errors": {
+                          "type": "array",
+                          "items": {
+                            "type": "object",
+                            "required": [
+                              "code",
+                              "message"
+                            ],
+                            "properties": {
+                              "code": {
+                                "type": "string"
+                              },
+                              "message": {
+                                "type": "string"
+                              },
+                              "field": {
+                                "type": "string",
+                                "enum": [
+                                  "name",
+                                  "currencyCode"
+                                ]
+                              }
+                            }
+                          }
+                        }
+                      }
+                    }
+                  ]
+                },
+                "examples": {
+                  "existingCurrency": {
+                    "summary": "Duplicate detected before creation",
+                    "value": {
+                      "code": "CURRENCY_ALREADY_EXISTS",
+                      "message": "Currency already exists."
+                    }
+                  },
+                  "duplicateName": {
+                    "summary": "Database name conflict",
+                    "value": {
+                      "errors": [
+                        {
+                          "code": "currencies.CURRENCY_ALREADY_EXISTS",
+                          "field": "name",
+                          "message": "Currency already exists."
+                        }
+                      ]
+                    }
+                  },
+                  "duplicateCode": {
+                    "summary": "Database code conflict",
+                    "value": {
+                      "errors": [
+                        {
+                          "code": "currencies.CURRENCY_ALREADY_EXISTS",
+                          "field": "currencyCode",
+                          "message": "Currency already exists."
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "An unexpected server error occurred.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InternalErrorResponseDto"
+                },
+                "examples": {
+                  "unexpected": {
+                    "summary": "Unexpected server error",
+                    "value": {
+                      "errors": [
+                        {
+                          "message": "errors.internal_server_error"
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "access-token": []
+          }
+        ],
+        "summary": "Create a currency",
+        "tags": [
+          "Currencies"
+        ],
+        "x-docs-order": 10,
+        "x-docs-roles": [
+          "admin"
+        ],
+        "x-docs-audience": "admin",
+        "x-docs-access": "Admin"
+      },
+      "get": {
+        "description": "Returns a paginated list of non-deleted currencies. Name uses a literal, case-insensitive partial match; currencyCode uses an exact match.",
+        "operationId": "currenciesFindAll",
+        "parameters": [
+          {
+            "name": "page",
+            "required": false,
+            "in": "query",
+            "description": "Page number.",
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "default": 1,
+              "example": 1,
+              "allOf": [
+                {
+                  "$ref": "#/components/schemas/Object"
+                }
+              ]
+            }
+          },
+          {
+            "name": "limit",
+            "required": false,
+            "in": "query",
+            "description": "Number of items per page.",
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 100,
+              "default": 10,
+              "example": 10,
+              "allOf": [
+                {
+                  "$ref": "#/components/schemas/Object"
+                }
+              ]
+            }
+          },
+          {
+            "name": "name",
+            "required": false,
+            "in": "query",
+            "description": "Partial currency name.",
+            "schema": {
+              "minLength": 3,
+              "maxLength": 50,
+              "example": "dollar",
+              "type": "string"
+            }
+          },
+          {
+            "name": "currencyCode",
+            "required": false,
+            "in": "query",
+            "description": "Exact currency code.",
+            "schema": {
+              "minLength": 3,
+              "maxLength": 3,
+              "example": "USD",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Paginated list of matching currencies.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/CurrencyResponseDto"
+                      }
+                    },
+                    "meta": {
+                      "type": "object",
+                      "properties": {
+                        "page": {
+                          "type": "integer",
+                          "example": 1
+                        },
+                        "limit": {
+                          "type": "integer",
+                          "example": 10
+                        },
+                        "total": {
+                          "type": "integer",
+                          "example": 25
+                        },
+                        "totalPages": {
+                          "type": "integer",
+                          "example": 3
+                        },
+                        "hasNextPage": {
+                          "type": "boolean",
+                          "example": true
+                        },
+                        "hasPreviousPage": {
+                          "type": "boolean",
+                          "example": false
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Request validation failed. Returned when required fields are missing, formats are invalid, or unknown fields are present.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ValidationErrorsResponseDto"
+                },
+                "examples": {
+                  "unknownField": {
+                    "summary": "Unknown request field",
+                    "value": {
+                      "errors": [
+                        {
+                          "code": "whitelistValidation",
+                          "field": "extra",
+                          "message": "property extra should not exist"
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "An unexpected server error occurred.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InternalErrorResponseDto"
+                },
+                "examples": {
+                  "unexpected": {
+                    "summary": "Unexpected server error",
+                    "value": {
+                      "errors": [
+                        {
+                          "message": "errors.internal_server_error"
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "summary": "List currencies",
+        "tags": [
+          "Currencies"
+        ],
+        "x-docs-order": 20,
+        "x-docs-public": true,
+        "x-docs-audience": "shared",
+        "x-docs-access": "Public",
+        "security": []
+      }
+    },
+    "/api/currencies/{id}": {
+      "patch": {
+        "description": "Updates only the supplied name or code of a non-deleted currency.",
+        "operationId": "currenciesUpdate",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "description": "Currency MongoDB ObjectId.",
+            "schema": {
+              "type": "string",
+              "pattern": "^[a-fA-F0-9]{24}$",
+              "example": "670d1234567890abcdef1234"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateCurrencyDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Currency after the update.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "data"
+                  ],
+                  "properties": {
+                    "data": {
+                      "$ref": "#/components/schemas/CurrencyResponseDto"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Request validation failed. Returned when required fields are missing, formats are invalid, or unknown fields are present.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ValidationErrorsResponseDto"
+                },
+                "examples": {
+                  "unknownField": {
+                    "summary": "Unknown request field",
+                    "value": {
+                      "errors": [
+                        {
+                          "code": "whitelistValidation",
+                          "field": "extra",
+                          "message": "property extra should not exist"
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Access token is missing, invalid, or expired."
+          },
+          "403": {
+            "description": "The authenticated role cannot access this operation."
+          },
+          "404": {
+            "description": "The currency does not exist or has been soft deleted.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "code",
+                    "message"
+                  ],
+                  "properties": {
+                    "code": {
+                      "type": "string"
+                    },
+                    "message": {
+                      "type": "string"
+                    }
+                  },
+                  "example": {
+                    "code": "CURRENCY_NOT_FOUND",
+                    "message": "Currency not found."
+                  }
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "The currency name or code is already in use.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "oneOf": [
+                    {
+                      "type": "object",
+                      "required": [
+                        "code",
+                        "message"
+                      ],
+                      "properties": {
+                        "code": {
+                          "type": "string"
+                        },
+                        "message": {
+                          "type": "string"
+                        }
+                      }
+                    },
+                    {
+                      "type": "object",
+                      "required": [
+                        "errors"
+                      ],
+                      "properties": {
+                        "errors": {
+                          "type": "array",
+                          "items": {
+                            "type": "object",
+                            "required": [
+                              "code",
+                              "message"
+                            ],
+                            "properties": {
+                              "code": {
+                                "type": "string"
+                              },
+                              "message": {
+                                "type": "string"
+                              },
+                              "field": {
+                                "type": "string",
+                                "enum": [
+                                  "name",
+                                  "currencyCode"
+                                ]
+                              }
+                            }
+                          }
+                        }
+                      }
+                    }
+                  ]
+                },
+                "examples": {
+                  "existingCurrency": {
+                    "summary": "Duplicate detected before creation",
+                    "value": {
+                      "code": "CURRENCY_ALREADY_EXISTS",
+                      "message": "Currency already exists."
+                    }
+                  },
+                  "duplicateName": {
+                    "summary": "Database name conflict",
+                    "value": {
+                      "errors": [
+                        {
+                          "code": "currencies.CURRENCY_ALREADY_EXISTS",
+                          "field": "name",
+                          "message": "Currency already exists."
+                        }
+                      ]
+                    }
+                  },
+                  "duplicateCode": {
+                    "summary": "Database code conflict",
+                    "value": {
+                      "errors": [
+                        {
+                          "code": "currencies.CURRENCY_ALREADY_EXISTS",
+                          "field": "currencyCode",
+                          "message": "Currency already exists."
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "An unexpected server error occurred.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InternalErrorResponseDto"
+                },
+                "examples": {
+                  "unexpected": {
+                    "summary": "Unexpected server error",
+                    "value": {
+                      "errors": [
+                        {
+                          "message": "errors.internal_server_error"
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "access-token": []
+          }
+        ],
+        "summary": "Update a currency",
+        "tags": [
+          "Currencies"
+        ],
+        "x-docs-order": 40,
+        "x-docs-roles": [
+          "admin"
+        ],
+        "x-docs-audience": "admin",
+        "x-docs-access": "Admin"
+      },
+      "delete": {
+        "description": "Soft deletes a currency by setting isDeleted and deletedAt. No documents are removed.",
+        "operationId": "currenciesDelete",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "description": "Currency MongoDB ObjectId.",
+            "schema": {
+              "type": "string",
+              "pattern": "^[a-fA-F0-9]{24}$",
+              "example": "670d1234567890abcdef1234"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Currency soft deleted successfully. No response body."
+          },
+          "400": {
+            "description": "Request validation failed. Returned when required fields are missing, formats are invalid, or unknown fields are present.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ValidationErrorsResponseDto"
+                },
+                "examples": {
+                  "unknownField": {
+                    "summary": "Unknown request field",
+                    "value": {
+                      "errors": [
+                        {
+                          "code": "whitelistValidation",
+                          "field": "extra",
+                          "message": "property extra should not exist"
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Access token is missing, invalid, or expired."
+          },
+          "403": {
+            "description": "The authenticated role cannot access this operation."
+          },
+          "404": {
+            "description": "The currency does not exist or has been soft deleted.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "code",
+                    "message"
+                  ],
+                  "properties": {
+                    "code": {
+                      "type": "string"
+                    },
+                    "message": {
+                      "type": "string"
+                    }
+                  },
+                  "example": {
+                    "code": "CURRENCY_NOT_FOUND",
+                    "message": "Currency not found."
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "An unexpected server error occurred.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InternalErrorResponseDto"
+                },
+                "examples": {
+                  "unexpected": {
+                    "summary": "Unexpected server error",
+                    "value": {
+                      "errors": [
+                        {
+                          "message": "errors.internal_server_error"
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "access-token": []
+          }
+        ],
+        "summary": "Delete a currency",
+        "tags": [
+          "Currencies"
+        ],
+        "x-docs-order": 50,
+        "x-docs-roles": [
+          "admin"
+        ],
+        "x-docs-audience": "admin",
+        "x-docs-access": "Admin"
+      },
+      "get": {
+        "description": "Returns a non-deleted currency by its ID.",
+        "operationId": "currenciesFindById",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "description": "Currency MongoDB ObjectId.",
+            "schema": {
+              "type": "string",
+              "pattern": "^[a-fA-F0-9]{24}$",
+              "example": "670d1234567890abcdef1234"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Currency found.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "data"
+                  ],
+                  "properties": {
+                    "data": {
+                      "$ref": "#/components/schemas/CurrencyResponseDto"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Request validation failed. Returned when required fields are missing, formats are invalid, or unknown fields are present.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ValidationErrorsResponseDto"
+                },
+                "examples": {
+                  "unknownField": {
+                    "summary": "Unknown request field",
+                    "value": {
+                      "errors": [
+                        {
+                          "code": "whitelistValidation",
+                          "field": "extra",
+                          "message": "property extra should not exist"
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "The currency does not exist or has been soft deleted.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "code",
+                    "message"
+                  ],
+                  "properties": {
+                    "code": {
+                      "type": "string"
+                    },
+                    "message": {
+                      "type": "string"
+                    }
+                  },
+                  "example": {
+                    "code": "CURRENCY_NOT_FOUND",
+                    "message": "Currency not found."
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "An unexpected server error occurred.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InternalErrorResponseDto"
+                },
+                "examples": {
+                  "unexpected": {
+                    "summary": "Unexpected server error",
+                    "value": {
+                      "errors": [
+                        {
+                          "message": "errors.internal_server_error"
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "summary": "Get a currency",
+        "tags": [
+          "Currencies"
+        ],
+        "x-docs-order": 30,
+        "x-docs-public": true,
+        "x-docs-audience": "shared",
+        "x-docs-access": "Public",
+        "security": []
+      }
+    },
+    "/api/unit-categories": {
+      "post": {
+        "description": "Creates a unit category with a unique name.",
+        "operationId": "unitCategoriesCreate",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateUnitCategoryDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Unit category created successfully.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "data"
+                  ],
+                  "properties": {
+                    "data": {
+                      "$ref": "#/components/schemas/UnitCategoryResponseDto"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Request validation failed. Returned when required fields are missing, formats are invalid, or unknown fields are present.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ValidationErrorsResponseDto"
+                },
+                "examples": {
+                  "unknownField": {
+                    "summary": "Unknown request field",
+                    "value": {
+                      "errors": [
+                        {
+                          "code": "whitelistValidation",
+                          "field": "extra",
+                          "message": "property extra should not exist"
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Access token is missing, invalid, or expired."
+          },
+          "403": {
+            "description": "The authenticated role cannot access this operation."
+          },
+          "409": {
+            "description": "The unit category name is already in use.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "oneOf": [
+                    {
+                      "type": "object",
+                      "required": [
+                        "code",
+                        "message"
+                      ],
+                      "properties": {
+                        "code": {
+                          "type": "string"
+                        },
+                        "message": {
+                          "type": "string"
+                        }
+                      }
+                    },
+                    {
+                      "type": "object",
+                      "required": [
+                        "errors"
+                      ],
+                      "properties": {
+                        "errors": {
+                          "type": "array",
+                          "items": {
+                            "type": "object",
+                            "required": [
+                              "code",
+                              "message"
+                            ],
+                            "properties": {
+                              "code": {
+                                "type": "string"
+                              },
+                              "message": {
+                                "type": "string"
+                              },
+                              "field": {
+                                "type": "string",
+                                "enum": [
+                                  "name"
+                                ]
+                              }
+                            }
+                          }
+                        }
+                      }
+                    }
+                  ]
+                },
+                "examples": {
+                  "existingUnitCategory": {
+                    "summary": "Duplicate detected before creation",
+                    "value": {
+                      "code": "UNIT_CATEGORY_ALREADY_EXISTS",
+                      "message": "Unit category already exists."
+                    }
+                  },
+                  "duplicateName": {
+                    "summary": "Database name conflict",
+                    "value": {
+                      "errors": [
+                        {
+                          "code": "unit-categories.UNIT_CATEGORY_ALREADY_EXISTS",
+                          "field": "name",
+                          "message": "Unit category already exists."
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "An unexpected server error occurred.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InternalErrorResponseDto"
+                },
+                "examples": {
+                  "unexpected": {
+                    "summary": "Unexpected server error",
+                    "value": {
+                      "errors": [
+                        {
+                          "message": "errors.internal_server_error"
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "access-token": []
+          }
+        ],
+        "summary": "Create a unit category",
+        "tags": [
+          "Unit Categories"
+        ],
+        "x-docs-order": 10,
+        "x-docs-roles": [
+          "admin"
+        ],
+        "x-docs-audience": "admin",
+        "x-docs-access": "Admin"
+      },
+      "get": {
+        "description": "Returns a paginated list of non-deleted unit categories. Name uses a literal, case-insensitive partial match.",
+        "operationId": "unitCategoriesFindAll",
+        "parameters": [
+          {
+            "name": "page",
+            "required": false,
+            "in": "query",
+            "description": "Page number.",
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "default": 1,
+              "example": 1,
+              "allOf": [
+                {
+                  "$ref": "#/components/schemas/Object"
+                }
+              ]
+            }
+          },
+          {
+            "name": "limit",
+            "required": false,
+            "in": "query",
+            "description": "Number of items per page.",
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 100,
+              "default": 10,
+              "example": 10,
+              "allOf": [
+                {
+                  "$ref": "#/components/schemas/Object"
+                }
+              ]
+            }
+          },
+          {
+            "name": "name",
+            "required": false,
+            "in": "query",
+            "description": "Partial unit category name.",
+            "schema": {
+              "minLength": 3,
+              "maxLength": 50,
+              "example": "weight",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Paginated list of matching unit categories.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/UnitCategoryResponseDto"
+                      }
+                    },
+                    "meta": {
+                      "type": "object",
+                      "properties": {
+                        "page": {
+                          "type": "integer",
+                          "example": 1
+                        },
+                        "limit": {
+                          "type": "integer",
+                          "example": 10
+                        },
+                        "total": {
+                          "type": "integer",
+                          "example": 25
+                        },
+                        "totalPages": {
+                          "type": "integer",
+                          "example": 3
+                        },
+                        "hasNextPage": {
+                          "type": "boolean",
+                          "example": true
+                        },
+                        "hasPreviousPage": {
+                          "type": "boolean",
+                          "example": false
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Request validation failed. Returned when required fields are missing, formats are invalid, or unknown fields are present.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ValidationErrorsResponseDto"
+                },
+                "examples": {
+                  "unknownField": {
+                    "summary": "Unknown request field",
+                    "value": {
+                      "errors": [
+                        {
+                          "code": "whitelistValidation",
+                          "field": "extra",
+                          "message": "property extra should not exist"
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "An unexpected server error occurred.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InternalErrorResponseDto"
+                },
+                "examples": {
+                  "unexpected": {
+                    "summary": "Unexpected server error",
+                    "value": {
+                      "errors": [
+                        {
+                          "message": "errors.internal_server_error"
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "summary": "List unit categories",
+        "tags": [
+          "Unit Categories"
+        ],
+        "x-docs-order": 20,
+        "x-docs-public": true,
+        "x-docs-audience": "shared",
+        "x-docs-access": "Public",
+        "security": []
+      }
+    },
+    "/api/unit-categories/{id}": {
+      "patch": {
+        "description": "Updates only the supplied name or icon of a non-deleted unit category.",
+        "operationId": "unitCategoriesUpdate",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "description": "Unit category MongoDB ObjectId.",
+            "schema": {
+              "type": "string",
+              "pattern": "^[a-fA-F0-9]{24}$",
+              "example": "670d1234567890abcdef1234"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateUnitCategoryDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Unit category after the update.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "data"
+                  ],
+                  "properties": {
+                    "data": {
+                      "$ref": "#/components/schemas/UnitCategoryResponseDto"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Request validation failed. Returned when required fields are missing, formats are invalid, or unknown fields are present.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ValidationErrorsResponseDto"
+                },
+                "examples": {
+                  "unknownField": {
+                    "summary": "Unknown request field",
+                    "value": {
+                      "errors": [
+                        {
+                          "code": "whitelistValidation",
+                          "field": "extra",
+                          "message": "property extra should not exist"
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Access token is missing, invalid, or expired."
+          },
+          "403": {
+            "description": "The authenticated role cannot access this operation."
+          },
+          "404": {
+            "description": "The unit category does not exist or has been soft deleted.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "code",
+                    "message"
+                  ],
+                  "properties": {
+                    "code": {
+                      "type": "string"
+                    },
+                    "message": {
+                      "type": "string"
+                    }
+                  },
+                  "example": {
+                    "code": "UNIT_CATEGORY_NOT_FOUND",
+                    "message": "Unit category not found."
+                  }
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "The unit category name is already in use.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "oneOf": [
+                    {
+                      "type": "object",
+                      "required": [
+                        "code",
+                        "message"
+                      ],
+                      "properties": {
+                        "code": {
+                          "type": "string"
+                        },
+                        "message": {
+                          "type": "string"
+                        }
+                      }
+                    },
+                    {
+                      "type": "object",
+                      "required": [
+                        "errors"
+                      ],
+                      "properties": {
+                        "errors": {
+                          "type": "array",
+                          "items": {
+                            "type": "object",
+                            "required": [
+                              "code",
+                              "message"
+                            ],
+                            "properties": {
+                              "code": {
+                                "type": "string"
+                              },
+                              "message": {
+                                "type": "string"
+                              },
+                              "field": {
+                                "type": "string",
+                                "enum": [
+                                  "name"
+                                ]
+                              }
+                            }
+                          }
+                        }
+                      }
+                    }
+                  ]
+                },
+                "examples": {
+                  "existingUnitCategory": {
+                    "summary": "Duplicate detected before creation",
+                    "value": {
+                      "code": "UNIT_CATEGORY_ALREADY_EXISTS",
+                      "message": "Unit category already exists."
+                    }
+                  },
+                  "duplicateName": {
+                    "summary": "Database name conflict",
+                    "value": {
+                      "errors": [
+                        {
+                          "code": "unit-categories.UNIT_CATEGORY_ALREADY_EXISTS",
+                          "field": "name",
+                          "message": "Unit category already exists."
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "An unexpected server error occurred.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InternalErrorResponseDto"
+                },
+                "examples": {
+                  "unexpected": {
+                    "summary": "Unexpected server error",
+                    "value": {
+                      "errors": [
+                        {
+                          "message": "errors.internal_server_error"
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "access-token": []
+          }
+        ],
+        "summary": "Update a unit category",
+        "tags": [
+          "Unit Categories"
+        ],
+        "x-docs-order": 40,
+        "x-docs-roles": [
+          "admin"
+        ],
+        "x-docs-audience": "admin",
+        "x-docs-access": "Admin"
+      },
+      "delete": {
+        "description": "Soft deletes a unit category by setting isDeleted and deletedAt. No documents are removed.",
+        "operationId": "unitCategoriesDelete",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "description": "Unit category MongoDB ObjectId.",
+            "schema": {
+              "type": "string",
+              "pattern": "^[a-fA-F0-9]{24}$",
+              "example": "670d1234567890abcdef1234"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Unit category soft deleted successfully. No response body."
+          },
+          "400": {
+            "description": "Request validation failed. Returned when required fields are missing, formats are invalid, or unknown fields are present.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ValidationErrorsResponseDto"
+                },
+                "examples": {
+                  "unknownField": {
+                    "summary": "Unknown request field",
+                    "value": {
+                      "errors": [
+                        {
+                          "code": "whitelistValidation",
+                          "field": "extra",
+                          "message": "property extra should not exist"
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Access token is missing, invalid, or expired."
+          },
+          "403": {
+            "description": "The authenticated role cannot access this operation."
+          },
+          "404": {
+            "description": "The unit category does not exist or has been soft deleted.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "code",
+                    "message"
+                  ],
+                  "properties": {
+                    "code": {
+                      "type": "string"
+                    },
+                    "message": {
+                      "type": "string"
+                    }
+                  },
+                  "example": {
+                    "code": "UNIT_CATEGORY_NOT_FOUND",
+                    "message": "Unit category not found."
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "An unexpected server error occurred.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InternalErrorResponseDto"
+                },
+                "examples": {
+                  "unexpected": {
+                    "summary": "Unexpected server error",
+                    "value": {
+                      "errors": [
+                        {
+                          "message": "errors.internal_server_error"
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "access-token": []
+          }
+        ],
+        "summary": "Delete a unit category",
+        "tags": [
+          "Unit Categories"
+        ],
+        "x-docs-order": 50,
+        "x-docs-roles": [
+          "admin"
+        ],
+        "x-docs-audience": "admin",
+        "x-docs-access": "Admin"
+      },
+      "get": {
+        "description": "Returns a non-deleted unit category by its ID.",
+        "operationId": "unitCategoriesFindById",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "description": "Unit category MongoDB ObjectId.",
+            "schema": {
+              "type": "string",
+              "pattern": "^[a-fA-F0-9]{24}$",
+              "example": "670d1234567890abcdef1234"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Unit category found.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "data"
+                  ],
+                  "properties": {
+                    "data": {
+                      "$ref": "#/components/schemas/UnitCategoryResponseDto"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Request validation failed. Returned when required fields are missing, formats are invalid, or unknown fields are present.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ValidationErrorsResponseDto"
+                },
+                "examples": {
+                  "unknownField": {
+                    "summary": "Unknown request field",
+                    "value": {
+                      "errors": [
+                        {
+                          "code": "whitelistValidation",
+                          "field": "extra",
+                          "message": "property extra should not exist"
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "The unit category does not exist or has been soft deleted.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "code",
+                    "message"
+                  ],
+                  "properties": {
+                    "code": {
+                      "type": "string"
+                    },
+                    "message": {
+                      "type": "string"
+                    }
+                  },
+                  "example": {
+                    "code": "UNIT_CATEGORY_NOT_FOUND",
+                    "message": "Unit category not found."
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "An unexpected server error occurred.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InternalErrorResponseDto"
+                },
+                "examples": {
+                  "unexpected": {
+                    "summary": "Unexpected server error",
+                    "value": {
+                      "errors": [
+                        {
+                          "message": "errors.internal_server_error"
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "summary": "Get a unit category",
+        "tags": [
+          "Unit Categories"
+        ],
+        "x-docs-order": 30,
+        "x-docs-public": true,
+        "x-docs-audience": "shared",
+        "x-docs-access": "Public",
+        "security": []
+      }
+    },
+    "/api/app-settings": {
+      "get": {
+        "description": "Returns the singleton application settings document.",
+        "operationId": "appSettingsFind",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Application settings.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "data"
+                  ],
+                  "properties": {
+                    "data": {
+                      "$ref": "#/components/schemas/AppSettingsResponseDto"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Access token is missing, invalid, or expired."
+          },
+          "403": {
+            "description": "The authenticated role cannot access this operation."
+          },
+          "404": {
+            "description": "The application settings have not been initialized yet.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "code",
+                    "message"
+                  ],
+                  "properties": {
+                    "code": {
+                      "type": "string"
+                    },
+                    "message": {
+                      "type": "string"
+                    }
+                  },
+                  "example": {
+                    "code": "APP_SETTINGS_NOT_FOUND",
+                    "message": "Application settings not found."
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "An unexpected server error occurred.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InternalErrorResponseDto"
+                },
+                "examples": {
+                  "unexpected": {
+                    "summary": "Unexpected server error",
+                    "value": {
+                      "errors": [
+                        {
+                          "message": "errors.internal_server_error"
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "access-token": []
+          }
+        ],
+        "summary": "Get application settings",
+        "tags": [
+          "App Settings"
+        ],
+        "x-docs-order": 10,
+        "x-docs-roles": [
+          "admin"
+        ],
+        "x-docs-audience": "admin",
+        "x-docs-access": "Admin"
+      },
+      "patch": {
+        "description": "Creates the singleton application settings document on first call, or updates the supplied fields thereafter. Only the provided fields are changed.",
+        "operationId": "appSettingsUpsert",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpsertAppSettingsDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Application settings after the upsert.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "data"
+                  ],
+                  "properties": {
+                    "data": {
+                      "$ref": "#/components/schemas/AppSettingsResponseDto"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Request validation failed. Returned when required fields are missing, formats are invalid, or unknown fields are present.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ValidationErrorsResponseDto"
+                },
+                "examples": {
+                  "outOfRange": {
+                    "summary": "Value out of allowed range",
+                    "value": {
+                      "errors": [
+                        {
+                          "code": "max",
+                          "field": "vatRate",
+                          "message": "vatRate must not be greater than 25"
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Access token is missing, invalid, or expired."
+          },
+          "403": {
+            "description": "The authenticated role cannot access this operation."
+          },
+          "500": {
+            "description": "An unexpected server error occurred.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InternalErrorResponseDto"
+                },
+                "examples": {
+                  "unexpected": {
+                    "summary": "Unexpected server error",
+                    "value": {
+                      "errors": [
+                        {
+                          "message": "errors.internal_server_error"
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "access-token": []
+          }
+        ],
+        "summary": "Update application settings",
+        "tags": [
+          "App Settings"
+        ],
+        "x-docs-order": 20,
+        "x-docs-roles": [
+          "admin"
+        ],
+        "x-docs-audience": "admin",
+        "x-docs-access": "Admin"
+      }
+    },
+    "/api/admins": {
+      "get": {
+        "description": "Returns a paginated list of admins. Supports optional filtering by name, email, and super admin status.",
+        "operationId": "adminsFindAll",
+        "parameters": [
+          {
+            "name": "page",
+            "required": false,
+            "in": "query",
+            "description": "Page number.",
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "default": 1,
+              "example": 1,
+              "allOf": [
+                {
+                  "$ref": "#/components/schemas/Object"
+                }
+              ]
+            }
+          },
+          {
+            "name": "limit",
+            "required": false,
+            "in": "query",
+            "description": "Number of items per page.",
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 100,
+              "default": 10,
+              "example": 10,
+              "allOf": [
+                {
+                  "$ref": "#/components/schemas/Object"
+                }
+              ]
+            }
+          },
+          {
+            "name": "name",
+            "required": false,
+            "in": "query",
+            "description": "Partial admin name.",
+            "schema": {
+              "minLength": 3,
+              "maxLength": 50,
+              "example": "John",
+              "type": "string"
+            }
+          },
+          {
+            "name": "email",
+            "required": false,
+            "in": "query",
+            "description": "Admin email address.",
+            "schema": {
+              "format": "email",
+              "example": "muhammedmostafa.dev@gmail.com",
+              "type": "string"
+            }
+          },
+          {
+            "name": "isSuperAdmin",
+            "required": false,
+            "in": "query",
+            "description": "Filter by super admin status.",
+            "schema": {
+              "example": true,
+              "type": "boolean"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Paginated list of matching admins.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/AdminResponseDto"
+                      }
+                    },
+                    "meta": {
+                      "type": "object",
+                      "properties": {
+                        "page": {
+                          "type": "integer",
+                          "example": 1
+                        },
+                        "limit": {
+                          "type": "integer",
+                          "example": 10
+                        },
+                        "total": {
+                          "type": "integer",
+                          "example": 25
+                        },
+                        "totalPages": {
+                          "type": "integer",
+                          "example": 3
+                        },
+                        "hasNextPage": {
+                          "type": "boolean",
+                          "example": true
+                        },
+                        "hasPreviousPage": {
+                          "type": "boolean",
+                          "example": false
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Request validation failed. Returned when required fields are missing, formats are invalid, or unknown fields are present.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ValidationErrorsResponseDto"
+                },
+                "examples": {
+                  "unknownField": {
+                    "summary": "Unknown request field",
+                    "value": {
+                      "errors": [
+                        {
+                          "code": "whitelistValidation",
+                          "field": "extra",
+                          "message": "property extra should not exist"
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Access token is missing, invalid, or expired."
+          },
+          "403": {
+            "description": "The authenticated role cannot access this operation."
+          },
+          "500": {
+            "description": "An unexpected server error occurred.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InternalErrorResponseDto"
+                },
+                "examples": {
+                  "unexpected": {
+                    "summary": "Unexpected server error",
+                    "value": {
+                      "errors": [
+                        {
+                          "message": "errors.internal_server_error"
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "access-token": []
+          }
+        ],
+        "summary": "List admins",
+        "tags": [
+          "Admins"
+        ],
+        "x-docs-order": 20,
+        "x-docs-roles": [
+          "admin"
+        ],
+        "x-docs-audience": "admin",
+        "x-docs-access": "Admin"
+      }
+    },
+    "/api/admins/{id}": {
+      "get": {
+        "description": "Returns a non-deleted admin by its ID.",
+        "operationId": "adminsFindById",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "description": "Admin MongoDB ObjectId.",
+            "schema": {
+              "type": "string",
+              "pattern": "^[a-fA-F0-9]{24}$",
+              "example": "670d1234567890abcdef1234"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Admin found.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "data"
+                  ],
+                  "properties": {
+                    "data": {
+                      "$ref": "#/components/schemas/AdminResponseDto"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Request validation failed. Returned when required fields are missing, formats are invalid, or unknown fields are present.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ValidationErrorsResponseDto"
+                },
+                "examples": {
+                  "unknownField": {
+                    "summary": "Unknown request field",
+                    "value": {
+                      "errors": [
+                        {
+                          "code": "whitelistValidation",
+                          "field": "extra",
+                          "message": "property extra should not exist"
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Access token is missing, invalid, or expired."
+          },
+          "403": {
+            "description": "The authenticated role cannot access this operation."
+          },
+          "404": {
+            "description": "The admin does not exist or has been soft deleted.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "code",
+                    "message"
+                  ],
+                  "properties": {
+                    "code": {
+                      "type": "string"
+                    },
+                    "message": {
+                      "type": "string"
+                    }
+                  },
+                  "example": {
+                    "code": "ADMIN_NOT_FOUND",
+                    "message": "Admin not found."
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "An unexpected server error occurred.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InternalErrorResponseDto"
+                },
+                "examples": {
+                  "unexpected": {
+                    "summary": "Unexpected server error",
+                    "value": {
+                      "errors": [
+                        {
+                          "message": "errors.internal_server_error"
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "access-token": []
+          }
+        ],
+        "summary": "Get an admin",
+        "tags": [
+          "Admins"
+        ],
+        "x-docs-order": 30,
+        "x-docs-roles": [
+          "admin"
+        ],
+        "x-docs-audience": "admin",
+        "x-docs-access": "Admin"
+      }
+    },
+    "/api/auth/admin/login": {
+      "post": {
+        "description": "Validates admin credentials and returns JWT access and refresh tokens for authenticated admin API access.",
+        "operationId": "adminLogin",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/LoginAdminDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Authentication successful. Returns access and refresh tokens.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "data"
+                  ],
+                  "properties": {
+                    "data": {
+                      "$ref": "#/components/schemas/AuthResponseDto"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Request validation failed. Returned when required fields are missing, formats are invalid, or unknown fields are present.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ValidationErrorsResponseDto"
+                },
+                "examples": {
+                  "email": {
+                    "summary": "email ? required field",
+                    "value": {
+                      "errors": [
+                        {
+                          "code": "isEmail",
+                          "field": "email",
+                          "message": "email must be an email"
+                        },
+                        {
+                          "code": "isNotEmpty",
+                          "field": "email",
+                          "message": "email should not be empty"
+                        }
+                      ]
+                    }
+                  },
+                  "password": {
+                    "summary": "password ? required field",
+                    "value": {
+                      "errors": [
+                        {
+                          "code": "isNotEmpty",
+                          "field": "password",
+                          "message": "password should not be empty"
+                        }
+                      ]
+                    }
+                  },
+                  "invalidEmail": {
+                    "summary": "email ? invalid format",
+                    "value": {
+                      "errors": [
+                        {
+                          "code": "isEmail",
+                          "field": "email",
+                          "message": "email must be an email"
+                        }
+                      ]
+                    }
+                  },
+                  "unknownField": {
+                    "summary": "Unknown field",
+                    "value": {
+                      "errors": [
+                        {
+                          "code": "whitelistValidation",
+                          "field": "extra",
+                          "message": "property extra should not exist"
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Authentication failed due to invalid email or password.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApplicationErrorResponseDto"
+                },
+                "examples": {
+                  "email": {
+                    "summary": "Incorrect email",
+                    "value": {
+                      "code": "INVALID_CREDENTIALS",
+                      "message": "Invalid credentials"
+                    }
+                  },
+                  "password": {
+                    "summary": "Incorrect password",
+                    "value": {
+                      "code": "INVALID_CREDENTIALS",
+                      "message": "Invalid credentials"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "An unexpected server error occurred.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InternalErrorResponseDto"
+                },
+                "examples": {
+                  "unexpected": {
+                    "summary": "Unexpected server error",
+                    "value": {
+                      "errors": [
+                        {
+                          "message": "errors.internal_server_error"
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "summary": "Login admin",
+        "tags": [
+          "Authentication"
+        ],
+        "x-docs-audience": "admin",
+        "x-docs-order": 10,
+        "x-docs-public": true,
+        "x-docs-access": "Public",
+        "security": []
+      }
+    },
+    "/api/auth/refresh-token": {
+      "post": {
+        "description": "Exchanges a valid refresh token for a new access token and refresh token pair. The previous refresh token is invalidated.",
+        "operationId": "authRefreshToken",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RefreshTokenDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Tokens refreshed successfully. Returns a new access and refresh token pair.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "data"
+                  ],
+                  "properties": {
+                    "data": {
+                      "$ref": "#/components/schemas/AuthResponseDto"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Request validation failed. Returned when required fields are missing, formats are invalid, or unknown fields are present.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ValidationErrorsResponseDto"
+                },
+                "examples": {
+                  "token": {
+                    "summary": "token ? required field",
+                    "value": {
+                      "errors": [
+                        {
+                          "code": "isString",
+                          "field": "token",
+                          "message": "token must be a string"
+                        },
+                        {
+                          "code": "isNotEmpty",
+                          "field": "token",
+                          "message": "token should not be empty"
+                        }
+                      ]
+                    }
+                  },
+                  "unknownField": {
+                    "summary": "Unknown field",
+                    "value": {
+                      "errors": [
+                        {
+                          "code": "whitelistValidation",
+                          "field": "extra",
+                          "message": "property extra should not exist"
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "The provided refresh token is invalid or expired.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApplicationErrorResponseDto"
+                },
+                "examples": {
+                  "invalid": {
+                    "summary": "Invalid token",
+                    "value": {
+                      "code": "INVALID_TOKEN",
+                      "message": "Invalid token"
+                    }
+                  },
+                  "expired": {
+                    "summary": "Expired token",
+                    "value": {
+                      "code": "INVALID_TOKEN",
+                      "message": "Invalid token"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "An unexpected server error occurred.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InternalErrorResponseDto"
+                },
+                "examples": {
+                  "unexpected": {
+                    "summary": "Unexpected server error",
+                    "value": {
+                      "errors": [
+                        {
+                          "message": "errors.internal_server_error"
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "summary": "Refresh access token",
+        "tags": [
+          "Authentication"
+        ],
+        "x-docs-order": 30,
+        "x-docs-public": true,
+        "x-docs-audience": "shared",
+        "x-docs-access": "Public",
+        "security": []
+      }
+    },
+    "/api/auth/me": {
+      "get": {
+        "description": "Returns the authenticated user ID and role from the JWT access token.",
+        "operationId": "authGetMe",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Returns the authenticated user ID and role.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "data"
+                  ],
+                  "properties": {
+                    "data": {
+                      "$ref": "#/components/schemas/CurrentUserResponseDto"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "The access token is missing, invalid, or expired.\n\nAccess token is missing, invalid, or expired."
+          },
+          "403": {
+            "description": "The authenticated role cannot access this operation."
+          },
+          "500": {
+            "description": "An unexpected server error occurred.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InternalErrorResponseDto"
+                },
+                "examples": {
+                  "unexpected": {
+                    "summary": "Unexpected server error",
+                    "value": {
+                      "errors": [
+                        {
+                          "message": "errors.internal_server_error"
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "access-token": []
+          },
+          {
+            "access-token": []
+          }
+        ],
+        "summary": "Get current user",
+        "tags": [
+          "Authentication"
+        ],
+        "x-docs-order": 40,
+        "x-docs-roles": [
+          "admin",
+          "user"
+        ],
+        "x-docs-audience": "shared",
+        "x-docs-access": "Admin + User"
+      }
+    }
+  },
+  "components": {
+    "securitySchemes": {
+      "access-token": {
+        "scheme": "bearer",
+        "bearerFormat": "JWT",
+        "type": "http",
+        "name": "Authorization",
+        "description": "JWT access token obtained from register, login, or refresh-token endpoints. Example: `Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...`",
+        "in": "header"
+      }
+    },
+    "schemas": {
+      "ValidationErrorItemDto": {
+        "type": "object",
+        "properties": {
+          "code": {
+            "type": "string",
+            "description": "Validation error code (i18n message key).",
+            "example": "validation.isEmail"
+          },
+          "field": {
+            "type": "string",
+            "description": "Request field that failed validation.",
+            "example": "email"
+          },
+          "message": {
+            "type": "string",
+            "description": "Localized validation error message.",
+            "example": "email must be a valid email address"
+          }
+        },
+        "required": [
+          "code",
+          "field",
+          "message"
+        ]
+      },
+      "ValidationErrorsResponseDto": {
+        "type": "object",
+        "properties": {
+          "errors": {
+            "description": "List of validation errors for one or more request fields.",
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ValidationErrorItemDto"
+            }
+          }
+        },
+        "required": [
+          "errors"
+        ]
+      },
+      "ApplicationErrorResponseDto": {
+        "type": "object",
+        "properties": {
+          "code": {
+            "type": "string",
+            "description": "Application error code.",
+            "example": "INVALID_CREDENTIALS",
+            "enum": [
+              "INVALID_CREDENTIALS",
+              "INVALID_TOKEN",
+              "INVALID_PHONE_NUMBER"
+            ]
+          },
+          "message": {
+            "type": "string",
+            "description": "Localized error message.",
+            "example": "Invalid credentials"
+          }
+        },
+        "required": [
+          "code",
+          "message"
+        ]
+      },
+      "HttpErrorItemDto": {
+        "type": "object",
+        "properties": {
+          "code": {
+            "type": "string",
+            "description": "Application error code.",
+            "example": "auth.USER_ALREADY_EXISTS"
+          },
+          "message": {
+            "type": "string",
+            "description": "Localized error message.",
+            "example": "User already exists"
+          },
+          "field": {
+            "type": "string",
+            "description": "Request field related to the error, when applicable.",
+            "example": "email"
+          }
+        },
+        "required": [
+          "code",
+          "message"
+        ]
+      },
+      "HttpErrorsResponseDto": {
+        "type": "object",
+        "properties": {
+          "errors": {
+            "description": "List of HTTP-layer errors.",
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/HttpErrorItemDto"
+            }
+          }
+        },
+        "required": [
+          "errors"
+        ]
+      },
+      "InternalErrorItemDto": {
+        "type": "object",
+        "properties": {
+          "message": {
+            "type": "string",
+            "description": "Generic internal server error message.",
+            "example": "Internal server error"
+          }
+        },
+        "required": [
+          "message"
+        ]
+      },
+      "InternalErrorResponseDto": {
+        "type": "object",
+        "properties": {
+          "errors": {
+            "description": "List containing a single internal server error entry.",
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/InternalErrorItemDto"
+            }
+          }
+        },
+        "required": [
+          "errors"
+        ]
+      },
+      "RegisterDto": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "Full name of the user.",
+            "example": "Muhammed Mustafa",
+            "minLength": 2,
+            "maxLength": 50
+          },
+          "email": {
+            "type": "string",
+            "description": "Unique email address. Normalized to lowercase on input.",
+            "example": "muhammedmostafa.dev@gmail.com",
+            "format": "email"
+          },
+          "countryCode": {
+            "type": "string",
+            "description": "International dialing code including the leading plus sign.",
+            "example": "+20",
+            "minLength": 1
+          },
+          "phone": {
+            "type": "string",
+            "description": "Phone number without the country code. Validated against the country code.",
+            "example": "1555738344",
+            "minLength": 1
+          },
+          "password": {
+            "type": "string",
+            "description": "Account password. Must be between 8 and 128 characters.",
+            "example": "Password123!",
+            "format": "password",
+            "minLength": 8,
+            "maxLength": 128,
+            "writeOnly": true
+          }
+        },
+        "required": [
+          "name",
+          "email",
+          "countryCode",
+          "phone",
+          "password"
+        ]
+      },
+      "AuthResponseDto": {
+        "type": "object",
+        "properties": {
+          "accessToken": {
+            "type": "string",
+            "description": "JWT access token used to authenticate protected API requests. Include as `Authorization: Bearer <token>`.",
+            "example": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI2NzBkMTIzNDU2Nzg5MGFiY2RlZjEyMzQiLCJ0eXBlIjoiYWNjZXNzIiwiaWF0IjoxNzAwMDAwMDAwLCJleHAiOjE3MDAwMDA5MDB9.example-access-token",
+            "format": "jwt"
+          },
+          "refreshToken": {
+            "type": "string",
+            "description": "JWT refresh token used to obtain a new access token via `POST /auth/refresh-token`. Store securely — treat as a secret.",
+            "example": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI2NzBkMTIzNDU2Nzg5MGFiY2RlZjEyMzQiLCJ0eXBlIjoicmVmcmVzaCIsImlhdCI6MTcwMDAwMDAwMCwiZXhwIjoxNzAyNTkyMDAwfQ.example-refresh-token",
+            "format": "jwt"
+          }
+        },
+        "required": [
+          "accessToken",
+          "refreshToken"
+        ]
+      },
+      "LoginDto": {
+        "type": "object",
+        "properties": {
+          "email": {
+            "type": "string",
+            "description": "Registered account email address.",
+            "example": "muhammedmostafa.dev@gmail.com",
+            "format": "email"
+          },
+          "password": {
+            "type": "string",
+            "description": "Account password.",
+            "example": "Password123!",
+            "format": "password",
+            "minLength": 1,
+            "writeOnly": true
+          }
+        },
+        "required": [
+          "email",
+          "password"
+        ]
+      },
+      "CreateCountryDto": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "Country name.",
+            "example": "Egypt",
+            "minLength": 3,
+            "maxLength": 50
+          },
+          "code": {
+            "type": "string",
+            "description": "Country code.",
+            "example": "EG",
+            "minLength": 2,
+            "maxLength": 2
+          }
+        },
+        "required": [
+          "name",
+          "code"
+        ]
+      },
+      "CountryResponseDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "Country ID.",
+            "example": "670d1234567890abcdef1234"
+          },
+          "name": {
+            "type": "string",
+            "description": "Country name.",
+            "example": "Egypt"
+          },
+          "code": {
+            "type": "string",
+            "description": "Country code.",
+            "example": "EG"
+          }
+        },
+        "required": [
+          "id",
+          "name",
+          "code"
+        ]
+      },
+      "Object": {
+        "type": "object",
+        "properties": {}
+      },
+      "UpdateCountryDto": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "Country name.",
+            "example": "Egypt",
+            "minLength": 3,
+            "maxLength": 50
+          },
+          "code": {
+            "type": "string",
+            "description": "Country code.",
+            "example": "EG",
+            "minLength": 2,
+            "maxLength": 2
+          }
+        }
+      },
+      "CreateCityDto": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "City name. Unique within its country.",
+            "example": "Cairo",
+            "minLength": 3,
+            "maxLength": 50
+          },
+          "country": {
+            "type": "string",
+            "description": "ID of an existing country.",
+            "example": "670d1234567890abcdef1234"
+          }
+        },
+        "required": [
+          "name",
+          "country"
+        ]
+      },
+      "CityResponseDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "City ID.",
+            "example": "670d1234567890abcdef5678"
+          },
+          "name": {
+            "type": "string",
+            "description": "City name, stored in lowercase.",
+            "example": "cairo"
+          },
+          "country": {
+            "type": "string",
+            "description": "ID of the country the city belongs to.",
+            "example": "670d1234567890abcdef1234"
+          }
+        },
+        "required": [
+          "id",
+          "name",
+          "country"
+        ]
+      },
+      "UpdateCityDto": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "City name. Unique within its country.",
+            "example": "Cairo",
+            "minLength": 3,
+            "maxLength": 50
+          },
+          "country": {
+            "type": "string",
+            "description": "ID of an existing country.",
+            "example": "670d1234567890abcdef1234"
+          }
+        }
+      },
+      "CreateCurrencyDto": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "Currency name.",
+            "example": "US Dollar",
+            "minLength": 3,
+            "maxLength": 50
+          },
+          "currencyCode": {
+            "type": "string",
+            "description": "Currency code (ISO 4217 alpha-3).",
+            "example": "USD",
+            "minLength": 3,
+            "maxLength": 3
+          }
+        },
+        "required": [
+          "name",
+          "currencyCode"
+        ]
+      },
+      "CurrencyResponseDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "Currency ID.",
+            "example": "670d1234567890abcdef1234"
+          },
+          "name": {
+            "type": "string",
+            "description": "Currency name.",
+            "example": "US Dollar"
+          },
+          "currencyCode": {
+            "type": "string",
+            "description": "Currency code.",
+            "example": "USD"
+          }
+        },
+        "required": [
+          "id",
+          "name",
+          "currencyCode"
+        ]
+      },
+      "UpdateCurrencyDto": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "Currency name.",
+            "example": "US Dollar",
+            "minLength": 3,
+            "maxLength": 50
+          },
+          "currencyCode": {
+            "type": "string",
+            "description": "Currency code (ISO 4217 alpha-3).",
+            "example": "USD",
+            "minLength": 3,
+            "maxLength": 3
+          }
+        }
+      },
+      "CreateUnitCategoryDto": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "Unit category name.",
+            "example": "Weight",
+            "minLength": 3,
+            "maxLength": 50
+          },
+          "icon": {
+            "type": "string",
+            "description": "Unit category icon identifier.",
+            "example": "weight-icon",
+            "maxLength": 100
+          }
+        },
+        "required": [
+          "name"
+        ]
+      },
+      "UnitCategoryResponseDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "Unit category ID.",
+            "example": "670d1234567890abcdef1234"
+          },
+          "name": {
+            "type": "string",
+            "description": "Unit category name.",
+            "example": "weight"
+          },
+          "icon": {
+            "type": "string",
+            "description": "Unit category icon identifier.",
+            "example": "weight-icon"
+          }
+        },
+        "required": [
+          "id",
+          "name",
+          "icon"
+        ]
+      },
+      "UpdateUnitCategoryDto": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "Unit category name.",
+            "example": "Weight",
+            "minLength": 3,
+            "maxLength": 50
+          },
+          "icon": {
+            "type": "string",
+            "description": "Unit category icon identifier.",
+            "example": "weight-icon",
+            "maxLength": 100
+          }
+        }
+      },
+      "AppSettingsResponseDto": {
+        "type": "object",
+        "properties": {
+          "vatRate": {
+            "type": "number",
+            "description": "VAT rate as a percentage.",
+            "example": 14
+          },
+          "minPrice": {
+            "type": "number",
+            "description": "Minimum allowed listing price.",
+            "example": 500
+          }
+        },
+        "required": [
+          "vatRate",
+          "minPrice"
+        ]
+      },
+      "UpsertAppSettingsDto": {
+        "type": "object",
+        "properties": {
+          "vatRate": {
+            "type": "number",
+            "description": "VAT rate as a percentage.",
+            "example": 14,
+            "minimum": 0,
+            "maximum": 25,
+            "default": 0
+          },
+          "minPrice": {
+            "type": "number",
+            "description": "Minimum allowed listing price.",
+            "example": 500,
+            "minimum": 0,
+            "default": 0
+          }
+        }
+      },
+      "AdminResponseDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "Admin ID.",
+            "example": "670d1234567890abcdef1234"
+          },
+          "name": {
+            "type": "string",
+            "description": "Admin name.",
+            "example": "Egypt"
+          },
+          "email": {
+            "type": "string",
+            "description": "Admin email address.",
+            "example": "muhammedmostafa.dev@gmail.com",
+            "format": "email"
+          },
+          "isSuperAdmin": {
+            "type": "boolean",
+            "description": "Admin super admin status.",
+            "example": true
+          }
+        },
+        "required": [
+          "id",
+          "name",
+          "email",
+          "isSuperAdmin"
+        ]
+      },
+      "LoginAdminDto": {
+        "type": "object",
+        "properties": {
+          "email": {
+            "type": "string",
+            "description": "Registered admin email address.",
+            "example": "muhammedmostafa.dev@gmail.com",
+            "format": "email"
+          },
+          "password": {
+            "type": "string",
+            "description": "Admin account password.",
+            "example": "Password123!",
+            "format": "password",
+            "minLength": 1,
+            "writeOnly": true
+          }
+        },
+        "required": [
+          "email",
+          "password"
+        ]
+      },
+      "RefreshTokenDto": {
+        "type": "object",
+        "properties": {
+          "token": {
+            "type": "string",
+            "description": "Valid refresh token previously issued by register, login, or refresh-token.",
+            "example": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI2NzBkMTIzNDU2Nzg5MGFiY2RlZjEyMzQiLCJ0eXBlIjoicmVmcmVzaCIsImlhdCI6MTcwMDAwMDAwMCwiZXhwIjoxNzAyNTkyMDAwfQ.example-refresh-token",
+            "format": "jwt"
+          }
+        },
+        "required": [
+          "token"
+        ]
+      },
+      "CurrentUserResponseDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "Authenticated user ID from the access token.",
+            "example": "670d1234567890abcdef1234"
+          },
+          "role": {
+            "type": "string",
+            "description": "Authenticated user role from the access token.",
+            "enum": [
+              "admin",
+              "user"
+            ],
+            "example": "user"
+          }
+        },
+        "required": [
+          "id",
+          "role"
+        ]
+      }
+    }
+  }
+}

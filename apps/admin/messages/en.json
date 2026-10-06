@@ -1,0 +1,179 @@
+{
+  "app": {
+    "title": "Admin",
+    "skipToContent": "Skip to content"
+  },
+  "nav": {
+    "label": "Main navigation",
+    "locations": "Locations",
+    "countries": "Countries",
+    "cities": "Cities",
+    "openMenu": "Open menu",
+    "closeMenu": "Close menu"
+  },
+  "account": {
+    "signOut": "Sign out of this browser",
+    "signingOut": "Signing out…",
+    "switchLanguage": "العربية",
+    "switchLanguageLabel": "Switch to Arabic",
+    "signedInAs": "Signed in as"
+  },
+  "login": {
+    "title": "Admin sign in",
+    "intro": "Use your admin account.",
+    "email": "Email",
+    "password": "Password",
+    "submit": "Sign in",
+    "submitting": "Signing in…",
+    "expired": "Your session ended. Sign in again to continue.",
+    "signedOut": "You signed out of this browser."
+  },
+  "common": {
+    "save": "Save",
+    "saving": "Saving…",
+    "cancel": "Cancel",
+    "edit": "Edit",
+    "delete": "Delete",
+    "deleting": "Deleting…",
+    "retry": "Try again",
+    "close": "Close",
+    "actions": "Actions",
+    "actionsFor": "Actions for {name}",
+    "loading": "Loading…",
+    "requestId": "Request ID",
+    "copy": "Copy",
+    "copied": "Copied",
+    "clearFilters": "Clear filters",
+    "noChanges": "You haven't changed anything yet."
+  },
+  "pagination": {
+    "label": "Pagination",
+    "previous": "Previous",
+    "next": "Next",
+    "status": "Page {page} of {totalPages}"
+  },
+  "offline": "You're offline. Anything you've typed stays here until the connection returns.",
+  "countries": {
+    "title": "Countries",
+    "count": "{count, plural, =0 {No countries} one {# country} other {# countries}}",
+    "add": "Add country",
+    "searchName": "Search by name",
+    "searchNameHint": "At least 3 characters",
+    "searchCode": "Code",
+    "searchCodeHint": "2 letters, e.g. EG",
+    "columnName": "Name",
+    "columnCode": "Code",
+    "emptyTitle": "No countries yet",
+    "emptyBody": "Add the first country so you can add its cities.",
+    "noResultsTitle": "No results",
+    "noResultsBody": "No country matches this search.",
+    "createTitle": "Add country",
+    "editTitle": "Edit {name}",
+    "fieldName": "Country name",
+    "fieldNameHint": "3 to 50 characters, as guests will see it.",
+    "fieldCode": "Country code",
+    "fieldCodeHint": "2 letters (ISO 3166-1), e.g. EG.",
+    "created": "{name} added.",
+    "updated": "{name} saved.",
+    "deleteTitle": "Delete {name}?",
+    "deleteBody": "The country will no longer be shown.",
+    "deleteCities": "{count, plural, =0 {It has no cities.} one {Its # city will be deleted too.} other {Its # cities will be deleted too.}}",
+    "deleteCitiesLoading": "Counting its cities…",
+    "deleteCitiesUnknown": "Couldn't count its cities. Any cities it has will be deleted too.",
+    "deleteConfirm": "Delete country",
+    "deleted": "{name} deleted."
+  },
+  "cities": {
+    "title": "Cities",
+    "count": "{count, plural, =0 {No cities} one {# city} other {# cities}}",
+    "add": "Add city",
+    "searchName": "Search by name",
+    "searchNameHint": "At least 3 characters",
+    "filterCountry": "Country",
+    "allCountries": "All countries",
+    "columnName": "Name",
+    "columnCountry": "Country",
+    "unknownCountry": "Unavailable country",
+    "emptyTitle": "No cities yet",
+    "emptyBody": "Add a city and choose the country it belongs to.",
+    "noCountriesBody": "Add a country first, then add its cities.",
+    "goToCountries": "Go to countries",
+    "noResultsTitle": "No results",
+    "noResultsBody": "No city matches this search.",
+    "createTitle": "Add city",
+    "editTitle": "Edit {name}",
+    "fieldName": "City name",
+    "fieldNameHint": "3 to 50 characters. Unique within its country.",
+    "fieldCountry": "Country",
+    "chooseCountry": "Choose a country",
+    "created": "{name} added.",
+    "updated": "{name} saved.",
+    "deleteTitle": "Delete {name}?",
+    "deleteBody": "The city will no longer be shown.",
+    "deleteConfirm": "Delete city",
+    "deleted": "{name} deleted."
+  },
+  "validation": {
+    "required": "This field is required.",
+    "tooShort": "Enter at least {min} characters.",
+    "tooLong": "Enter at most {max} characters.",
+    "exactLength": "Enter exactly {length} characters.",
+    "email": "Enter a valid email, like name@example.com.",
+    "invalid": "This value isn't valid."
+  },
+  "errors": {
+    "summary": "Check the highlighted fields.",
+    "field": {
+      "alreadyUsed": "This value is already in use."
+    },
+    "kinds": {
+      "validation": "Some details aren't valid.",
+      "invalid_credentials": "The email or password is incorrect.",
+      "session_expired": "Your session ended. Sign in again.",
+      "forbidden": "You don't have permission to do this.",
+      "not_found": "This item doesn't exist or was deleted.",
+      "conflict": "This conflicts with existing data.",
+      "csrf": "The request was blocked for security reasons. Refresh the page and try again.",
+      "rate_limited": "Too many attempts. Wait a moment and try again.",
+      "server": "Something went wrong on the server. Try again shortly.",
+      "session_refresh_unavailable": "We couldn't renew your session because of a connection problem. You're still signed in. Try again.",
+      "network": "We couldn't connect. Check your connection and try again.",
+      "timeout": "The request took too long. If you were saving, check the list before trying again; it may have been saved.",
+      "unknown": "Something unexpected went wrong."
+    },
+    "auth": {
+      "INVALID_CREDENTIALS": "The email or password is incorrect.",
+      "SESSION_EXPIRED": "Your session ended. Sign in again.",
+      "SESSION_REFRESH_UNAVAILABLE": "We couldn't renew your session because of a connection problem. You're still signed in. Try again."
+    },
+    "countries": {
+      "COUNTRY_ALREADY_EXISTS": "A country with this name or code already exists.",
+      "COUNTRY_NOT_FOUND": "This country no longer exists."
+    },
+    "cities": {
+      "CITY_ALREADY_EXISTS": "This country already has a city with this name.",
+      "CITY_NOT_FOUND": "This city no longer exists."
+    },
+    "security": {
+      "CSRF_REJECTED": "The request was blocked for security reasons. Refresh the page and try again."
+    },
+    "validation": {
+      "isNotEmpty": "This field is required.",
+      "isEmail": "Enter a valid email.",
+      "isString": "This must be text.",
+      "minLength": "This is shorter than allowed.",
+      "maxLength": "This is longer than allowed.",
+      "isMongoId": "The id isn't valid."
+    },
+    "errors": {
+      "INVALID_JSON": "We couldn't read the submitted data.",
+      "NETWORK": "We couldn't connect. Check your connection and try again.",
+      "TIMEOUT": "The request took too long. If you were saving, check the list before trying again; it may have been saved.",
+      "INTERNAL_SERVER_ERROR": "Something went wrong on the server. Try again shortly.",
+      "UNKNOWN": "Something unexpected went wrong.",
+      "NOT_FOUND": "This item doesn't exist or was deleted.",
+      "FORBIDDEN": "You don't have permission to do this.",
+      "UNAUTHORIZED": "Your session ended. Sign in again."
+    }
+  }
+}

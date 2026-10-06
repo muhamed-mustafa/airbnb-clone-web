@@ -1,0 +1,25 @@
+{
+  "name": "@stays/api-contract",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "exports": {
+    ".": "./src/index.ts",
+    "./schemas": "./src/schemas.ts"
+  },
+  "scripts": {
+    "sync": "node scripts/merge-openapi.mjs && openapi-ts",
+    "generate": "openapi-ts",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run"
+  },
+  "dependencies": {
+    "zod": "4.6.5"
+  },
+  "devDependencies": {
+    "@hey-api/openapi-ts": "0.99.0",
+    "@types/node": "24.19.1",
+    "typescript": "~6.0.3",
+    "vitest": "5.0.3"
+  }
+}

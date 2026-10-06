@@ -1,0 +1,10 @@
+packages:
+  - apps/*
+  - packages/*
+
+# Native packages below ship prebuilt binaries as optional dependencies,
+# so their install scripts are not needed. Keep scripts denied by default.
+allowBuilds:
+  '@parcel/watcher': false
+  '@swc/core': false
+  unrs-resolver: false

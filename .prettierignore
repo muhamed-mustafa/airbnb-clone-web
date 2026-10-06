@@ -1,0 +1,9 @@
+pnpm-lock.yaml
+.next/
+.cache/
+packages/api-contract/openapi/
+packages/api-contract/src/generated/
+/docs/phase-1/screens/
+apps/admin/test-results/
+apps/admin/playwright-report/
+apps/admin/next-env.d.ts
