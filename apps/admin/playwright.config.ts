@@ -4,7 +4,7 @@ import { ADMIN_URL, E2E_BACKEND_URL } from './e2e/support/constants';
 
 /**
  * End-to-end tests run the production build of the admin against an isolated backend
- * (main@4d43d07, port 3100, database airbnb-clone-e2e, test-only secrets). They never
+ * (fix/d11-d12@3ed3f9c, port 3100, database airbnb-clone-e2e, test-only secrets). They never
  * touch the development backend or database.
  */
 export default defineConfig({

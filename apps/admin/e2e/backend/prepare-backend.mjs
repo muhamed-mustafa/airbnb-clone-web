@@ -17,7 +17,10 @@ const CACHE_ROOT = resolve(repoRoot, '.cache', 'e2e-backend');
 
 export const BACKEND_REPO =
   process.env.E2E_BACKEND_REPO ?? resolve(repoRoot, '../airbnb-clone-api');
-export const BACKEND_REF = process.env.E2E_BACKEND_REF ?? '4d43d07';
+// fix/d11-d12 on top of main@4d43d07: admin list without password hashes (D11) and a unique
+// jti per refresh token (D12). backend-tokens.spec.ts and session.spec.ts depend on it.
+export const BACKEND_REF =
+  process.env.E2E_BACKEND_REF ?? '3ed3f9c04567a370c05c3242f67c4a1985ed0b8c';
 
 /** Full 40-hex commit SHA for a ref, or throw. The ref is passed to Git only. */
 export function resolveCommitSha(ref, repo = BACKEND_REPO) {
