@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useRef, useState, type InputHTMLAttributes } from 'react';
+import { onNavigationStart } from '@/lib/navigation-start';
 import { TextField } from '@/ui/field';
 
 interface FilterInputProps extends Omit<
@@ -22,8 +23,10 @@ interface FilterInputProps extends Omit<
 
 /**
  * Text filter that applies its value 350 ms after typing stops, and only when the backend
- * can search it. A pending search is cancelled on unmount, on "Clear filters", and when
- * the applied value changes from outside (Back/Forward); the field then follows the URL.
+ * can search it. A pending search is cancelled when a navigation starts (link click,
+ * Back/Forward: before the router commits it, so a slow navigation is never overridden),
+ * on unmount, on "Clear filters", and when the applied value changes from outside; the
+ * field then follows the URL.
  */
 export function FilterInput({
   label,
@@ -48,6 +51,14 @@ export function FilterInput({
 
   // Timers are an external system: cancel them where the draft stops being relevant.
   useEffect(() => () => clearTimeout(timer.current), []);
+  useEffect(
+    () =>
+      onNavigationStart(() => {
+        clearTimeout(timer.current);
+        setDraft((current) => ({ ...current, text: current.applied }));
+      }),
+    [],
+  );
   useEffect(() => {
     clearTimeout(timer.current);
   }, [resetToken]);
