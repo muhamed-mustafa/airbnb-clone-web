@@ -1,23 +1,16 @@
 @import 'tailwindcss';
 
-/*
- * Clear Ledger — admin design tokens.
- * Contrast (WCAG 2.x, measured against ground #F5F8F8 unless noted):
- *   ink 15.1:1 · muted 6.1:1 · accent 6.0:1 (6.4:1 on surface) · white on accent 6.4:1
- *   edge (control borders) 3.6:1 · danger on surface 6.6:1 · success on surface 5.4:1
- * Hairlines are decorative separators only; every control boundary uses `edge`.
- */
 @theme {
-  --color-ground: #f5f8f8;
+  --color-ground: #f6f5f9;
   --color-surface: #ffffff;
-  --color-sunken: #edf2f2;
-  --color-ink: #13232a;
-  --color-muted: #4d6168;
-  --color-edge: #71868c;
-  --color-hairline: #d6e0e2;
-  --color-accent: #0a6a6a;
-  --color-accent-strong: #075454;
-  --color-accent-tint: #e3f1f0;
+  --color-sunken: #f0eef5;
+  --color-ink: #202139;
+  --color-muted: #62627a;
+  --color-edge: #85849b;
+  --color-hairline: #e2dfeb;
+  --color-accent: #6542ce;
+  --color-accent-strong: #5130b1;
+  --color-accent-tint: #eee8fc;
   --color-danger: #b42318;
   --color-danger-strong: #8f1c13;
   --color-danger-tint: #fbe7e5;
@@ -37,8 +30,8 @@
   --text-base: 0.9375rem;
   --text-base--line-height: 1.5rem;
 
-  --radius-md: 6px;
-  --radius-lg: 8px;
+  --radius-md: 10px;
+  --radius-lg: 16px;
 }
 
 @layer base {
@@ -81,4 +74,218 @@
     animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
   }
+}
+
+/* Motion uses opacity/transform only. The reduced-motion override below is authoritative. */
+@keyframes enter-panel {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+@keyframes enter-overlay {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+@keyframes orbit-glow {
+  0%,
+  100% {
+    opacity: 0.5;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.85;
+    transform: scale(1.04);
+  }
+}
+.brand-mark {
+  display: inline-grid;
+  place-items: center;
+  width: 42px;
+  height: 42px;
+  flex-shrink: 0;
+  border-radius: 13px;
+  color: white;
+  background: linear-gradient(145deg, #9870ee, #6542ce);
+  box-shadow: 0 6px 18px #6542ce28;
+}
+.premium-button {
+  transition:
+    background-color 160ms,
+    border-color 160ms,
+    box-shadow 160ms,
+    transform 160ms;
+}
+.premium-button:not(:disabled):hover {
+  transform: translateY(-1px);
+}
+.premium-button:not(:disabled):active {
+  transform: translateY(0) scale(0.98);
+}
+.premium-primary {
+  background-image: linear-gradient(130deg, #7954df, #6542ce);
+  box-shadow:
+    0 4px 12px #6542ce24,
+    inset 0 1px 0 #ffffff26;
+}
+.premium-primary:not(:disabled):hover {
+  background-image: linear-gradient(130deg, #6b45d0, #5130b1);
+  box-shadow: 0 6px 18px #6542ce38;
+}
+.premium-control {
+  transition:
+    border-color 160ms,
+    box-shadow 160ms,
+    background-color 160ms;
+  box-shadow: 0 1px 2px #20213904;
+}
+.premium-control:focus-visible {
+  box-shadow: 0 0 0 4px #6542ce12;
+}
+.premium-panel {
+  box-shadow: 0 5px 20px #20213905;
+}
+.premium-panel th {
+  letter-spacing: 0.01em;
+}
+.premium-panel tbody tr {
+  transition: background-color 160ms;
+}
+.premium-panel thead {
+  background: #faf9fc;
+}
+.route-enter {
+  animation: enter-panel 300ms cubic-bezier(0.2, 0.7, 0.2, 1) both;
+}
+.dialog-panel {
+  animation: enter-panel 220ms cubic-bezier(0.2, 0.7, 0.2, 1);
+  border: 1px solid var(--color-hairline);
+  box-shadow: 0 24px 90px #20213930;
+}
+.dialog-overlay {
+  animation: enter-overlay 160ms;
+  backdrop-filter: blur(5px);
+}
+.toast-enter {
+  animation: enter-panel 240ms ease-out;
+}
+.admin-sidebar {
+  background: linear-gradient(165deg, #25243d, #191a2e 85%);
+  color: #f5f3ff;
+}
+.admin-sidebar .text-muted {
+  color: #b5b1ca;
+}
+.admin-sidebar .text-ink {
+  color: #f5f3ff;
+}
+.admin-sidebar .border-hairline {
+  border-color: #ffffff18;
+}
+.admin-sidebar .premium-button {
+  color: #ece9f7;
+}
+.admin-sidebar .premium-button:hover {
+  background: #ffffff0c;
+}
+.nav-item {
+  gap: 12px;
+  transition:
+    background-color 160ms,
+    color 160ms;
+}
+.nav-item:not([aria-current]):hover {
+  background: #ffffff09;
+}
+.nav-item[aria-current] {
+  background: linear-gradient(100deg, #8060d238, #8060d218);
+  color: #ffffff;
+  box-shadow: inset 0 0 0 1px #b7a1ff25;
+}
+.nav-item[aria-current]::after {
+  content: '';
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #bcabfa;
+  margin-inline-start: auto;
+}
+.shell-topbar {
+  background: #ffffffc9;
+  backdrop-filter: blur(16px);
+}
+.auth-page {
+  background: radial-gradient(ellipse at 90% 10%, #eae3fa 0, transparent 45%), var(--color-ground);
+}
+.auth-card {
+  animation: enter-panel 450ms cubic-bezier(0.2, 0.7, 0.2, 1) both;
+  background: #ffffff;
+  border: 1px solid #e7e2ef;
+  box-shadow: 0 24px 80px #2021390a;
+}
+.auth-art {
+  position: relative;
+  overflow: hidden;
+  background: linear-gradient(145deg, #24213b, #18192b 70%);
+  color: #ffffff;
+}
+.auth-art::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(ellipse at 80% 20%, #7953d44d, transparent 55%);
+  animation: orbit-glow 10s ease-in-out infinite;
+  pointer-events: none;
+}
+.architecture-art {
+  position: relative;
+  margin: 28px auto;
+  width: min(100%, 280px);
+  aspect-ratio: 1;
+  border: 1px solid #ffffff12;
+  border-radius: 50%;
+}
+.architecture-art::before {
+  content: '';
+  position: absolute;
+  inset: 12%;
+  border: 1px solid #bba6fb30;
+  border-radius: 50%;
+}
+.architecture-art::after {
+  content: '';
+  position: absolute;
+  inset: 28%;
+  border: 1px solid #bba6fb30;
+  border-radius: 50%;
+}
+.auth-transition {
+  animation: enter-overlay 180ms;
+  background: #f6f5f9e8;
+  backdrop-filter: blur(12px);
+}
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+  .premium-button:not(:disabled):hover,
+  .premium-button:not(:disabled):active {
+    transform: none;
+  }
+}
+
+.admin-sidebar :focus-visible {
+  outline-color: #c6b6f5;
 }

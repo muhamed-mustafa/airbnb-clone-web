@@ -6,6 +6,9 @@ import { useTranslations } from 'next-intl';
 import { Dialog as DialogPrimitive } from 'radix-ui';
 import { useState, useSyncExternalStore, type ReactNode } from 'react';
 import { useSession, useSignOut } from '@/features/auth/use-session';
+import { BrandMark } from '@/ui/brand';
+import { SessionTransition } from '@/ui/session-transition';
+import { NavigationIcon } from '@/ui/navigation-icon';
 import { Button } from '@/ui/button';
 import { CloseIcon, MenuIcon, SignOutIcon } from '@/ui/icons';
 import { LocaleSwitch } from './locale-switch';
@@ -20,7 +23,10 @@ const NAV_GROUPS = [
   },
   {
     key: 'referenceData',
-    items: [{ href: '/catalog/currencies', key: 'currencies' }],
+    items: [
+      { href: '/catalog/currencies', key: 'currencies' },
+      { href: '/catalog/unit-categories', key: 'unitCategories' },
+    ],
   },
   {
     key: 'team',
@@ -56,10 +62,11 @@ function Navigation({ onNavigate }: { onNavigate?: () => void }) {
                 onClick={onNavigate}
                 aria-current={current ? 'page' : undefined}
                 className={[
-                  'flex min-h-10 items-center rounded-md px-3 text-sm font-semibold pointer-coarse:min-h-11',
-                  current ? 'bg-accent-tint text-accent' : 'text-ink hover:bg-sunken',
+                  'nav-item flex min-h-11 items-center rounded-md px-3 text-sm font-semibold pointer-coarse:min-h-11',
+                  current ? 'text-white' : 'text-ink',
                 ].join(' ')}
               >
+                <NavigationIcon name={item.key} />
                 {t(item.key)}
               </Link>
             );
@@ -78,7 +85,7 @@ function Account() {
   return (
     <div className="grid gap-2 border-t border-hairline pt-4">
       {subject && (
-        <div className="grid px-3 text-sm">
+        <div className="grid rounded-lg bg-white/5 px-3 py-3 text-sm">
           <span className="text-xs text-muted">{t('signedInAs')}</span>
           <span className="truncate font-semibold">{subject.name ?? subject.email ?? '—'}</span>
           {subject.name && subject.email && (
@@ -99,6 +106,7 @@ function Account() {
       >
         {t('signOut')}
       </Button>
+      {signOut.isPending && <SessionTransition label={t('signingOut')} />}
     </div>
   );
 }
@@ -130,6 +138,7 @@ function OfflineBanner() {
 export function AppShell({ children }: { children: ReactNode }) {
   const t = useTranslations();
   const [menuOpen, setMenuOpen] = useState(false);
+  const pathname = usePathname();
 
   return (
     <div className="min-h-dvh lg:grid lg:grid-cols-[17rem_1fr]">
@@ -140,28 +149,45 @@ export function AppShell({ children }: { children: ReactNode }) {
         {t('app.skipToContent')}
       </a>
 
-      <aside className="sticky top-0 hidden h-dvh flex-col justify-between border-e border-hairline bg-surface p-4 lg:flex">
+      <aside className="admin-sidebar sticky top-0 hidden h-dvh overflow-y-auto flex-col justify-between border-e border-hairline bg-surface p-4 lg:flex">
         <div className="grid gap-6">
-          <p className="px-3 text-base font-semibold">{t('app.title')}</p>
+          <div className="flex items-center gap-3 px-2 py-3">
+            <BrandMark />
+            <div className="grid gap-1">
+              <p className="text-base font-semibold">{t('app.title')}</p>
+              <p className="text-xs text-muted">{t('design.workspace')}</p>
+            </div>
+          </div>
           <Navigation />
         </div>
         <Account />
       </aside>
 
       <div className="min-w-0">
-        <header className="sticky top-0 z-30 flex items-center justify-between border-b border-hairline bg-surface px-4 py-2 lg:hidden">
-          <p className="text-base font-semibold">{t('app.title')}</p>
+        <header className="shell-topbar sticky top-0 z-30 flex min-h-18 items-center justify-between border-b border-hairline px-4 py-3 sm:px-6 lg:px-8">
+          <div className="flex items-center gap-3">
+            <span className="lg:hidden">
+              <BrandMark />
+            </span>
+            <div>
+              <p className="text-xs text-muted">{t('design.workspace')}</p>
+              <p className="text-sm font-semibold">{t('app.title')}</p>
+            </div>
+          </div>
+          <span className="hidden rounded-full border border-hairline bg-surface px-3 py-1.5 text-xs font-semibold text-muted lg:inline-flex">
+            {t('design.adminSpace')}
+          </span>
           <DialogPrimitive.Root open={menuOpen} onOpenChange={setMenuOpen}>
             <DialogPrimitive.Trigger asChild>
-              <Button variant="ghost" className="px-2" aria-label={t('nav.openMenu')}>
+              <Button variant="ghost" className="px-2 lg:hidden" aria-label={t('nav.openMenu')}>
                 <MenuIcon />
               </Button>
             </DialogPrimitive.Trigger>
             <DialogPrimitive.Portal>
-              <DialogPrimitive.Overlay className="fixed inset-0 z-40 bg-ink/40" />
+              <DialogPrimitive.Overlay className="dialog-overlay fixed inset-0 z-40 bg-ink/45" />
               <DialogPrimitive.Content
                 aria-describedby={undefined}
-                className="fixed inset-y-0 end-0 z-50 flex w-[min(20rem,85vw)] flex-col justify-between gap-6 overflow-y-auto bg-surface p-4"
+                className="admin-sidebar route-enter fixed inset-y-0 end-0 z-50 flex w-[min(20rem,85vw)] flex-col justify-between gap-6 overflow-y-auto p-4"
               >
                 <div className="grid gap-6">
                   <div className="flex items-center justify-between">
@@ -185,9 +211,11 @@ export function AppShell({ children }: { children: ReactNode }) {
         <main
           id="main"
           tabIndex={-1}
-          className="mx-auto w-full max-w-5xl px-4 py-6 focus:outline-none sm:px-6 lg:py-8"
+          className="mx-auto w-full max-w-6xl px-4 py-6 focus:outline-none sm:px-6 lg:py-8"
         >
-          {children}
+          <div key={pathname} className="route-enter">
+            {children}
+          </div>
         </main>
       </div>
     </div>

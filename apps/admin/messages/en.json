@@ -15,7 +15,8 @@
     "settings": "Settings",
     "pricingSettings": "Pricing settings",
     "team": "Team",
-    "admins": "Admin team"
+    "admins": "Admin team",
+    "unitCategories": "Accommodation types"
   },
   "account": {
     "signOut": "Sign out of this browser",
@@ -259,6 +260,42 @@
     },
     "admins": {
       "ADMIN_NOT_FOUND": "This admin no longer exists."
+    },
+    "unit-categories": {
+      "UNIT_CATEGORY_ALREADY_EXISTS": "An accommodation type with this name already exists.",
+      "UNIT_CATEGORY_NOT_FOUND": "This accommodation type no longer exists."
     }
+  },
+  "unitCategories": {
+    "title": "Accommodation types",
+    "count": "{count, plural, =0 {No accommodation types} one {# accommodation type} other {# accommodation types}}",
+    "add": "Add accommodation type",
+    "searchName": "Search by name",
+    "searchNameHint": "At least 3 characters",
+    "columnName": "Name",
+    "columnCode": "Icon identifier",
+    "emptyTitle": "No accommodation types yet",
+    "emptyBody": "Add the accommodation types the platform will use.",
+    "noResultsTitle": "No results",
+    "noResultsBody": "No accommodation type matches this search.",
+    "createTitle": "Add accommodation type",
+    "editTitle": "Edit {name}",
+    "fieldName": "Accommodation type name",
+    "fieldNameHint": "3 to 50 characters, e.g. Villa or Apartment.",
+    "fieldCode": "Icon identifier (optional)",
+    "fieldCodeHint": "Optional identifier, up to 100 characters.",
+    "created": "{name} added.",
+    "updated": "{name} saved.",
+    "deleteTitle": "Delete {name}?",
+    "deleteBody": "This accommodation type will be removed from the list.",
+    "deleteConfirm": "Delete accommodation type",
+    "deleted": "{name} deleted."
+  },
+  "design": {
+    "workspace": "Your management workspace",
+    "adminSpace": "ADMIN WORKSPACE",
+    "welcome": "Every detail. One place.",
+    "welcomeBody": "Organize your locations, accommodation types and settings in a workspace built for clarity.",
+    "signInNote": "Access is reserved for platform administrators."
   }
 }

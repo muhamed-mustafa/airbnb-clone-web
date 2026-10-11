@@ -55,7 +55,7 @@
             }
           },
           "400": {
-            "description": "Bad request — returned for validation failures or an invalid phone number for the given country code.",
+            "description": "Bad request \u00e2\u20ac\u201d returned for validation failures or an invalid phone number for the given country code.",
             "content": {
               "application/json": {
                 "schema": {
@@ -3249,13 +3249,14 @@
             "name": "name",
             "required": false,
             "in": "query",
-            "description": "Partial unit category name.",
+            "description": "Partial accommodation type name.",
             "schema": {
               "minLength": 3,
               "maxLength": 50,
               "example": "weight",
               "type": "string"
-            }
+            },
+            "example": "villa"
           }
         ],
         "responses": {
@@ -4909,7 +4910,7 @@
           },
           "refreshToken": {
             "type": "string",
-            "description": "JWT refresh token used to obtain a new access token via `POST /auth/refresh-token`. Store securely — treat as a secret.",
+            "description": "JWT refresh token used to obtain a new access token via `POST /auth/refresh-token`. Store securely \u00e2\u20ac\u201d treat as a secret.",
             "example": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI2NzBkMTIzNDU2Nzg5MGFiY2RlZjEyMzQiLCJ0eXBlIjoicmVmcmVzaCIsImlhdCI6MTcwMDAwMDAwMCwiZXhwIjoxNzAyNTkyMDAwfQ.example-refresh-token",
             "format": "jwt"
           }
@@ -5148,15 +5149,15 @@
         "properties": {
           "name": {
             "type": "string",
-            "description": "Unit category name.",
-            "example": "Weight",
+            "description": "Accommodation type name (for example, apartment or villa).",
+            "example": "Villa",
             "minLength": 3,
             "maxLength": 50
           },
           "icon": {
             "type": "string",
-            "description": "Unit category icon identifier.",
-            "example": "weight-icon",
+            "description": "Opaque icon identifier for an accommodation type; not an upload or image URL.",
+            "example": "villa",
             "maxLength": 100
           }
         },
@@ -5174,13 +5175,13 @@
           },
           "name": {
             "type": "string",
-            "description": "Unit category name.",
-            "example": "weight"
+            "description": "Accommodation type name (for example, apartment or villa).",
+            "example": "Villa"
           },
           "icon": {
             "type": "string",
-            "description": "Unit category icon identifier.",
-            "example": "weight-icon"
+            "description": "Opaque icon identifier for an accommodation type; not an upload or image URL.",
+            "example": "villa"
           }
         },
         "required": [
@@ -5194,15 +5195,15 @@
         "properties": {
           "name": {
             "type": "string",
-            "description": "Unit category name.",
-            "example": "Weight",
+            "description": "Accommodation type name (for example, apartment or villa).",
+            "example": "Villa",
             "minLength": 3,
             "maxLength": 50
           },
           "icon": {
             "type": "string",
-            "description": "Unit category icon identifier.",
-            "example": "weight-icon",
+            "description": "Opaque icon identifier for an accommodation type; not an upload or image URL.",
+            "example": "villa",
             "maxLength": 100
           }
         }

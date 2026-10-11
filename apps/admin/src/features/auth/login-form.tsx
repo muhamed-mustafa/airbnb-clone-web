@@ -6,6 +6,7 @@ import { useTranslations } from 'next-intl';
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import type * as z from 'zod/mini';
+import { animatePageExit } from '@/lib/page-exit';
 import { bffFetch } from '@/lib/bff-client';
 import { useApplyServerErrors, useZodErrorMap } from '@/lib/form-errors';
 import { Button } from '@/ui/button';
@@ -32,6 +33,7 @@ export function LoginForm({ next }: { next: string }) {
       try {
         await bffFetch('/bff/session', { method: 'POST', body: values });
         // Full navigation: the new session cookie must be read by the server on the next page.
+        await animatePageExit();
         window.location.assign(next);
       } catch (error) {
         const result = applyServerErrors(error, form.setError, ['email', 'password']);

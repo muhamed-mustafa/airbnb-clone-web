@@ -16,7 +16,7 @@ interface Country {
 }
 
 const shot = (page: Page, project: string, name: string) =>
-  page.screenshot({ path: `${OUT}${project}-${name}.png`, fullPage: true });
+  page.screenshot({ path: `${OUT}${project}-${name}.png`, fullPage: true, animations: 'disabled' });
 
 test('capture review screens', async ({ page }, testInfo) => {
   test.setTimeout(120_000);

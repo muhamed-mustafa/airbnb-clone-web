@@ -47,7 +47,7 @@ export function ListFrame({
   return (
     <section
       aria-busy={isPending || isRefreshing}
-      className={`overflow-hidden rounded-lg border border-hairline bg-surface transition-opacity ${isRefreshing ? 'opacity-70' : ''}`}
+      className={`premium-panel overflow-hidden rounded-lg border border-hairline bg-surface transition-opacity ${isRefreshing ? 'opacity-70' : ''}`}
     >
       {content}
       {meta && !isEmpty && <Pagination meta={meta} onPage={onPage} />}

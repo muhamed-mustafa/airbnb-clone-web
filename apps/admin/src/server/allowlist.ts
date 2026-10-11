@@ -12,7 +12,7 @@
 type Method = 'GET' | 'POST' | 'PATCH' | 'DELETE';
 
 interface Rule {
-  resource: 'countries' | 'cities' | 'currencies' | 'app-settings' | 'admins';
+  resource: 'countries' | 'cities' | 'currencies' | 'app-settings' | 'admins' | 'unit-categories';
   withId: boolean;
   methods: readonly Method[];
   query: readonly string[];
@@ -30,6 +30,14 @@ const ADMIN_FIELDS: ResponseShape = {
 };
 
 const RULES: readonly Rule[] = [
+  {
+    resource: 'unit-categories',
+    withId: false,
+    methods: ['GET'],
+    query: ['page', 'limit', 'name'],
+  },
+  { resource: 'unit-categories', withId: false, methods: ['POST'], query: [] },
+  { resource: 'unit-categories', withId: true, methods: ['GET', 'PATCH', 'DELETE'], query: [] },
   {
     resource: 'countries',
     withId: false,

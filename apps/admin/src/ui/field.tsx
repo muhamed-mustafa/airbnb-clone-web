@@ -7,7 +7,7 @@ import {
 } from 'react';
 
 const controlClasses = [
-  'block w-full min-h-10 rounded-md border border-edge bg-surface px-3 text-base text-ink',
+  'premium-control block w-full min-h-11 rounded-md border border-edge bg-surface px-3 text-base text-ink',
   'pointer-coarse:min-h-11 placeholder:text-muted',
   'aria-invalid:border-danger aria-invalid:ring-1 aria-invalid:ring-danger aria-invalid:focus-visible:outline-danger',
   'disabled:bg-sunken disabled:text-muted',

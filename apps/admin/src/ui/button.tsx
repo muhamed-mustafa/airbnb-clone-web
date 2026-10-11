@@ -4,7 +4,8 @@ import { SpinnerIcon } from './icons';
 type Variant = 'primary' | 'secondary' | 'ghost' | 'danger';
 
 const VARIANTS: Record<Variant, string> = {
-  primary: 'bg-accent text-white border-accent hover:bg-accent-strong hover:border-accent-strong',
+  primary:
+    'premium-primary bg-accent text-white border-accent hover:bg-accent-strong hover:border-accent-strong',
   secondary: 'bg-surface text-ink border-edge hover:bg-sunken',
   ghost: 'bg-transparent text-ink border-transparent hover:bg-sunken',
   danger: 'bg-danger text-white border-danger hover:bg-danger-strong hover:border-danger-strong',
@@ -12,7 +13,7 @@ const VARIANTS: Record<Variant, string> = {
 
 export const buttonClasses = (variant: Variant = 'secondary', extra = '') =>
   [
-    'inline-flex min-h-10 items-center justify-center gap-2 rounded-md border px-4 text-sm font-semibold',
+    'premium-button inline-flex min-h-11 items-center justify-center gap-2 rounded-md border px-4 text-sm font-semibold',
     'transition-colors pointer-coarse:min-h-11 disabled:cursor-not-allowed disabled:opacity-60',
     VARIANTS[variant],
     extra,

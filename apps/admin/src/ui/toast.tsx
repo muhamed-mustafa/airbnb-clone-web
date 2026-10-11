@@ -37,7 +37,7 @@ export function ToastProvider({ children }: { children: ReactNode }) {
         {toasts.map((toast) => (
           <p
             key={toast.id}
-            className="flex items-center gap-2 rounded-md bg-ink px-4 py-3 text-sm text-white shadow-lg"
+            className="toast-enter flex items-center gap-2 rounded-md bg-ink px-4 py-3 text-sm text-white shadow-lg"
           >
             <CheckIcon width={18} height={18} />
             {toast.message}

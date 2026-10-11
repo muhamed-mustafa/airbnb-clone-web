@@ -9,13 +9,13 @@ import { CloseIcon } from './icons';
 // Phones: a bottom sheet that fits the visual viewport (works with the on-screen keyboard).
 // Larger screens: a centered panel.
 const panelClasses = [
-  'fixed inset-x-0 bottom-0 z-50 flex max-h-[92dvh] flex-col rounded-t-lg bg-surface shadow-xl',
+  'dialog-panel fixed inset-x-0 bottom-0 z-50 flex max-h-[92dvh] flex-col rounded-t-lg bg-surface shadow-xl',
   'sm:inset-x-auto sm:bottom-auto sm:start-1/2 sm:top-[12vh] sm:w-full sm:max-w-lg sm:rounded-lg',
   'sm:ltr:-translate-x-1/2 sm:rtl:translate-x-1/2',
   'focus:outline-none',
 ].join(' ');
 
-const overlayClasses = 'fixed inset-0 z-40 bg-ink/40';
+const overlayClasses = 'dialog-overlay fixed inset-0 z-40 bg-ink/45';
 
 /**
  * Our dialogs open from state, not from a Radix Trigger, so Radix cannot return focus on

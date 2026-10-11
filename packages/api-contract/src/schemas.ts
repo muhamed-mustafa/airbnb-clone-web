@@ -5,6 +5,7 @@ export {
   zCountriesCreateBody,
   zCountriesUpdateBody,
   zCurrenciesCreateBody,
+  zUnitCategoriesCreateBody,
   zCurrenciesUpdateBody,
   zLoginAdminDtoWritable,
   zUpsertAppSettingsDto,

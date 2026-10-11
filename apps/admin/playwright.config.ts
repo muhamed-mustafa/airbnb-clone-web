@@ -41,7 +41,7 @@ export default defineConfig({
   ],
   webServer: {
     // E2E_SKIP_BUILD=1 reuses an existing production build, e.g. for repeated stability runs.
-    command: `${process.env.E2E_SKIP_BUILD ? '' : 'pnpm exec next build && '}pnpm exec next start --port 4100`,
+    command: `${process.env.E2E_SKIP_BUILD ? '' : 'pnpm exec next build && '}pnpm exec next start --port ${new URL(ADMIN_URL).port}`,
     url: `${ADMIN_URL}/login`,
     reuseExistingServer: false,
     timeout: 240_000,
