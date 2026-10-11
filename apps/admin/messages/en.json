@@ -308,5 +308,12 @@
     "manage": "Manage data",
     "tools": "Administration",
     "error": "Count unavailable"
+  },
+  "sessionMotion": {
+    "entered": "Welcome back",
+    "exited": "Signed out",
+    "ready": "Your workspace is ready.",
+    "closed": "Your session has ended.",
+    "working": "Just a moment."
   }
 }

@@ -159,3 +159,33 @@ test('validation is linked to fields and password visibility preserves input', a
     .analyze();
   expect(arabicAudit.violations).toEqual([]);
 });
+
+test('switching locale translates existing errors without another request or losing input', async ({
+  page,
+}) => {
+  await setLocale(page, 'en');
+  await page.goto('/login');
+  let requests = 0;
+  page.on('request', (request) => {
+    if (request.url().endsWith('/bff/session') && request.method() === 'POST') requests++;
+  });
+  await page.getByLabel('Email').fill(admin().email);
+  await page.getByLabel('Password', { exact: true }).fill('wrong-password');
+  await page.getByRole('button', { name: 'Sign in', exact: true }).click();
+  const alert = page.getByRole('main').getByRole('alert');
+  await expect(alert).toContainText('The email or password is incorrect.');
+  await page.getByRole('button', { name: 'Switch to Arabic' }).click();
+  await expect(page.locator('html')).toHaveAttribute('dir', 'rtl');
+  await expect(alert).toContainText('البريد الإلكتروني أو كلمة المرور غير صحيحة.');
+  await expect(page.locator('input[type="email"]')).toHaveValue(admin().email);
+  expect(requests).toBe(1);
+  await page.getByRole('button', { name: 'التبديل إلى الإنجليزية' }).click();
+  await expect(alert).toContainText('The email or password is incorrect.');
+  await page.getByLabel('Email').fill('invalid');
+  await page.getByRole('button', { name: 'Sign in', exact: true }).click();
+  await expect(page.locator('.field-error')).toHaveCount(2);
+  await page.getByRole('button', { name: 'Switch to Arabic' }).click();
+  await expect(page.locator('.field-error').last()).toContainText('هذا الحقل مطلوب.');
+  await expect(page.locator('input[type="email"]')).toHaveValue('invalid');
+  expect(requests).toBe(1);
+});

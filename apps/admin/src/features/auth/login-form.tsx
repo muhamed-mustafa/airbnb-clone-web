@@ -2,13 +2,15 @@
 
 import { zodResolver } from '@hookform/resolvers/zod';
 import { zLoginAdminDtoWritable } from '@stays/api-contract/schemas';
-import { useTranslations } from 'next-intl';
-import { useState } from 'react';
+import type { AppError } from '@stays/api-contract';
+import { useLocale, useTranslations } from 'next-intl';
+import { useEffect, useRef, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import type * as z from 'zod/mini';
 import { animatePageExit } from '@/lib/page-exit';
 import { bffFetch } from '@/lib/bff-client';
 import { useApplyServerErrors, useZodErrorMap } from '@/lib/form-errors';
+import { useErrorText } from '@/lib/error-text';
 import { SessionTransition, finishSessionScene } from '@/ui/session-transition';
 import { Button } from '@/ui/button';
 import { TextField } from '@/ui/field';
@@ -18,11 +20,16 @@ type LoginValues = z.infer<typeof zLoginAdminDtoWritable>;
 
 export function LoginForm({ next }: { next: string }) {
   const t = useTranslations('login');
+  const locale = useLocale();
+  const previousLocale = useRef(locale);
+  const { formTexts, fieldText } = useErrorText();
   const errorMap = useZodErrorMap();
   const applyServerErrors = useApplyServerErrors();
   const [showPassword, setShowPassword] = useState(false);
   const [complete, setComplete] = useState(false);
-  const [alert, setAlert] = useState<{ messages: string[]; requestId?: string }>({ messages: [] });
+  const [alert, setAlert] = useState<{ messages: string[]; requestId?: string; error?: AppError }>({
+    messages: [],
+  });
 
   const form = useForm<LoginValues>({
     resolver: zodResolver(zLoginAdminDtoWritable, { error: errorMap }),
@@ -30,6 +37,21 @@ export function LoginForm({ next }: { next: string }) {
     mode: 'onTouched',
   });
   const { errors, isSubmitting } = form.formState;
+  useEffect(() => {
+    if (previousLocale.current === locale) return;
+    previousLocale.current = locale;
+    const fields = (['email', 'password'] as const).filter(
+      (name) => form.formState.errors[name] && form.formState.errors[name]?.type !== 'server',
+    );
+    if (fields.length) void form.trigger(fields);
+  }, [locale, form]);
+
+  const fieldMessage = (name: keyof LoginValues) => {
+    const issue = alert.error?.fieldErrors[name]?.[0];
+    return errors[name]?.type === 'server' && issue && alert.error
+      ? fieldText(issue, alert.error)
+      : errors[name]?.message;
+  };
 
   const onSubmit = form.handleSubmit(
     async (values) => {
@@ -44,7 +66,11 @@ export function LoginForm({ next }: { next: string }) {
         window.location.assign(next);
       } catch (error) {
         const result = applyServerErrors(error, form.setError, ['email', 'password']);
-        setAlert({ messages: result.messages, requestId: result.requestId });
+        setAlert({
+          messages: result.messages,
+          requestId: result.requestId,
+          error: result.appError ?? { kind: 'unknown', formErrors: [], fieldErrors: {} },
+        });
         // Wrong credentials: keep the email, clear only the password.
         if (result.appError?.kind === 'invalid_credentials') {
           form.resetField('password');
@@ -61,7 +87,10 @@ export function LoginForm({ next }: { next: string }) {
       {isSubmitting && (
         <SessionTransition action="enter" complete={complete} label={t('submitting')} />
       )}
-      <FormAlert messages={alert.messages} requestId={alert.requestId} />
+      <FormAlert
+        messages={alert.error && alert.messages.length ? formTexts(alert.error) : alert.messages}
+        requestId={alert.requestId}
+      />
       <TextField
         label={t('email')}
         type="email"
@@ -69,7 +98,7 @@ export function LoginForm({ next }: { next: string }) {
         inputMode="email"
         dir="ltr"
         reserveMessageSpace
-        error={errors.email?.message}
+        error={fieldMessage('email')}
         {...form.register('email')}
       />
       <TextField
@@ -106,7 +135,7 @@ export function LoginForm({ next }: { next: string }) {
         autoCapitalize="none"
         reserveMessageSpace
         dir="ltr"
-        error={errors.password?.message}
+        error={fieldMessage('password')}
         {...form.register('password')}
       />
       <Button

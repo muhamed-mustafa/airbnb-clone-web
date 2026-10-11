@@ -30,6 +30,7 @@ test('reduced motion covers login, route entry and sign-out without blocking nav
   if (info.project.name === 'mobile') await page.getByRole('button', { name: 'Open menu' }).click();
   await page.getByRole('button', { name: 'Sign out' }).click();
   await expect(page.locator('.auth-transition')).toBeVisible();
+  await expect(page.locator('.session-orbit')).toHaveCSS('animation-name', 'none');
   const overlay = page.locator('.auth-transition');
   expect((await overlay.boundingBox())?.width).toBe(page.viewportSize()!.width);
   await expect(overlay).toHaveCSS('color', 'rgb(20, 36, 59)');

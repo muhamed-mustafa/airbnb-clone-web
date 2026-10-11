@@ -1,7 +1,7 @@
 import AxeBuilder from '@axe-core/playwright';
 import { test, expect, setLocale, admin, expectNoHorizontalScroll } from './support/fixtures';
 
-test('door scenes accompany a real sign in and sign out; overview shows live counts', async ({
+test('brand seal scenes accompany a real sign in and sign out; overview shows live counts', async ({
   page,
 }, info) => {
   await setLocale(page, 'en');
@@ -15,13 +15,14 @@ test('door scenes accompany a real sign in and sign out; overview shows live cou
   await page.getByRole('button', { name: 'Sign in', exact: true }).click();
   const entry = page.locator('.session-story[data-action="enter"][data-complete="true"]');
   await expect(entry).toBeVisible();
-  await expect(entry.locator('.scene-door')).toHaveCSS('animation-name', 'door-open');
-  const start = await entry.locator('.scene-door').boundingBox();
+  await expect(entry.locator('.session-emblem')).toHaveCSS('animation-name', 'seal-settle');
+  await expect(entry.locator('.session-confirm')).toHaveCSS('animation-name', 'seal-check');
+  const start = await entry.locator('.session-emblem').boundingBox();
   expect(start).not.toBeNull();
   await expect
-    .poll(async () => (await entry.locator('.scene-door').boundingBox())?.width ?? start!.width)
+    .poll(async () => (await entry.locator('.session-emblem').boundingBox())?.width ?? start!.width)
     .not.toBe(start!.width);
-  await page.screenshot({ path: `../../docs/phase-1/screens/${info.project.name}-door-entry.png` });
+  await page.screenshot({ path: `../../docs/phase-1/screens/${info.project.name}-seal-entry.png` });
   await expect(page).toHaveURL(/\/$/);
   await expect(page.getByRole('heading', { name: 'Your workspace, at a glance' })).toBeVisible();
   for (const api of ['countries', 'cities', 'unit-categories', 'currencies']) {
@@ -60,13 +61,16 @@ test('door scenes accompany a real sign in and sign out; overview shows live cou
   await page.getByRole('button', { name: 'Sign out', exact: true }).click();
   const exit = page.locator('.session-story[data-action="exit"][data-complete="true"]');
   await expect(exit).toBeVisible();
-  await expect(exit.locator('.scene-door')).toHaveCSS('animation-name', 'door-close');
-  const exitStart = await exit.locator('.scene-door').boundingBox();
+  await expect(exit.locator('.session-emblem')).toHaveCSS('animation-name', 'seal-settle');
+  await expect(exit.locator('.session-lock')).toHaveCSS('animation-name', 'seal-reveal');
+  const exitStart = await exit.locator('.session-emblem').boundingBox();
   expect(exitStart).not.toBeNull();
   await expect
-    .poll(async () => (await exit.locator('.scene-door').boundingBox())?.width ?? exitStart!.width)
+    .poll(
+      async () => (await exit.locator('.session-emblem').boundingBox())?.width ?? exitStart!.width,
+    )
     .not.toBe(exitStart!.width);
-  await page.screenshot({ path: `../../docs/phase-1/screens/${info.project.name}-door-exit.png` });
+  await page.screenshot({ path: `../../docs/phase-1/screens/${info.project.name}-seal-exit.png` });
   await expect(page).toHaveURL(/\/login$/);
 });
 

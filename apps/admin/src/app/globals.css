@@ -334,135 +334,65 @@
 .auth-card {
   border-radius: 24px;
 }
-.door-scene {
-  width: min(440px, 88vw);
-  height: 320px;
+.session-emblem {
+  width: 150px;
+  height: 150px;
   position: relative;
-  overflow: hidden;
-  border-radius: 8px;
-  background: #e8e9eb;
-  box-shadow: 0 32px 70px -38px #14243b45;
-}
-.scene-architecture {
-  position: absolute;
-  inset: 0;
-  perspective: 850px;
-  direction: ltr;
-}
-.scene-wall {
-  position: absolute;
-  inset: 0 0 60px;
-  background: linear-gradient(110deg, #ececee, #d4d6d9 62%, #e5e6e8);
-  box-shadow: inset 0 -1px 0 #ffffff80;
-}
-.scene-wall::after {
-  content: '';
-  position: absolute;
-  inset: 0;
-  opacity: 0.14;
-  background: repeating-linear-gradient(
-    90deg,
-    transparent 0 109px,
-    #878a90 110px,
-    transparent 111px
-  );
-}
-.scene-floor {
-  position: absolute;
-  inset: 260px 0 0;
-  background: linear-gradient(#c9ccd1, #e7e8eb);
-}
-.scene-frame {
-  position: absolute;
-  width: 118px;
-  height: 225px;
-  left: calc(50% - 59px);
-  top: 35px;
-  border: 7px solid #30343a;
-  border-bottom: 0;
-  background: #b1a389;
+  display: grid;
+  place-items: center;
+  border-radius: 36px;
+  background: linear-gradient(145deg, #233853, #111e31);
+  border: 1px solid #ffffff30;
   box-shadow:
-    9px 5px 17px #151c2930,
-    inset 3px 0 5px #0009;
-  transform-style: preserve-3d;
+    inset 0 1px 0 #ffffff20,
+    0 24px 48px -20px #14243b60;
 }
-.scene-interior {
+.session-halo {
   position: absolute;
-  inset: 0;
-  background: linear-gradient(90deg, #6e6355, #e3d1aa 20%, #f7eddb 55%, #c6b38e);
-  box-shadow: inset 0 0 18px #584f4670;
+  inset: -18px;
+  border: 1px solid #2860d720;
+  border-radius: 48px;
 }
-.scene-interior::after {
-  content: '';
-  position: absolute;
-  inset: 22px 28px 0;
-  border: 1px solid #ab967455;
-  background: linear-gradient(180deg, #eadfc9, #f9efdf);
+.session-seal {
+  width: 106px;
+  height: 106px;
+  stroke-linecap: round;
+  stroke-linejoin: round;
 }
-.scene-door {
-  position: absolute;
-  inset: 0;
-  transform-origin: left center;
-  transform-style: preserve-3d;
-  background: linear-gradient(105deg, #45494f, #252930 38%, #333840 75%, #22262c);
-  border: 1px solid #555b63;
-  box-shadow:
-    inset 2px 0 1px #85899070,
-    inset -3px 0 1px #111820;
+.session-orbit {
+  stroke: #a9bdd7;
+  stroke-width: 1;
+  stroke-dasharray: 82 251;
+  transform-origin: center;
+  animation: session-orbit 1800ms linear infinite;
 }
-.scene-door-inlay {
-  position: absolute;
-  inset: 13px;
-  border: 1px solid #9297a323;
-  box-shadow: inset 1px 0 2px #0005;
+.session-mark {
+  stroke: #e5edf8;
+  stroke-width: 1.8;
+  transition: opacity 160ms;
 }
-.scene-handle {
-  position: absolute;
-  right: 12px;
-  top: 105px;
-  width: 5px;
-  height: 33px;
-  border-radius: 2px;
-  background: linear-gradient(90deg, #85704e, #ead7a9, #ab8e59);
-  box-shadow: 3px 2px 3px #0007;
-}
-.scene-light {
-  position: absolute;
-  width: 200px;
-  height: 80px;
-  top: 251px;
-  left: calc(50% - 100px);
-  background: linear-gradient(#e9cf9960, #fff2ce00);
-  clip-path: polygon(24% 0, 76% 0, 100% 100%, 0 100%);
+.session-story[data-complete='true'] .session-mark {
   opacity: 0;
 }
-.scene-threshold {
-  position: absolute;
-  width: 120px;
-  height: 3px;
-  top: 260px;
-  left: calc(50% - 60px);
-  background: linear-gradient(90deg, #555960, #ccc5b5, #555960);
-  box-shadow: 0 5px 10px #0003;
+.session-story[data-complete='true'] .session-orbit {
+  animation: seal-complete 400ms cubic-bezier(0.2, 0, 0, 1) both;
 }
-.session-story[data-complete='true'] .scene-door {
-  animation: door-open 1100ms cubic-bezier(0.22, 0.61, 0.36, 1) both;
+.session-confirm,
+.session-lock {
+  stroke: #edc78c;
+  stroke-width: 2.5;
+  animation: seal-reveal 400ms cubic-bezier(0.2, 0, 0, 1) both;
 }
-.session-story[data-complete='true'][data-action='exit'] .scene-door {
-  animation-name: door-close;
+.session-confirm {
+  stroke-dasharray: 52;
+  stroke-dashoffset: 0;
+  animation-name: seal-check;
 }
-.session-story[data-action='exit'] .scene-door {
-  transform: rotateY(-72deg);
+.session-lock {
+  transform-origin: center;
 }
-.session-story[data-complete='true'] .scene-light {
-  animation: threshold-light 1100ms ease both;
-}
-.session-story[data-action='exit'] .scene-light {
-  opacity: 1;
-  animation-direction: reverse;
-}
-.session-story[data-complete='true'][data-action='enter'] .scene-architecture {
-  animation: camera-enter 1100ms ease both;
+.session-story[data-complete='true'] .session-emblem {
+  animation: seal-settle 500ms cubic-bezier(0.2, 0, 0, 1) both;
 }
 .scene-progress {
   width: 100px;
@@ -479,36 +409,48 @@
   background: var(--color-accent);
   animation: scene-progress 1s ease-in-out infinite alternate;
 }
-@keyframes door-open {
-  from {
-    transform: rotateY(0);
-  }
+.session-story[data-complete='true'] .scene-progress::after {
+  width: 100%;
+  animation: none;
+}
+@keyframes session-orbit {
   to {
-    transform: rotateY(-78deg);
+    transform: rotate(360deg);
   }
 }
-@keyframes door-close {
-  from {
-    transform: rotateY(-78deg);
-  }
+@keyframes seal-complete {
   to {
-    transform: rotateY(0);
+    stroke-dasharray: 333 0;
+    transform: rotate(0);
   }
 }
-@keyframes threshold-light {
+@keyframes seal-check {
+  from {
+    stroke-dashoffset: 52;
+  }
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+@keyframes seal-reveal {
   from {
     opacity: 0;
+    transform: translateY(5px);
   }
   to {
     opacity: 1;
+    transform: translateY(0);
   }
 }
-@keyframes camera-enter {
-  from {
+@keyframes seal-settle {
+  0% {
     transform: scale(1);
   }
-  to {
-    transform: scale(1.08);
+  40% {
+    transform: scale(1.045);
+  }
+  100% {
+    transform: scale(1);
   }
 }
 @keyframes scene-progress {
@@ -547,9 +489,10 @@
   box-shadow: 0 12px 30px #14243b0c;
 }
 @media (prefers-reduced-motion: reduce) {
-  .scene-architecture,
-  .scene-light,
-  .scene-door,
+  .session-emblem,
+  .session-orbit,
+  .session-confirm,
+  .session-lock,
   .scene-progress::after {
     animation: none !important;
   }
