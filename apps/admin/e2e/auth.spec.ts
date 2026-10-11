@@ -1,3 +1,4 @@
+import AxeBuilder from '@axe-core/playwright';
 import { E2E_BACKEND_URL } from './support/constants';
 import { admin, expect, setLocale, signIn, test, unique } from './support/fixtures';
 
@@ -108,4 +109,53 @@ test('logout notice is consumed without removing the intended destination', asyn
   await page.reload();
   await expect(page.getByRole('main').getByRole('status')).toHaveCount(0);
   await expect(page).toHaveURL(/next=%2Fteam%2Fadmins$/);
+});
+
+test('validation is linked to fields and password visibility preserves input', async ({
+  page,
+}, info) => {
+  await setLocale(page, 'en');
+  await page.goto('/login');
+  const email = page.getByLabel('Email', { exact: true });
+  const password = page.getByLabel('Password', { exact: true });
+  await page.getByRole('button', { name: 'Sign in', exact: true }).click();
+  await expect(email).toBeFocused();
+  for (const input of [email, password]) {
+    await expect(input).toHaveAttribute('aria-invalid', 'true');
+    const messageId = await input.getAttribute('aria-describedby');
+    await expect(page.locator(`[id="${messageId}"]`)).toHaveText('This field is required.');
+  }
+  await password.hover();
+  await expect(password).toHaveCSS('border-color', 'rgb(180, 35, 24)');
+  await page.screenshot({
+    path: `../../docs/phase-1/screens/${info.project.name}-login-validation-en.png`,
+  });
+  const audit = await new AxeBuilder({ page })
+    .withTags(['wcag2a', 'wcag2aa', 'wcag21aa'])
+    .analyze();
+  expect(audit.violations).toEqual([]);
+  await email.fill('name@example.com');
+  await password.fill('a');
+  await expect(email).not.toHaveAttribute('aria-invalid', 'true');
+  await expect(password).not.toHaveAttribute('aria-invalid', 'true');
+  await page.getByRole('button', { name: 'Show password' }).click();
+  await expect(password).toHaveAttribute('type', 'text');
+  await expect(password).toHaveValue('a');
+  await page.getByRole('button', { name: 'Hide password' }).click();
+  await expect(password).toHaveAttribute('type', 'password');
+  await expect(password).toHaveValue('a');
+  // Login accepts an existing password; no account-creation policy is imposed here.
+  await expect(page.locator('.field-error')).toHaveCount(0);
+  await setLocale(page, 'ar');
+  await page.reload();
+  await page.locator('form button[type="submit"]').click();
+  await expect(page.locator('.field-error')).toHaveCount(2);
+  await expect(page.locator('input[type="password"]')).toHaveAttribute('aria-invalid', 'true');
+  await page.screenshot({
+    path: `../../docs/phase-1/screens/${info.project.name}-login-validation-ar.png`,
+  });
+  const arabicAudit = await new AxeBuilder({ page })
+    .withTags(['wcag2a', 'wcag2aa', 'wcag21aa'])
+    .analyze();
+  expect(arabicAudit.violations).toEqual([]);
 });

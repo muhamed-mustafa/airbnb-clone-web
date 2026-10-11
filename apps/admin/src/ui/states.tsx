@@ -92,10 +92,10 @@ export function FormAlert({ messages, requestId }: { messages: string[]; request
   return (
     <div
       role="alert"
-      className="grid gap-2 rounded-md border border-danger bg-danger-tint px-3 py-2.5 text-sm text-danger"
+      className="form-error grid gap-2 rounded-md border border-danger/25 bg-[#fff5f4] px-4 py-3 text-sm text-danger"
     >
       {messages.map((message) => (
-        <p key={message} className="flex items-start gap-2 font-semibold">
+        <p key={message} className="flex items-start gap-2 leading-6">
           <AlertIcon width={18} height={18} className="mt-0.5 shrink-0" />
           {message}
         </p>

@@ -27,6 +27,7 @@ export function LoginForm({ next }: { next: string }) {
   const form = useForm<LoginValues>({
     resolver: zodResolver(zLoginAdminDtoWritable, { error: errorMap }),
     defaultValues: { email: '', password: '' },
+    mode: 'onTouched',
   });
   const { errors, isSubmitting } = form.formState;
 
@@ -67,6 +68,7 @@ export function LoginForm({ next }: { next: string }) {
         autoComplete="username"
         inputMode="email"
         dir="ltr"
+        reserveMessageSpace
         error={errors.email?.message}
         {...form.register('email')}
       />
@@ -76,8 +78,9 @@ export function LoginForm({ next }: { next: string }) {
         endAdornment={
           <button
             type="button"
-            className="grid h-11 w-11 place-items-center rounded-md text-muted hover:text-accent"
+            className="password-toggle grid h-11 w-11 place-items-center rounded-md text-muted hover:bg-accent-tint hover:text-accent"
             aria-label={t(showPassword ? 'hidePassword' : 'showPassword')}
+            title={t(showPassword ? 'hidePassword' : 'showPassword')}
             aria-pressed={showPassword}
             onClick={() => setShowPassword(!showPassword)}
           >
@@ -89,6 +92,8 @@ export function LoginForm({ next }: { next: string }) {
               fill="none"
               stroke="currentColor"
               strokeWidth="1.7"
+              strokeLinecap="round"
+              strokeLinejoin="round"
             >
               <path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12Z" />
               <circle cx="12" cy="12" r="3" />
@@ -97,6 +102,9 @@ export function LoginForm({ next }: { next: string }) {
           </button>
         }
         autoComplete="current-password"
+        spellCheck={false}
+        autoCapitalize="none"
+        reserveMessageSpace
         dir="ltr"
         error={errors.password?.message}
         {...form.register('password')}

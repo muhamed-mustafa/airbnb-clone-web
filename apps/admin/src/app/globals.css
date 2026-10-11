@@ -554,3 +554,30 @@
     animation: none !important;
   }
 }
+
+/* Validation stays calm: one focus outline, a tinted field and an explicit icon. */
+.premium-control[aria-invalid='true'],
+.premium-control[aria-invalid='true']:hover:not(:disabled),
+.premium-control[aria-invalid='true']:focus-visible {
+  border-color: var(--color-danger);
+  background: #fffafa;
+}
+.premium-control[aria-invalid='true']:focus-visible {
+  box-shadow: none;
+}
+.password-toggle {
+  transition:
+    background-color 160ms,
+    color 160ms;
+}
+.field-error {
+  animation: field-message 160ms ease-out;
+}
+@keyframes field-message {
+  from {
+    transform: translateY(-3px);
+  }
+  to {
+    transform: translateY(0);
+  }
+}
