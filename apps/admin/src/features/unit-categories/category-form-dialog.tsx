@@ -7,6 +7,7 @@ import { useForm } from 'react-hook-form';
 import { useApplyServerErrors, useZodErrorMap } from '@/lib/form-errors';
 import { Button } from '@/ui/button';
 import { Dialog } from '@/ui/dialog';
+import { NavigationIcon } from '@/ui/navigation-icon';
 import { TextField } from '@/ui/field';
 import { FormAlert } from '@/ui/states';
 import { useToast } from '@/ui/toast';
@@ -73,14 +74,17 @@ export function UnitCategoryFormDialog({
   return (
     <Dialog
       open
+      icon={<NavigationIcon name="unitCategories" />}
       returnFocusTo={returnFocusTo}
       onOpenChange={(open) => !open && !isSubmitting && onClose()}
+      description={t('formDescription')}
       title={category ? t('editTitle', { name: category.name }) : t('createTitle')}
     >
-      <form noValidate onSubmit={onSubmit} className="grid gap-4">
+      <form noValidate onSubmit={onSubmit} className="resource-form grid gap-6">
         <FormAlert messages={alert.messages} requestId={alert.requestId} />
         <TextField
           label={t('fieldName')}
+          placeholder={t('namePlaceholder')}
           hint={t('fieldNameHint')}
           autoComplete="off"
           error={errors.name?.message}
@@ -88,6 +92,7 @@ export function UnitCategoryFormDialog({
         />
         <TextField
           label={t('fieldCode')}
+          placeholder={t('codePlaceholder')}
           hint={t('fieldCodeHint')}
           autoComplete="off"
           dir="ltr"
@@ -96,7 +101,7 @@ export function UnitCategoryFormDialog({
           error={errors.icon?.message}
           {...form.register('icon')}
         />
-        <div className="flex flex-col-reverse gap-2 pt-2 sm:flex-row sm:justify-end">
+        <div className="form-actions flex flex-col-reverse gap-3 sm:flex-row sm:justify-end">
           <Button onClick={onClose} disabled={isSubmitting}>
             {tc('cancel')}
           </Button>

@@ -14,7 +14,7 @@ import { isBffError } from '@/lib/bff-client';
 import { supportRequestId, useErrorText } from '@/lib/error-text';
 import { Button, buttonClasses } from '@/ui/button';
 import { ConfirmDialog } from '@/ui/dialog';
-import { SelectField } from '@/ui/field';
+import { SearchSelect } from '@/ui/search-select';
 import { PlusIcon } from '@/ui/icons';
 import { EmptyState, FormAlert } from '@/ui/states';
 import { useToast } from '@/ui/toast';
@@ -115,19 +115,21 @@ export function CitiesScreen() {
       </div>
 
       <search className="grid grid-cols-1 items-start gap-3 sm:grid-cols-[minmax(0,16rem)_minmax(0,16rem)_auto]">
-        <SelectField
+        <SearchSelect
           label={t('filterCountry')}
+          placeholder={t('allCountries')}
+          options={[
+            { value: '', label: t('allCountries') },
+            ...(countries.data ?? []).map((country) => ({
+              value: country.id,
+              label: country.name,
+              detail: country.code,
+            })),
+          ]}
           value={values.country}
-          onChange={(event) => update({ country: event.target.value })}
+          onValueChange={(country) => update({ country })}
           disabled={!countries.isSuccess}
-        >
-          <option value="">{t('allCountries')}</option>
-          {(countries.data ?? []).map((country) => (
-            <option key={country.id} value={country.id}>
-              {country.name}
-            </option>
-          ))}
-        </SelectField>
+        />
         <FilterInput
           resetToken={resetToken}
           label={t('searchName')}

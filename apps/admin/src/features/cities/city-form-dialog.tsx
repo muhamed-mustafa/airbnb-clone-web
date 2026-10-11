@@ -3,12 +3,14 @@
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useTranslations } from 'next-intl';
 import { useState } from 'react';
-import { useForm } from 'react-hook-form';
+import { Controller, useForm } from 'react-hook-form';
 import type { Country } from '@/features/countries/api';
 import { useApplyServerErrors, useZodErrorMap } from '@/lib/form-errors';
 import { Button } from '@/ui/button';
 import { Dialog } from '@/ui/dialog';
-import { SelectField, TextField } from '@/ui/field';
+import { NavigationIcon } from '@/ui/navigation-icon';
+import { TextField } from '@/ui/field';
+import { SearchSelect } from '@/ui/search-select';
 import { FormAlert } from '@/ui/states';
 import { useToast } from '@/ui/toast';
 import { useCreateCity, useUpdateCity, type City } from './api';
@@ -78,32 +80,43 @@ export function CityFormDialog({
   return (
     <Dialog
       open
+      icon={<NavigationIcon name="cities" />}
       returnFocusTo={returnFocusTo}
       onOpenChange={(open) => !open && !isSubmitting && onClose()}
       title={city ? t('editTitle', { name: city.name }) : t('createTitle')}
+      description={t('formDescription')}
     >
-      <form noValidate onSubmit={onSubmit} className="grid gap-4">
+      <form noValidate onSubmit={onSubmit} className="resource-form grid gap-6">
         <FormAlert messages={alert.messages} requestId={alert.requestId} />
         <TextField
           label={t('fieldName')}
+          placeholder={t('namePlaceholder')}
           hint={t('fieldNameHint')}
           autoComplete="off"
           error={errors.name?.message}
           {...form.register('name')}
         />
-        <SelectField
-          label={t('fieldCountry')}
-          error={errors.country?.message}
-          {...form.register('country')}
-        >
-          <option value="">{t('chooseCountry')}</option>
-          {countries.map((country) => (
-            <option key={country.id} value={country.id}>
-              {country.name}
-            </option>
-          ))}
-        </SelectField>
-        <div className="flex flex-col-reverse gap-2 pt-2 sm:flex-row sm:justify-end">
+        <Controller
+          name="country"
+          control={form.control}
+          render={({ field }) => (
+            <SearchSelect
+              label={t('fieldCountry')}
+              placeholder={t('chooseCountry')}
+              options={countries.map((country) => ({
+                value: country.id,
+                label: country.name,
+                detail: country.code,
+              }))}
+              value={field.value}
+              onValueChange={field.onChange}
+              onBlur={field.onBlur}
+              ref={field.ref}
+              error={errors.country?.message}
+            />
+          )}
+        />
+        <div className="form-actions flex flex-col-reverse gap-3 sm:flex-row sm:justify-end">
           <Button onClick={onClose} disabled={isSubmitting}>
             {tc('cancel')}
           </Button>

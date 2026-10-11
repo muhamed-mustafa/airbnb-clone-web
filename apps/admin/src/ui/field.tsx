@@ -7,7 +7,7 @@ import {
 } from 'react';
 import { AlertIcon } from './icons';
 
-const controlClasses = [
+export const controlClasses = [
   'premium-control block w-full min-h-11 rounded-md border border-edge bg-surface px-3 text-base text-ink',
   'pointer-coarse:min-h-11 placeholder:text-muted',
   'aria-invalid:border-danger aria-invalid:bg-[#fffafa] aria-invalid:focus-visible:outline-danger',
@@ -24,7 +24,7 @@ interface FieldFrameProps {
   reserveMessageSpace?: boolean;
 }
 
-function FieldFrame({
+export function FieldFrame({
   id,
   label,
   hint,
@@ -34,7 +34,7 @@ function FieldFrame({
   reserveMessageSpace,
 }: FieldFrameProps) {
   return (
-    <div className={`grid content-start gap-1.5 ${className}`}>
+    <div className={`field-frame grid content-start gap-2 ${className}`}>
       <label htmlFor={id} className="text-sm font-semibold text-ink">
         {label}
       </label>
@@ -132,15 +132,29 @@ export function SelectField({
   const id = useId();
   return (
     <FieldFrame id={id} label={label} hint={hint} error={error} className={frameClassName}>
-      <select
-        id={id}
-        className={`${controlClasses} pe-8 ${className}`}
-        aria-invalid={error ? true : undefined}
-        aria-describedby={describedBy(id, hint, error)}
-        {...select}
-      >
-        {children}
-      </select>
+      <div className="relative">
+        <select
+          id={id}
+          className={`${controlClasses} native-select pe-11 ${className}`}
+          aria-invalid={error ? true : undefined}
+          aria-describedby={describedBy(id, hint, error)}
+          {...select}
+        >
+          {children}
+        </select>
+        <svg
+          aria-hidden="true"
+          className="pointer-events-none absolute end-4 top-1/2 -translate-y-1/2 text-muted"
+          width="16"
+          height="16"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          strokeWidth="1.7"
+        >
+          <path d="m6 9 6 6 6-6" />
+        </svg>
+      </div>
     </FieldFrame>
   );
 }

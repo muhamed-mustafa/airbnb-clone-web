@@ -7,6 +7,7 @@ import { useForm } from 'react-hook-form';
 import { useApplyServerErrors, useZodErrorMap } from '@/lib/form-errors';
 import { Button } from '@/ui/button';
 import { Dialog } from '@/ui/dialog';
+import { NavigationIcon } from '@/ui/navigation-icon';
 import { TextField } from '@/ui/field';
 import { FormAlert } from '@/ui/states';
 import { useToast } from '@/ui/toast';
@@ -69,14 +70,17 @@ export function CountryFormDialog({ country, onClose, returnFocusTo }: CountryFo
   return (
     <Dialog
       open
+      icon={<NavigationIcon name="countries" />}
       returnFocusTo={returnFocusTo}
       onOpenChange={(open) => !open && !isSubmitting && onClose()}
+      description={t('formDescription')}
       title={country ? t('editTitle', { name: country.name }) : t('createTitle')}
     >
-      <form noValidate onSubmit={onSubmit} className="grid gap-4">
+      <form noValidate onSubmit={onSubmit} className="resource-form grid gap-6">
         <FormAlert messages={alert.messages} requestId={alert.requestId} />
         <TextField
           label={t('fieldName')}
+          placeholder={t('namePlaceholder')}
           hint={t('fieldNameHint')}
           autoComplete="off"
           error={errors.name?.message}
@@ -84,6 +88,7 @@ export function CountryFormDialog({ country, onClose, returnFocusTo }: CountryFo
         />
         <TextField
           label={t('fieldCode')}
+          placeholder={t('codePlaceholder')}
           hint={t('fieldCodeHint')}
           autoComplete="off"
           autoCapitalize="characters"
@@ -93,7 +98,7 @@ export function CountryFormDialog({ country, onClose, returnFocusTo }: CountryFo
           error={errors.code?.message}
           {...form.register('code')}
         />
-        <div className="flex flex-col-reverse gap-2 pt-2 sm:flex-row sm:justify-end">
+        <div className="form-actions flex flex-col-reverse gap-3 sm:flex-row sm:justify-end">
           <Button onClick={onClose} disabled={isSubmitting}>
             {tc('cancel')}
           </Button>

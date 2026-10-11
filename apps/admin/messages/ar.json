@@ -92,7 +92,10 @@
     "deleteCitiesLoading": "جارٍ حساب المدن التابعة…",
     "deleteCitiesUnknown": "تعذّر حساب المدن التابعة. أي مدن تابعة لها ستُحذف أيضًا.",
     "deleteConfirm": "حذف الدولة",
-    "deleted": "تم حذف {name}."
+    "deleted": "تم حذف {name}.",
+    "namePlaceholder": "مثال: الإمارات العربية المتحدة",
+    "formDescription": "بيانات الدولة تُستخدم في تنظيم المواقع.",
+    "codePlaceholder": "AE"
   },
   "cities": {
     "title": "المدن",
@@ -122,7 +125,9 @@
     "deleteTitle": "حذف {name}؟",
     "deleteBody": "لن تظهر المدينة بعد الآن.",
     "deleteConfirm": "حذف المدينة",
-    "deleted": "تم حذف {name}."
+    "deleted": "تم حذف {name}.",
+    "namePlaceholder": "مثال: الإسكندرية",
+    "formDescription": "أضف اسم المدينة والدولة التابعة لها. الحقلان مطلوبان."
   },
   "currencies": {
     "title": "العملات",
@@ -149,7 +154,10 @@
     "deleteTitle": "حذف {name}؟",
     "deleteBody": "لن تظهر العملة بعد الآن.",
     "deleteConfirm": "حذف العملة",
-    "deleted": "تم حذف {name}."
+    "deleted": "تم حذف {name}.",
+    "namePlaceholder": "مثال: الجنيه المصري",
+    "formDescription": "حدّد اسم العملة ورمزها المكوّن من ثلاثة حروف.",
+    "codePlaceholder": "EGP"
   },
   "pricingSettings": {
     "title": "إعدادات التسعير",
@@ -293,7 +301,10 @@
     "deleted": "تم حذف {name}.",
     "deleteTitle": "حذف {name}؟",
     "deleteBody": "سيُزال نوع الإقامة من القائمة.",
-    "deleteConfirm": "حذف نوع الإقامة"
+    "deleteConfirm": "حذف نوع الإقامة",
+    "namePlaceholder": "مثال: فيلا",
+    "formDescription": "أضف نوع إقامة واضحًا لتنظيم الكتالوج.",
+    "codePlaceholder": "villa"
   },
   "design": {
     "workspace": "مساحة الإدارة الخاصة بك",
@@ -315,5 +326,11 @@
     "ready": "مساحة عملك جاهزة.",
     "closed": "انتهت جلستك.",
     "working": "لحظات قليلة."
+  },
+  "select": {
+    "search": "البحث عن دولة",
+    "searchPlaceholder": "ابحث بالاسم أو الرمز...",
+    "empty": "لا توجد دول مطابقة. جرّب اسمًا آخر.",
+    "count": "النتائج: {count}"
   }
 }

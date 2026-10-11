@@ -24,7 +24,9 @@ test.describe('cities', () => {
     await dialog.getByRole('button', { name: 'حفظ' }).click();
     await expect(dialog.getByText('هذا الحقل مطلوب.')).toBeVisible();
 
-    await dialog.getByLabel('الدولة').selectOption({ label: country.name });
+    await dialog.getByLabel('الدولة').click();
+    await page.locator('.select-popover').getByRole('searchbox').fill(country.name);
+    await page.getByRole('option').filter({ hasText: country.name }).click();
     await dialog.getByRole('button', { name: 'حفظ' }).click();
     await expect(dialog).toBeHidden();
     await expect(page.getByRole('status').filter({ hasText: `تمت إضافة ${name}.` })).toBeVisible();
@@ -32,14 +34,18 @@ test.describe('cities', () => {
     // Same name in the same country: conflict, input kept.
     await page.getByRole('button', { name: 'إضافة مدينة' }).click();
     await dialog.getByLabel('اسم المدينة').fill(name);
-    await dialog.getByLabel('الدولة').selectOption({ label: country.name });
+    await dialog.getByLabel('الدولة').click();
+    await page.locator('.select-popover').getByRole('searchbox').fill(country.name);
+    await page.getByRole('option').filter({ hasText: country.name }).click();
     await dialog.getByRole('button', { name: 'حفظ' }).click();
     await expect(dialog.getByRole('alert')).toContainText('توجد مدينة بنفس الاسم في هذه الدولة.');
     await expect(dialog.getByLabel('اسم المدينة')).toHaveValue(name);
     await page.keyboard.press('Escape');
 
     // Country filter in the URL; the country's name is shown, not its id (L4).
-    await page.getByLabel('الدولة').selectOption({ label: country.name });
+    await page.getByLabel('الدولة').click();
+    await page.locator('.select-popover').getByRole('searchbox').fill(country.name);
+    await page.getByRole('option').filter({ hasText: country.name }).click();
     await expect(page).toHaveURL(new RegExp(`country=${country.id}`));
     const row = page
       .getByRole('row', { name: new RegExp(name) })

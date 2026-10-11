@@ -92,7 +92,10 @@
     "deleteCitiesLoading": "Counting its cities…",
     "deleteCitiesUnknown": "Couldn't count its cities. Any cities it has will be deleted too.",
     "deleteConfirm": "Delete country",
-    "deleted": "{name} deleted."
+    "deleted": "{name} deleted.",
+    "namePlaceholder": "e.g. United Arab Emirates",
+    "formDescription": "Country details are used across your locations.",
+    "codePlaceholder": "AE"
   },
   "cities": {
     "title": "Cities",
@@ -122,7 +125,9 @@
     "deleteTitle": "Delete {name}?",
     "deleteBody": "The city will no longer be shown.",
     "deleteConfirm": "Delete city",
-    "deleted": "{name} deleted."
+    "deleted": "{name} deleted.",
+    "namePlaceholder": "e.g. Alexandria",
+    "formDescription": "Add the city name and its country. Both fields are required."
   },
   "currencies": {
     "title": "Currencies",
@@ -149,7 +154,10 @@
     "deleteTitle": "Delete {name}?",
     "deleteBody": "The currency will no longer be shown.",
     "deleteConfirm": "Delete currency",
-    "deleted": "{name} deleted."
+    "deleted": "{name} deleted.",
+    "namePlaceholder": "e.g. Egyptian Pound",
+    "formDescription": "Set the name and three-letter code for this currency.",
+    "codePlaceholder": "EGP"
   },
   "pricingSettings": {
     "title": "Pricing settings",
@@ -293,7 +301,10 @@
     "deleteTitle": "Delete {name}?",
     "deleteBody": "This accommodation type will be removed from the list.",
     "deleteConfirm": "Delete accommodation type",
-    "deleted": "{name} deleted."
+    "deleted": "{name} deleted.",
+    "namePlaceholder": "e.g. Villa",
+    "formDescription": "Create a consistent accommodation type for your catalog.",
+    "codePlaceholder": "villa"
   },
   "design": {
     "workspace": "Your management workspace",
@@ -315,5 +326,11 @@
     "ready": "Your workspace is ready.",
     "closed": "Your session has ended.",
     "working": "Just a moment."
+  },
+  "select": {
+    "search": "Search countries",
+    "searchPlaceholder": "Search by name or code...",
+    "empty": "No matching countries. Try another name.",
+    "count": "{count, plural, one {# option} other {# options}}"
   }
 }
