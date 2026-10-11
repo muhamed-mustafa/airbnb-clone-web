@@ -2,6 +2,7 @@ import type { Metadata } from 'next';
 import { getTranslations } from 'next-intl/server';
 import { BrandMark } from '@/ui/brand';
 import { LoginForm } from '@/features/auth/login-form';
+import { LogoutNotice } from '@/features/auth/logout-notice';
 import { LocaleSwitch } from '@/features/shell/locale-switch';
 import { safeNextPath } from '@/lib/safe-next-path';
 
@@ -82,14 +83,16 @@ export default async function LoginPage({
               <h1 className="text-2xl font-semibold sm:text-3xl">{t('login.title')}</h1>
               <p className="text-sm leading-6 text-muted">{t('login.intro')}</p>
             </div>
-            {notice && (
+            {params.reason === 'signed-out' ? (
+              <LogoutNotice message={t('login.signedOut')} />
+            ) : notice ? (
               <p
                 role="status"
                 className="route-enter rounded-md border border-hairline bg-accent-tint px-3 py-2.5 text-sm text-ink"
               >
                 {notice}
               </p>
-            )}
+            ) : null}
             <LoginForm next={safeNextPath(params.next)} />
             <p className="border-t border-hairline pt-5 text-xs leading-6 text-muted">
               {t('design.signInNote')}

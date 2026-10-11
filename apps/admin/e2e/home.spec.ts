@@ -67,7 +67,7 @@ test('door scenes accompany a real sign in and sign out; overview shows live cou
     .poll(async () => (await exit.locator('.scene-door').boundingBox())?.width ?? exitStart!.width)
     .not.toBe(exitStart!.width);
   await page.screenshot({ path: `../../docs/phase-1/screens/${info.project.name}-door-exit.png` });
-  await expect(page).toHaveURL(/reason=signed-out/);
+  await expect(page).toHaveURL(/\/login$/);
 });
 
 test('overview count errors show retry, never a fabricated zero', async ({ page }) => {

@@ -38,5 +38,5 @@ test('reduced motion covers login, route entry and sign-out without blocking nav
     fullPage: false,
     animations: 'disabled',
   });
-  await expect(page).toHaveURL(/\/login\?reason=signed-out/);
+  await expect(page).toHaveURL(/\/login$/);
 });

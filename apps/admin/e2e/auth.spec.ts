@@ -80,11 +80,14 @@ test.describe('admin sign in', () => {
     expect(before?.sameSite).toBe('Lax');
 
     await page.getByRole('button', { name: 'تسجيل الخروج' }).click();
-    await expect(page).toHaveURL(/\/login\?reason=signed-out/);
+    await expect(page).toHaveURL(/\/login$/);
     await expect(page.getByRole('main').getByRole('status')).toContainText('تم تسجيل الخروج.');
     expect((await context.cookies()).some((cookie) => cookie.name.endsWith('admin_session'))).toBe(
       false,
     );
+
+    await page.reload();
+    await expect(page.getByRole('main').getByRole('status')).toHaveCount(0);
 
     // Replaying the old cookie after sign-out is refused by the BFF (revoked session id).
     const replay = await page.request.get('/bff/api/countries', {
@@ -96,4 +99,13 @@ test.describe('admin sign in', () => {
     await page.goto('/locations/countries');
     await expect(page).toHaveURL(/\/login/);
   });
+});
+
+test('logout notice is consumed without removing the intended destination', async ({ page }) => {
+  await page.goto('/login?reason=signed-out&next=%2Fteam%2Fadmins');
+  await expect(page.getByRole('main').getByRole('status')).toBeVisible();
+  await expect(page).toHaveURL(/next=%2Fteam%2Fadmins$/);
+  await page.reload();
+  await expect(page.getByRole('main').getByRole('status')).toHaveCount(0);
+  await expect(page).toHaveURL(/next=%2Fteam%2Fadmins$/);
 });
