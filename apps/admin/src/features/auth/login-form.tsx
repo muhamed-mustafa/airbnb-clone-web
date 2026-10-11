@@ -9,6 +9,7 @@ import type * as z from 'zod/mini';
 import { animatePageExit } from '@/lib/page-exit';
 import { bffFetch } from '@/lib/bff-client';
 import { useApplyServerErrors, useZodErrorMap } from '@/lib/form-errors';
+import { SessionTransition, finishSessionScene } from '@/ui/session-transition';
 import { Button } from '@/ui/button';
 import { TextField } from '@/ui/field';
 import { FormAlert } from '@/ui/states';
@@ -19,6 +20,8 @@ export function LoginForm({ next }: { next: string }) {
   const t = useTranslations('login');
   const errorMap = useZodErrorMap();
   const applyServerErrors = useApplyServerErrors();
+  const [showPassword, setShowPassword] = useState(false);
+  const [complete, setComplete] = useState(false);
   const [alert, setAlert] = useState<{ messages: string[]; requestId?: string }>({ messages: [] });
 
   const form = useForm<LoginValues>({
@@ -30,8 +33,11 @@ export function LoginForm({ next }: { next: string }) {
   const onSubmit = form.handleSubmit(
     async (values) => {
       setAlert({ messages: [] });
+      setComplete(false);
       try {
         await bffFetch('/bff/session', { method: 'POST', body: values });
+        setComplete(true);
+        await finishSessionScene();
         // Full navigation: the new session cookie must be read by the server on the next page.
         await animatePageExit();
         window.location.assign(next);
@@ -51,6 +57,9 @@ export function LoginForm({ next }: { next: string }) {
 
   return (
     <form noValidate onSubmit={onSubmit} className="grid gap-4">
+      {isSubmitting && (
+        <SessionTransition action="enter" complete={complete} label={t('submitting')} />
+      )}
       <FormAlert messages={alert.messages} requestId={alert.requestId} />
       <TextField
         label={t('email')}
@@ -63,7 +72,30 @@ export function LoginForm({ next }: { next: string }) {
       />
       <TextField
         label={t('password')}
-        type="password"
+        type={showPassword ? 'text' : 'password'}
+        endAdornment={
+          <button
+            type="button"
+            className="grid h-11 w-11 place-items-center rounded-md text-muted hover:text-accent"
+            aria-label={t(showPassword ? 'hidePassword' : 'showPassword')}
+            aria-pressed={showPassword}
+            onClick={() => setShowPassword(!showPassword)}
+          >
+            <svg
+              aria-hidden="true"
+              width="20"
+              height="20"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="1.7"
+            >
+              <path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12Z" />
+              <circle cx="12" cy="12" r="3" />
+              {showPassword && <path d="M3 3l18 18" />}
+            </svg>
+          </button>
+        }
         autoComplete="current-password"
         dir="ltr"
         error={errors.password?.message}

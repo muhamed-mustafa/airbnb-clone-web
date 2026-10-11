@@ -47,6 +47,7 @@ const describedBy = (id: string, hint: unknown, error: unknown) =>
   error ? `${id}-error` : hint ? `${id}-hint` : undefined;
 
 interface TextFieldProps extends Omit<InputHTMLAttributes<HTMLInputElement>, 'id'> {
+  endAdornment?: ReactNode;
   label: ReactNode;
   hint?: ReactNode;
   error?: string;
@@ -55,6 +56,7 @@ interface TextFieldProps extends Omit<InputHTMLAttributes<HTMLInputElement>, 'id
 }
 
 export function TextField({
+  endAdornment,
   label,
   hint,
   error,
@@ -65,13 +67,18 @@ export function TextField({
   const id = useId();
   return (
     <FieldFrame id={id} label={label} hint={hint} error={error} className={frameClassName}>
-      <input
-        id={id}
-        className={`${controlClasses} ${className}`}
-        aria-invalid={error ? true : undefined}
-        aria-describedby={describedBy(id, hint, error)}
-        {...input}
-      />
+      <div className="relative">
+        <input
+          id={id}
+          className={`${controlClasses} ${endAdornment ? 'pe-14' : ''} ${className}`}
+          aria-invalid={error ? true : undefined}
+          aria-describedby={describedBy(id, hint, error)}
+          {...input}
+        />
+        {endAdornment && (
+          <span className="absolute inset-y-0 end-1 flex items-center">{endAdornment}</span>
+        )}
+      </div>
     </FieldFrame>
   );
 }

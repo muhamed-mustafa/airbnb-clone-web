@@ -40,34 +40,34 @@ export default async function LoginPage({
             aria-label={t('design.welcome')}
           >
             <div className="relative z-10 grid gap-5">
-              <p className="text-xs font-semibold tracking-[.16em] text-[#c6b6f5]">
+              <p className="text-xs font-semibold tracking-[.16em] text-[#edc78c]">
                 {t('design.adminSpace')}
               </p>
               <h2 className="max-w-sm text-4xl font-semibold leading-[1.4]">
                 {t('design.welcome')}
               </h2>
-              <p className="max-w-sm text-sm leading-7 text-[#c2bed5]">{t('design.welcomeBody')}</p>
+              <p className="max-w-sm text-sm leading-7 text-[#b1c0d4]">{t('design.welcomeBody')}</p>
             </div>
             <div className="architecture-art" aria-hidden="true">
               <svg viewBox="0 0 350 350" className="relative z-10 h-full w-full" fill="none">
                 <path
                   d="M69 260V143l106-69 106 69v117H69Z"
                   fill="#ffffff04"
-                  stroke="#c0a7fa"
+                  stroke="#82afff"
                   strokeWidth="1.5"
                 />
                 <path
                   d="M103 260V163l72-46 72 46v97M144 260v-77h62v77M69 143h212M103 163h144M144 183h62"
-                  stroke="#c0a7fa"
+                  stroke="#82afff"
                   strokeOpacity=".55"
                 />
                 <path d="M38 281h274M175 43v254" stroke="#ffffff20" strokeDasharray="3 6" />
-                <circle cx="175" cy="74" r="5" fill="#c0a7fa" />
-                <circle cx="69" cy="260" r="4" fill="#c0a7fa" />
-                <circle cx="281" cy="260" r="4" fill="#c0a7fa" />
+                <circle cx="175" cy="74" r="5" fill="#82afff" />
+                <circle cx="69" cy="260" r="4" fill="#82afff" />
+                <circle cx="281" cy="260" r="4" fill="#82afff" />
               </svg>
             </div>
-            <p className="relative z-10 border-t border-white/10 pt-6 text-xs text-[#c2bed5]">
+            <p className="relative z-10 border-t border-white/10 pt-6 text-xs text-[#b1c0d4]">
               {t('design.workspace')}
             </p>
           </section>

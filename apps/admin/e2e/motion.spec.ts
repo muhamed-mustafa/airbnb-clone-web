@@ -28,11 +28,11 @@ test('reduced motion covers login, route entry and sign-out without blocking nav
     await route.fulfill({ response });
   });
   if (info.project.name === 'mobile') await page.getByRole('button', { name: 'Open menu' }).click();
-  await page.getByRole('button', { name: 'Sign out of this browser' }).click();
+  await page.getByRole('button', { name: 'Sign out' }).click();
   await expect(page.locator('.auth-transition')).toBeVisible();
   const overlay = page.locator('.auth-transition');
   expect((await overlay.boundingBox())?.width).toBe(page.viewportSize()!.width);
-  await expect(overlay).toHaveCSS('color', 'rgb(32, 33, 57)');
+  await expect(overlay).toHaveCSS('color', 'rgb(20, 36, 59)');
   await page.screenshot({
     path: `../../docs/phase-1/screens/${info.project.name}-premium-signout.png`,
     fullPage: false,

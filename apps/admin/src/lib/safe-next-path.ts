@@ -1,4 +1,4 @@
-export const DEFAULT_PATH = '/locations/countries';
+export const DEFAULT_PATH = '/';
 
 /** Only same-app absolute paths; blocks open redirects like `//evil.test` or `https://…`. */
 export function safeNextPath(value: string | null | undefined): string {

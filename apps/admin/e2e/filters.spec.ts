@@ -77,7 +77,19 @@ test.describe('navigation started during a pending search', () => {
   };
   const DETAIL = /\/team\/admins\/[a-f0-9]{24}$/;
 
-  test.beforeEach(async ({ page }) => signIn(page, '/team/admins'));
+  test.beforeEach(async ({ page }) => {
+    await signIn(page, '/team/admins');
+    await expect(page.getByRole('link', { name: `عرض ${admin().name}` })).toBeVisible();
+    // Start the debounce race after the entrance settles, not while click actionability waits.
+    await page.locator('main > .route-enter').evaluate(async (node) => {
+      await Promise.all(
+        node
+          .getAnimations({ subtree: true })
+          .filter((animation) => animation.effect?.getComputedTiming().endTime !== Infinity)
+          .map((animation) => animation.finished.catch(() => undefined)),
+      );
+    });
+  });
 
   test('opening an admin keeps the detail page after the debounce', async ({ page }) => {
     await slowDown(page, /\/team\/admins\/[a-f0-9]{24}\?/);

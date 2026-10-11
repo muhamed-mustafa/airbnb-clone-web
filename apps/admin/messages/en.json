@@ -16,10 +16,12 @@
     "pricingSettings": "Pricing settings",
     "team": "Team",
     "admins": "Admin team",
-    "unitCategories": "Accommodation types"
+    "unitCategories": "Accommodation types",
+    "overview": "Workspace",
+    "home": "Overview"
   },
   "account": {
-    "signOut": "Sign out of this browser",
+    "signOut": "Sign out",
     "signingOut": "Signing out…",
     "switchLanguage": "العربية",
     "switchLanguageLabel": "Switch to Arabic",
@@ -33,7 +35,9 @@
     "submit": "Sign in",
     "submitting": "Signing in…",
     "expired": "Your session ended. Sign in again to continue.",
-    "signedOut": "You signed out of this browser."
+    "signedOut": "You signed out.",
+    "showPassword": "Show password",
+    "hidePassword": "Hide password"
   },
   "common": {
     "save": "Save",
@@ -297,5 +301,12 @@
     "welcome": "Every detail. One place.",
     "welcomeBody": "Organize your locations, accommodation types and settings in a workspace built for clarity.",
     "signInNote": "Access is reserved for platform administrators."
+  },
+  "home": {
+    "title": "Your workspace, at a glance",
+    "intro": "A clear view of your reference data and direct access to every workspace.",
+    "manage": "Manage data",
+    "tools": "Administration",
+    "error": "Count unavailable"
   }
 }

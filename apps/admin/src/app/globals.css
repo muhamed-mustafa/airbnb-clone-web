@@ -1,16 +1,16 @@
 @import 'tailwindcss';
 
 @theme {
-  --color-ground: #f6f5f9;
+  --color-ground: #f4f6f9;
   --color-surface: #ffffff;
-  --color-sunken: #f0eef5;
-  --color-ink: #202139;
-  --color-muted: #62627a;
-  --color-edge: #85849b;
-  --color-hairline: #e2dfeb;
-  --color-accent: #6542ce;
-  --color-accent-strong: #5130b1;
-  --color-accent-tint: #eee8fc;
+  --color-sunken: #edf1f6;
+  --color-ink: #14243b;
+  --color-muted: #596a80;
+  --color-edge: #8290a3;
+  --color-hairline: #dfe5ed;
+  --color-accent: #2860d7;
+  --color-accent-strong: #194aac;
+  --color-accent-tint: #eaf0fc;
   --color-danger: #b42318;
   --color-danger-strong: #8f1c13;
   --color-danger-tint: #fbe7e5;
@@ -36,6 +36,7 @@
 
 @layer base {
   html {
+    scroll-padding-top: 96px;
     background: var(--color-ground);
     color: var(--color-ink);
     font-family: var(--font-sans);
@@ -124,8 +125,8 @@
   flex-shrink: 0;
   border-radius: 13px;
   color: white;
-  background: linear-gradient(145deg, #9870ee, #6542ce);
-  box-shadow: 0 6px 18px #6542ce28;
+  background: linear-gradient(145deg, #5388ed, #2860d7);
+  box-shadow: 0 6px 18px #2860d728;
 }
 .premium-button {
   transition:
@@ -144,27 +145,27 @@
   transform: translateY(0) scale(0.98);
 }
 .premium-primary {
-  background-image: linear-gradient(130deg, #7954df, #6542ce);
+  background-image: linear-gradient(130deg, #316ddd, #2860d7);
   box-shadow:
-    0 4px 12px #6542ce24,
+    0 4px 12px #2860d724,
     inset 0 1px 0 #ffffff26;
 }
 .premium-primary:not(:disabled):hover {
-  background-image: linear-gradient(130deg, #6b45d0, #5130b1);
-  box-shadow: 0 6px 18px #6542ce38;
+  background-image: linear-gradient(130deg, #2860d7, #194aac);
+  box-shadow: 0 6px 18px #2860d738;
 }
 .premium-control {
   transition:
     border-color 160ms,
     box-shadow 160ms,
     background-color 160ms;
-  box-shadow: 0 1px 2px #20213904;
+  box-shadow: 0 1px 2px #14243b04;
 }
 .premium-control:focus-visible {
-  box-shadow: 0 0 0 4px #6542ce12;
+  box-shadow: 0 0 0 4px #2860d712;
 }
 .premium-panel {
-  box-shadow: 0 5px 20px #20213905;
+  box-shadow: 0 5px 20px #14243b05;
 }
 .premium-panel th {
   letter-spacing: 0.01em;
@@ -173,7 +174,7 @@
   transition: background-color 160ms;
 }
 .premium-panel thead {
-  background: #faf9fc;
+  background: #f7f9fc;
 }
 .route-enter {
   animation: enter-panel 300ms cubic-bezier(0.2, 0.7, 0.2, 1) both;
@@ -181,7 +182,7 @@
 .dialog-panel {
   animation: enter-panel 220ms cubic-bezier(0.2, 0.7, 0.2, 1);
   border: 1px solid var(--color-hairline);
-  box-shadow: 0 24px 90px #20213930;
+  box-shadow: 0 24px 90px #14243b30;
 }
 .dialog-overlay {
   animation: enter-overlay 160ms;
@@ -191,20 +192,20 @@
   animation: enter-panel 240ms ease-out;
 }
 .admin-sidebar {
-  background: linear-gradient(165deg, #25243d, #191a2e 85%);
-  color: #f5f3ff;
+  background: linear-gradient(165deg, #14243b, #0e1b2e 85%);
+  color: #f3f7ff;
 }
 .admin-sidebar .text-muted {
-  color: #b5b1ca;
+  color: #b1c0d4;
 }
 .admin-sidebar .text-ink {
-  color: #f5f3ff;
+  color: #f3f7ff;
 }
 .admin-sidebar .border-hairline {
   border-color: #ffffff18;
 }
 .admin-sidebar .premium-button {
-  color: #ece9f7;
+  color: #e9f0fc;
 }
 .admin-sidebar .premium-button:hover {
   background: #ffffff0c;
@@ -219,16 +220,16 @@
   background: #ffffff09;
 }
 .nav-item[aria-current] {
-  background: linear-gradient(100deg, #8060d238, #8060d218);
+  background: linear-gradient(100deg, #3977e738, #3977e718);
   color: #ffffff;
-  box-shadow: inset 0 0 0 1px #b7a1ff25;
+  box-shadow: inset 0 0 0 1px #82afff25;
 }
 .nav-item[aria-current]::after {
   content: '';
   width: 6px;
   height: 6px;
   border-radius: 50%;
-  background: #bcabfa;
+  background: #edc78c;
   margin-inline-start: auto;
 }
 .shell-topbar {
@@ -236,25 +237,25 @@
   backdrop-filter: blur(16px);
 }
 .auth-page {
-  background: radial-gradient(ellipse at 90% 10%, #eae3fa 0, transparent 45%), var(--color-ground);
+  background: radial-gradient(ellipse at 90% 10%, #e4ecf9 0, transparent 45%), var(--color-ground);
 }
 .auth-card {
   animation: enter-panel 450ms cubic-bezier(0.2, 0.7, 0.2, 1) both;
   background: #ffffff;
-  border: 1px solid #e7e2ef;
-  box-shadow: 0 24px 80px #2021390a;
+  border: 1px solid #dfe5ed;
+  box-shadow: 0 24px 80px #14243b0a;
 }
 .auth-art {
   position: relative;
   overflow: hidden;
-  background: linear-gradient(145deg, #24213b, #18192b 70%);
+  background: linear-gradient(145deg, #14243b, #0e1b2e 70%);
   color: #ffffff;
 }
 .auth-art::before {
   content: '';
   position: absolute;
   inset: 0;
-  background: radial-gradient(ellipse at 80% 20%, #7953d44d, transparent 55%);
+  background: radial-gradient(ellipse at 80% 20%, #3977e74d, transparent 55%);
   animation: orbit-glow 10s ease-in-out infinite;
   pointer-events: none;
 }
@@ -270,19 +271,19 @@
   content: '';
   position: absolute;
   inset: 12%;
-  border: 1px solid #bba6fb30;
+  border: 1px solid #82afff30;
   border-radius: 50%;
 }
 .architecture-art::after {
   content: '';
   position: absolute;
   inset: 28%;
-  border: 1px solid #bba6fb30;
+  border: 1px solid #82afff30;
   border-radius: 50%;
 }
 .auth-transition {
   animation: enter-overlay 180ms;
-  background: #f6f5f9e8;
+  background: #f4f6f9e8;
   backdrop-filter: blur(12px);
 }
 @media (prefers-reduced-motion: reduce) {
@@ -300,5 +301,168 @@
 }
 
 .admin-sidebar :focus-visible {
-  outline-color: #c6b6f5;
+  outline-color: #82afff;
+}
+
+.premium-control {
+  min-height: 48px;
+  background: #fcfdff;
+  padding-block: 10px;
+  border-radius: 12px;
+}
+.premium-control:hover:not(:disabled) {
+  border-color: var(--color-accent);
+}
+.premium-control:focus-visible {
+  background: white;
+}
+.premium-button {
+  min-height: 46px;
+  border-radius: 12px;
+}
+.admin-sidebar {
+  padding-top: 20px;
+}
+.nav-item {
+  min-height: 48px;
+  border-radius: 12px;
+}
+.nav-item[aria-current] {
+  background: #2860d7;
+  box-shadow: 0 6px 18px #00000015;
+}
+.auth-card {
+  border-radius: 24px;
+}
+.door-scene {
+  width: min(320px, 80vw);
+  overflow: visible;
+}
+.scene-door {
+  transform-box: fill-box;
+  transform-origin: left center;
+}
+.scene-person {
+  transform-box: fill-box;
+  transform-origin: center bottom;
+}
+.session-story[data-complete='false'] .scene-person {
+  animation: waiting-person 900ms ease-in-out infinite;
+}
+.session-story[data-complete='true'] .scene-door {
+  animation: door-open 1100ms ease both;
+}
+.session-story[data-complete='true'][data-action='enter'] .scene-person {
+  animation: person-enter 1100ms ease-in-out both;
+}
+.session-story[data-complete='true'][data-action='exit'] .scene-person {
+  animation: person-exit 1100ms ease-in-out both;
+}
+.scene-progress {
+  width: 120px;
+  height: 4px;
+  border-radius: 99px;
+  background: #dce5ef;
+  overflow: hidden;
+}
+.scene-progress::after {
+  content: '';
+  display: block;
+  width: 45%;
+  height: 100%;
+  background: var(--color-accent);
+  animation: scene-progress 1s ease-in-out infinite alternate;
+}
+@keyframes waiting-person {
+  50% {
+    transform: translateY(-4px) rotate(-2deg);
+  }
+}
+@keyframes door-open {
+  0%,
+  10% {
+    transform: scaleX(1);
+  }
+  35%,
+  80% {
+    transform: scaleX(0.18);
+  }
+  100% {
+    transform: scaleX(1);
+  }
+}
+@keyframes person-enter {
+  0%,
+  15% {
+    transform: translateX(0);
+    opacity: 1;
+  }
+  50% {
+    transform: translate(58px, -3px);
+    opacity: 1;
+  }
+  82%,
+  100% {
+    transform: translateX(110px) scale(0.85);
+    opacity: 0;
+  }
+}
+@keyframes person-exit {
+  0%,
+  15% {
+    transform: translateX(110px) scale(0.85);
+    opacity: 0;
+  }
+  40% {
+    opacity: 1;
+  }
+  65% {
+    transform: translate(50px, -4px);
+  }
+  100% {
+    transform: translateX(-25px);
+    opacity: 1;
+  }
+}
+@keyframes scene-progress {
+  to {
+    transform: translateX(125%);
+  }
+}
+.dashboard-hero {
+  position: relative;
+  overflow: hidden;
+  padding: clamp(24px, 5vw, 48px);
+  border-radius: 24px;
+  background: #14243b;
+  color: white;
+}
+.dashboard-hero::after {
+  content: '';
+  position: absolute;
+  width: 240px;
+  height: 240px;
+  border: 40px solid #ffffff08;
+  border-radius: 50%;
+  inset-inline-end: -80px;
+  top: -90px;
+  pointer-events: none;
+}
+.dashboard-card {
+  border: 1px solid var(--color-hairline);
+  border-radius: 18px;
+  background: white;
+  padding: 24px;
+  box-shadow: 0 4px 18px #14243b04;
+  transition: box-shadow 180ms;
+}
+.dashboard-card:hover {
+  box-shadow: 0 12px 30px #14243b0c;
+}
+@media (prefers-reduced-motion: reduce) {
+  .scene-person,
+  .scene-door,
+  .scene-progress::after {
+    animation: none !important;
+  }
 }

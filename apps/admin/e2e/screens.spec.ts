@@ -59,7 +59,7 @@ test('capture review screens', async ({ page }, testInfo) => {
   await page.goto('/login');
   await shot(page, project, 'ar-login');
   await page.getByLabel('البريد الإلكتروني').fill('admin@example.com');
-  await page.getByLabel('كلمة المرور').fill('wrong-password');
+  await page.getByLabel('كلمة المرور', { exact: true }).fill('wrong-password');
   await page.getByRole('button', { name: 'تسجيل الدخول' }).click();
   await expect(page.getByRole('main').getByRole('alert')).toBeVisible();
   await shot(page, project, 'ar-login-error');

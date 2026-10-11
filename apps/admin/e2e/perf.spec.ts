@@ -65,6 +65,7 @@ test('lab metrics', async ({ page, browserName }, testInfo) => {
   const project = testInfo.project.name;
   results[`${project} /login`] = await measure(page, '/login');
   await signIn(page);
+  results[`${project} /`] = await measure(page, '/');
   results[`${project} /locations/countries`] = await measure(page, '/locations/countries');
   results[`${project} /locations/cities`] = await measure(page, '/locations/cities');
   results[`${project} /catalog/currencies`] = await measure(page, '/catalog/currencies');

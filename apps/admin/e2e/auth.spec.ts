@@ -10,7 +10,7 @@ test.describe('admin sign in', () => {
 
     const { email, password } = admin();
     await page.getByLabel('البريد الإلكتروني').fill(email);
-    await page.getByLabel('كلمة المرور').fill(password);
+    await page.getByLabel('كلمة المرور', { exact: true }).fill(password);
     await page.getByRole('button', { name: 'تسجيل الدخول' }).click();
     await expect(page).toHaveURL(/\/locations\/cities\?name=cai$/);
   });
@@ -18,15 +18,15 @@ test.describe('admin sign in', () => {
   test('wrong password: message in the form, email kept, password cleared', async ({ page }) => {
     await page.goto('/login');
     await page.getByLabel('البريد الإلكتروني').fill(admin().email);
-    await page.getByLabel('كلمة المرور').fill('wrong-password');
+    await page.getByLabel('كلمة المرور', { exact: true }).fill('wrong-password');
     await page.getByRole('button', { name: 'تسجيل الدخول' }).click();
 
     await expect(page.getByRole('main').getByRole('alert')).toContainText(
       'البريد الإلكتروني أو كلمة المرور غير صحيحة.',
     );
     await expect(page.getByLabel('البريد الإلكتروني')).toHaveValue(admin().email);
-    await expect(page.getByLabel('كلمة المرور')).toHaveValue('');
-    await expect(page.getByLabel('كلمة المرور')).toBeFocused();
+    await expect(page.getByLabel('كلمة المرور', { exact: true })).toHaveValue('');
+    await expect(page.getByLabel('كلمة المرور', { exact: true })).toBeFocused();
     await expect(page).toHaveURL(/\/login/);
   });
 
@@ -58,7 +58,7 @@ test.describe('admin sign in', () => {
 
     await page.goto('/login');
     await page.getByLabel('البريد الإلكتروني').fill(email);
-    await page.getByLabel('كلمة المرور').fill(password);
+    await page.getByLabel('كلمة المرور', { exact: true }).fill(password);
     await page.getByRole('button', { name: 'تسجيل الدخول' }).click();
     await expect(page.getByRole('main').getByRole('alert')).toContainText(
       'البريد الإلكتروني أو كلمة المرور غير صحيحة.',
@@ -79,11 +79,9 @@ test.describe('admin sign in', () => {
     expect(before?.httpOnly).toBe(true);
     expect(before?.sameSite).toBe('Lax');
 
-    await page.getByRole('button', { name: 'تسجيل الخروج من هذا المتصفح' }).click();
+    await page.getByRole('button', { name: 'تسجيل الخروج' }).click();
     await expect(page).toHaveURL(/\/login\?reason=signed-out/);
-    await expect(page.getByRole('main').getByRole('status')).toContainText(
-      'تم تسجيل الخروج من هذا المتصفح.',
-    );
+    await expect(page.getByRole('main').getByRole('status')).toContainText('تم تسجيل الخروج.');
     expect((await context.cookies()).some((cookie) => cookie.name.endsWith('admin_session'))).toBe(
       false,
     );

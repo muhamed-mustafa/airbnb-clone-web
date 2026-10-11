@@ -14,6 +14,7 @@ import { CloseIcon, MenuIcon, SignOutIcon } from '@/ui/icons';
 import { LocaleSwitch } from './locale-switch';
 
 const NAV_GROUPS = [
+  { key: 'overview', items: [{ href: '/', key: 'home' }] },
   {
     key: 'locations',
     items: [
@@ -42,7 +43,7 @@ function Navigation({ onNavigate }: { onNavigate?: () => void }) {
   const t = useTranslations('nav');
   const pathname = usePathname();
   return (
-    <nav aria-label={t('label')} className="grid gap-5">
+    <nav aria-label={t('label')} className="grid gap-4 overflow-y-auto pb-3">
       {NAV_GROUPS.map((group) => (
         <div
           key={group.key}
@@ -54,7 +55,7 @@ function Navigation({ onNavigate }: { onNavigate?: () => void }) {
             {t(group.key)}
           </p>
           {group.items.map((item) => {
-            const current = pathname.startsWith(item.href);
+            const current = item.href === '/' ? pathname === '/' : pathname.startsWith(item.href);
             return (
               <Link
                 key={item.href}
@@ -83,7 +84,7 @@ function Account() {
   const signOut = useSignOut();
   const subject = data?.subject;
   return (
-    <div className="grid gap-2 border-t border-hairline pt-4">
+    <div className="grid shrink-0 gap-2 border-t border-hairline pt-4">
       {subject && (
         <div className="grid rounded-lg bg-white/5 px-3 py-3 text-sm">
           <span className="text-xs text-muted">{t('signedInAs')}</span>
@@ -106,7 +107,9 @@ function Account() {
       >
         {t('signOut')}
       </Button>
-      {signOut.isPending && <SessionTransition label={t('signingOut')} />}
+      {signOut.isPending && (
+        <SessionTransition complete={signOut.complete} label={t('signingOut')} />
+      )}
     </div>
   );
 }
@@ -139,6 +142,9 @@ export function AppShell({ children }: { children: ReactNode }) {
   const t = useTranslations();
   const [menuOpen, setMenuOpen] = useState(false);
   const pathname = usePathname();
+  const active = NAV_GROUPS.flatMap((group) => [...group.items]).find((item) =>
+    item.href === '/' ? pathname === '/' : pathname.startsWith(item.href),
+  );
 
   return (
     <div className="min-h-dvh lg:grid lg:grid-cols-[17rem_1fr]">
@@ -149,8 +155,8 @@ export function AppShell({ children }: { children: ReactNode }) {
         {t('app.skipToContent')}
       </a>
 
-      <aside className="admin-sidebar sticky top-0 hidden h-dvh overflow-y-auto flex-col justify-between border-e border-hairline bg-surface p-4 lg:flex">
-        <div className="grid gap-6">
+      <aside className="admin-sidebar sticky top-0 hidden h-dvh overflow-hidden flex-col justify-between border-e border-hairline bg-surface p-4 lg:flex">
+        <div className="flex min-h-0 flex-1 flex-col gap-6">
           <div className="flex items-center gap-3 px-2 py-3">
             <BrandMark />
             <div className="grid gap-1">
@@ -171,7 +177,7 @@ export function AppShell({ children }: { children: ReactNode }) {
             </span>
             <div>
               <p className="text-xs text-muted">{t('design.workspace')}</p>
-              <p className="text-sm font-semibold">{t('app.title')}</p>
+              <p className="text-sm font-semibold">{t(`nav.${active?.key ?? 'home'}`)}</p>
             </div>
           </div>
           <span className="hidden rounded-full border border-hairline bg-surface px-3 py-1.5 text-xs font-semibold text-muted lg:inline-flex">
