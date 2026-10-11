@@ -60,6 +60,16 @@
     text-wrap: balance;
   }
 
+  button:not(:disabled),
+  [role='button']:not([aria-disabled='true']) {
+    cursor: pointer;
+  }
+
+  button:disabled,
+  [role='button'][aria-disabled='true'] {
+    cursor: not-allowed;
+  }
+
   /* Codes, ids and numbers line up in columns. */
   .tabular {
     font-variant-numeric: tabular-nums;
@@ -123,6 +133,9 @@
     border-color 160ms,
     box-shadow 160ms,
     transform 160ms;
+}
+.premium-button[aria-busy='true'] {
+  cursor: wait;
 }
 .premium-button:not(:disabled):hover {
   transform: translateY(-1px);
