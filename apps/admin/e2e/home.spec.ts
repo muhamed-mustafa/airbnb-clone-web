@@ -15,12 +15,12 @@ test('door scenes accompany a real sign in and sign out; overview shows live cou
   await page.getByRole('button', { name: 'Sign in', exact: true }).click();
   const entry = page.locator('.session-story[data-action="enter"][data-complete="true"]');
   await expect(entry).toBeVisible();
-  await expect(entry.locator('.scene-person')).toHaveCSS('animation-name', 'person-enter');
-  const start = await entry.locator('.scene-person').boundingBox();
+  await expect(entry.locator('.scene-door')).toHaveCSS('animation-name', 'door-open');
+  const start = await entry.locator('.scene-door').boundingBox();
   expect(start).not.toBeNull();
   await expect
-    .poll(async () => (await entry.locator('.scene-person').boundingBox())?.x ?? start!.x)
-    .not.toBe(start!.x);
+    .poll(async () => (await entry.locator('.scene-door').boundingBox())?.width ?? start!.width)
+    .not.toBe(start!.width);
   await page.screenshot({ path: `../../docs/phase-1/screens/${info.project.name}-door-entry.png` });
   await expect(page).toHaveURL(/\/$/);
   await expect(page.getByRole('heading', { name: 'Your workspace, at a glance' })).toBeVisible();
@@ -60,12 +60,12 @@ test('door scenes accompany a real sign in and sign out; overview shows live cou
   await page.getByRole('button', { name: 'Sign out', exact: true }).click();
   const exit = page.locator('.session-story[data-action="exit"][data-complete="true"]');
   await expect(exit).toBeVisible();
-  await expect(exit.locator('.scene-person')).toHaveCSS('animation-name', 'person-exit');
-  const exitStart = await exit.locator('.scene-person').boundingBox();
+  await expect(exit.locator('.scene-door')).toHaveCSS('animation-name', 'door-close');
+  const exitStart = await exit.locator('.scene-door').boundingBox();
   expect(exitStart).not.toBeNull();
   await expect
-    .poll(async () => (await exit.locator('.scene-person').boundingBox())?.x ?? exitStart!.x)
-    .not.toBe(exitStart!.x);
+    .poll(async () => (await exit.locator('.scene-door').boundingBox())?.width ?? exitStart!.width)
+    .not.toBe(exitStart!.width);
   await page.screenshot({ path: `../../docs/phase-1/screens/${info.project.name}-door-exit.png` });
   await expect(page).toHaveURL(/reason=signed-out/);
 });
