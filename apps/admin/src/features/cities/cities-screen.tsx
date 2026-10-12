@@ -95,26 +95,9 @@ export function CitiesScreen() {
   const countryName = (id: string) =>
     countryNames.get(id) ?? (countries.isPending ? '…' : t('unknownCountry'));
 
-  return (
-    <div className="grid gap-5">
-      <div className="flex flex-wrap items-end justify-between gap-3">
-        <div className="grid gap-0.5">
-          <h1 className="text-2xl font-semibold">{t('title')}</h1>
-          <p className="tabular text-sm text-muted" aria-live="polite">
-            {meta ? t('count', { count: meta.total }) : ' '}
-          </p>
-        </div>
-        <Button
-          variant="primary"
-          icon={<PlusIcon width={18} height={18} />}
-          disabled={!countries.isSuccess || noCountries}
-          onClick={() => dialog.open({ type: 'create' })}
-        >
-          {t('add')}
-        </Button>
-      </div>
-
-      <search className="grid grid-cols-1 items-start gap-3 sm:grid-cols-[minmax(0,16rem)_minmax(0,16rem)_auto]">
+  const toolbar = (
+    <div className="catalog-toolbar">
+      <search className="catalog-search grid grid-cols-1 items-start gap-3 sm:grid-cols-[minmax(0,16rem)_minmax(0,16rem)_auto]">
         <SearchSelect
           label={t('filterCountry')}
           placeholder={t('allCountries')}
@@ -145,8 +128,30 @@ export function CitiesScreen() {
           </Button>
         )}
       </search>
+    </div>
+  );
+
+  return (
+    <div className="grid gap-5">
+      <div className="flex flex-wrap items-end justify-between gap-3">
+        <div className="grid gap-0.5">
+          <h1 className="text-3xl font-semibold">{t('title')}</h1>
+          <p className="tabular text-sm text-muted" aria-live="polite">
+            {meta ? t('count', { count: meta.total }) : ' '}
+          </p>
+        </div>
+        <Button
+          variant="primary"
+          icon={<PlusIcon width={18} height={18} />}
+          disabled={!countries.isSuccess || noCountries}
+          onClick={() => dialog.open({ type: 'create' })}
+        >
+          {t('add')}
+        </Button>
+      </div>
 
       <ListFrame
+        toolbar={toolbar}
         isPending={query.isPending}
         error={query.error}
         meta={meta}

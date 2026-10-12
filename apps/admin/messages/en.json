@@ -95,7 +95,15 @@
     "deleted": "{name} deleted.",
     "namePlaceholder": "e.g. United Arab Emirates",
     "formDescription": "Country details are used across your locations.",
-    "codePlaceholder": "AE"
+    "codePlaceholder": "AE",
+    "directory": "Country directory",
+    "liveSearch": "Live search",
+    "searchPlaceholder": "Search country names...",
+    "nameIncomplete": "Add {count} more characters to search. Current results are unchanged.",
+    "codeIncomplete": "Use a two-letter code, like EG. Current results are unchanged.",
+    "searchQueued": "Preparing your search...",
+    "appliedFilters": "Applied filters",
+    "removeFilter": "Remove filter {value}"
   },
   "cities": {
     "title": "Cities",
@@ -332,5 +340,11 @@
     "searchPlaceholder": "Search by name or code...",
     "empty": "No matching countries. Try another name.",
     "count": "{count, plural, one {# option} other {# options}}"
+  },
+  "listInteraction": {
+    "clearSearch": "Clear search",
+    "updating": "Updating results...",
+    "preparing": "Preparing your search...",
+    "notApplied": "{hint}. Current results are unchanged."
   }
 }

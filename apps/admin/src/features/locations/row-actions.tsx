@@ -16,7 +16,7 @@ export function RowActions({ name, onEdit, onDelete }: RowActionsProps) {
     <div className="flex justify-end gap-1">
       <Button
         variant="ghost"
-        className="px-2.5"
+        className="row-edit px-2.5"
         icon={<PencilIcon width={18} height={18} />}
         aria-label={`${tc('edit')} ${name}`}
         onClick={onEdit}
@@ -25,7 +25,7 @@ export function RowActions({ name, onEdit, onDelete }: RowActionsProps) {
       </Button>
       <Button
         variant="ghost"
-        className="px-2.5 text-danger"
+        className="row-delete px-2.5 text-danger"
         icon={<TrashIcon width={18} height={18} />}
         aria-label={`${tc('delete')} ${name}`}
         onClick={onDelete}

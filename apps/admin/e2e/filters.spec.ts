@@ -1,7 +1,7 @@
 import type { Page } from '@playwright/test';
 import { admin, expect, seed, signIn, test, unique, uniqueCode } from './support/fixtures';
 
-// Filter fields apply their value 350 ms after typing stops. These tests act inside that
+// Filter fields apply their value 250 ms after typing stops. These tests act inside that
 // window to prove a pending search never outlives "Clear filters", the page, or another
 // filter's change.
 const AFTER_DEBOUNCE = 900;
@@ -15,7 +15,7 @@ test.describe('pending filter searches', () => {
     await page.goto(`/locations/countries?code=${code}`);
 
     await page.getByLabel('بحث بالاسم').fill('Pending search');
-    await page.getByRole('button', { name: 'مسح الفلاتر' }).click(); // well within 350 ms
+    await page.getByRole('button', { name: 'مسح الفلاتر' }).click(); // well within 250 ms
     await page.waitForTimeout(AFTER_DEBOUNCE);
 
     await expect(page).toHaveURL(/\/locations\/countries$/);
@@ -29,7 +29,7 @@ test.describe('pending filter searches', () => {
   }) => {
     test.skip(isMobile, 'Client-side navigation from the sidebar is a desktop layout.');
     await page.getByLabel('بحث بالاسم').fill('Pending search');
-    await page.getByRole('link', { name: 'المدن' }).click(); // well within 350 ms
+    await page.getByRole('link', { name: 'المدن' }).click(); // well within 250 ms
     await expect(page).toHaveURL(/\/locations\/cities$/);
     await page.waitForTimeout(AFTER_DEBOUNCE);
 
@@ -96,7 +96,7 @@ test.describe('navigation started during a pending search', () => {
     const sent = searchesFor(page, 'Pending');
 
     await page.getByLabel('بحث بالاسم').fill('Pending');
-    await page.getByRole('link', { name: `عرض ${admin().name}` }).click(); // within 350 ms
+    await page.getByRole('link', { name: `عرض ${admin().name}` }).click(); // within 250 ms
 
     await expect(page).toHaveURL(DETAIL);
     await page.waitForTimeout(AFTER_DEBOUNCE);
@@ -127,7 +127,7 @@ test.describe('navigation started during a pending search', () => {
       const sent = searchesFor(page, 'Pending');
 
       await page.getByLabel('بحث بالاسم').fill('Pending');
-      await page.getByRole('link', { name: link, exact: true }).click(); // within 350 ms
+      await page.getByRole('link', { name: link, exact: true }).click(); // within 250 ms
 
       const target = new RegExp(`${to.replaceAll('/', '\\/')}$`);
       await expect(page).toHaveURL(target);
@@ -148,7 +148,7 @@ test.describe('navigation started during a pending search', () => {
     const sent = searchesFor(page, 'Pending');
 
     await page.getByLabel('بحث بالاسم').fill('Pending');
-    await page.goBack(); // within 350 ms
+    await page.goBack(); // within 250 ms
 
     await expect(page).toHaveURL(DETAIL);
     await page.waitForTimeout(AFTER_DEBOUNCE);

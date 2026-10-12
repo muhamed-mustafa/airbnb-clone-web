@@ -2,6 +2,7 @@
 
 import type { PaginationMeta } from '@stays/api-contract';
 import type { ReactNode } from 'react';
+import { useTranslations } from 'next-intl';
 import { isBffError } from '@/lib/bff-client';
 import { Pagination } from '@/ui/pagination';
 import { ErrorPanel, RowsSkeleton } from '@/ui/states';
@@ -18,6 +19,7 @@ interface ListFrameProps {
   /** True while a new page or filter loads over the previous results. */
   isRefreshing: boolean;
   children: ReactNode;
+  toolbar?: ReactNode;
 }
 
 /** The single place where a list chooses between loading, error, empty and data. */
@@ -32,7 +34,9 @@ export function ListFrame({
   onPage,
   isRefreshing,
   children,
+  toolbar,
 }: ListFrameProps) {
+  const t = useTranslations('listInteraction');
   let content: ReactNode;
   if (isPending) content = <RowsSkeleton label={loadingLabel} />;
   else if (error && !meta) {
@@ -47,8 +51,18 @@ export function ListFrame({
   return (
     <section
       aria-busy={isPending || isRefreshing}
-      className={`premium-panel overflow-hidden rounded-lg border border-hairline bg-surface transition-opacity ${isRefreshing ? 'opacity-70' : ''}`}
+      className="premium-panel relative overflow-hidden rounded-lg border border-hairline bg-surface"
     >
+      {toolbar}
+      {isRefreshing && (
+        <div
+          className="list-refresh flex items-center gap-2 px-5 py-2 text-xs text-accent"
+          role="status"
+        >
+          <span className="refresh-dot" aria-hidden="true" />
+          {t('updating')}
+        </div>
+      )}
       {content}
       {meta && !isEmpty && <Pagination meta={meta} onPage={onPage} />}
     </section>

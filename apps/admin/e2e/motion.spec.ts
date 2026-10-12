@@ -33,7 +33,7 @@ test('reduced motion covers login, route entry and sign-out without blocking nav
   await expect(page.locator('.session-orbit')).toHaveCSS('animation-name', 'none');
   const overlay = page.locator('.auth-transition');
   expect((await overlay.boundingBox())?.width).toBe(page.viewportSize()!.width);
-  await expect(overlay).toHaveCSS('color', 'rgb(20, 36, 59)');
+  await expect(overlay).toHaveCSS('color', 'rgb(32, 33, 39)');
   await page.screenshot({
     path: `../../docs/phase-1/screens/${info.project.name}-premium-signout.png`,
     fullPage: false,

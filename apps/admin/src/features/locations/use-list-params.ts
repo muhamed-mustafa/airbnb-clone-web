@@ -1,6 +1,6 @@
 'use client';
 
-import { usePathname, useRouter, useSearchParams } from 'next/navigation';
+import { usePathname, useSearchParams } from 'next/navigation';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { nextListQuery, type ListPatch } from './list-query';
 
@@ -15,7 +15,6 @@ import { nextListQuery, type ListPatch } from './list-query';
  */
 export function useListParams<K extends string>(keys: readonly K[]) {
   const searchParams = useSearchParams();
-  const router = useRouter();
   const pathname = usePathname();
   // Changes on "Clear filters" so inputs drop their drafts and pending searches.
   const [resetToken, setResetToken] = useState(0);
@@ -54,9 +53,11 @@ export function useListParams<K extends string>(keys: readonly K[]) {
       const query = nextListQuery(keys, base, patch);
       requested.current = query;
       const path = latest.current.pathname;
-      router.replace(query ? `${path}?${query}` : path, { scroll: false });
+      // Client-owned lists: update search params without an RSC navigation round trip.
+      // Next integrates the native history API with useSearchParams and Back/Forward.
+      window.history.replaceState(null, '', query ? `${path}?${query}` : path);
     },
-    [keys, router],
+    [keys],
   );
 
   const clear = useCallback(() => {

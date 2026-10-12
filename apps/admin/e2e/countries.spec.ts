@@ -84,7 +84,7 @@ test.describe('countries', () => {
     await search.fill('Al');
     await page.waitForTimeout(600);
     await expect(page).not.toHaveURL(/name=/);
-    await expect(page.getByText('3 أحرف على الأقل')).toBeVisible();
+    await expect(page.getByText('اكتب حرفًا إضافيًا لبدء البحث.')).toBeVisible();
 
     await search.fill(`Alpha ${tag}`);
     await expect(page).toHaveURL(new RegExp(`name=Alpha\\+${tag}`));

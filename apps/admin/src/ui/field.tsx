@@ -66,6 +66,7 @@ const describedBy = (id: string, hint: unknown, error: unknown) =>
   error ? `${id}-error` : hint ? `${id}-hint` : undefined;
 
 interface TextFieldProps extends Omit<InputHTMLAttributes<HTMLInputElement>, 'id'> {
+  startAdornment?: ReactNode;
   endAdornment?: ReactNode;
   label: ReactNode;
   hint?: ReactNode;
@@ -76,6 +77,7 @@ interface TextFieldProps extends Omit<InputHTMLAttributes<HTMLInputElement>, 'id
 }
 
 export function TextField({
+  startAdornment,
   endAdornment,
   label,
   hint,
@@ -98,11 +100,16 @@ export function TextField({
       <div className="relative" dir={input.dir}>
         <input
           id={id}
-          className={`${controlClasses} ${endAdornment ? 'pe-14' : ''} ${className}`}
+          className={`${controlClasses} ${endAdornment ? 'has-end-adornment pe-14' : ''} ${startAdornment ? 'has-start-adornment ps-11' : ''} ${className}`}
           aria-invalid={error ? true : undefined}
           aria-describedby={describedBy(id, hint, error)}
           {...input}
         />
+        {startAdornment && (
+          <span className="pointer-events-none absolute inset-y-0 start-3.5 flex items-center text-muted">
+            {startAdornment}
+          </span>
+        )}
         {endAdornment && (
           <span className="absolute inset-y-0 end-1 flex items-center">{endAdornment}</span>
         )}

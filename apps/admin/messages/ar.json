@@ -95,7 +95,15 @@
     "deleted": "تم حذف {name}.",
     "namePlaceholder": "مثال: الإمارات العربية المتحدة",
     "formDescription": "بيانات الدولة تُستخدم في تنظيم المواقع.",
-    "codePlaceholder": "AE"
+    "codePlaceholder": "AE",
+    "directory": "دليل الدول",
+    "liveSearch": "بحث مباشر",
+    "searchPlaceholder": "ابحث عن اسم دولة...",
+    "nameIncomplete": "{count, plural, one {اكتب حرفًا إضافيًا لبدء البحث.} two {اكتب حرفين إضافيين لبدء البحث.} other {اكتب # أحرف إضافية لبدء البحث.}} النتائج الحالية لم تتغير.",
+    "codeIncomplete": "اكتب رمزًا من حرفين، مثل EG. النتائج الحالية لم تتغير.",
+    "searchQueued": "جارٍ تجهيز البحث...",
+    "appliedFilters": "الفلاتر المطبّقة",
+    "removeFilter": "إزالة الفلتر {value}"
   },
   "cities": {
     "title": "المدن",
@@ -332,5 +340,11 @@
     "searchPlaceholder": "ابحث بالاسم أو الرمز...",
     "empty": "لا توجد دول مطابقة. جرّب اسمًا آخر.",
     "count": "النتائج: {count}"
+  },
+  "listInteraction": {
+    "clearSearch": "مسح البحث",
+    "updating": "جارٍ تحديث النتائج...",
+    "preparing": "جارٍ تجهيز البحث...",
+    "notApplied": "{hint}. النتائج الحالية لم تتغير."
   }
 }

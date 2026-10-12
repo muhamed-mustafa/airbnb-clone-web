@@ -15,6 +15,13 @@ const base = (props: IconProps) => ({
   ...props,
 });
 
+export const SearchIcon = (props: IconProps) => (
+  <svg {...base(props)}>
+    <circle cx="10.5" cy="10.5" r="6.5" />
+    <path d="m16 16 4 4" />
+  </svg>
+);
+
 export const PlusIcon = (props: IconProps) => (
   <svg {...base(props)}>
     <path d="M12 5v14M5 12h14" />

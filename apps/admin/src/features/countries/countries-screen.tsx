@@ -7,7 +7,7 @@ import { ListFrame } from '@/features/locations/list-frame';
 import { RowActions } from '@/features/locations/row-actions';
 import { useListParams } from '@/features/locations/use-list-params';
 import { Button } from '@/ui/button';
-import { PlusIcon } from '@/ui/icons';
+import { CloseIcon, GlobeIcon, PlusIcon } from '@/ui/icons';
 import { EmptyState } from '@/ui/states';
 import { useDialog } from '@/ui/use-dialog';
 import { useCountries, type Country } from './api';
@@ -34,28 +34,25 @@ export function CountriesScreen() {
   const meta = query.data?.meta;
   const rows = query.data?.data ?? [];
 
-  return (
-    <div className="grid gap-5">
-      <div className="flex flex-wrap items-end justify-between gap-3">
-        <div className="grid gap-0.5">
-          <h1 className="text-2xl font-semibold">{t('title')}</h1>
-          <p className="tabular text-sm text-muted" aria-live="polite">
-            {meta ? t('count', { count: meta.total }) : ' '}
-          </p>
-        </div>
-        <Button
-          variant="primary"
-          icon={<PlusIcon width={18} height={18} />}
-          onClick={() => dialog.open({ type: 'create' })}
-        >
-          {t('add')}
-        </Button>
+  const toolbar = (
+    <div className="catalog-toolbar">
+      <div className="catalog-toolbar-heading flex items-center justify-between gap-3">
+        <span className="flex items-center gap-2 text-sm font-semibold">
+          <GlobeIcon width={17} height={17} />
+          {t('directory')}
+        </span>
+        <span className="text-xs text-muted">{t('liveSearch')}</span>
       </div>
-
-      <search className="grid grid-cols-[minmax(0,1fr)_7rem] items-start gap-3 sm:grid-cols-[minmax(0,20rem)_8rem_auto]">
+      <search className="catalog-search grid grid-cols-[minmax(0,1fr)_7rem] items-start gap-3 sm:grid-cols-[minmax(0,24rem)_9rem_auto]">
         <FilterInput
           resetToken={resetToken}
           label={t('searchName')}
+          placeholder={t('searchPlaceholder')}
+          delayMs={250}
+          feedback={{
+            incomplete: (text) => t('nameIncomplete', { count: Math.max(0, 3 - text.length) }),
+            waiting: t('searchQueued'),
+          }}
           hint={t('searchNameHint')}
           value={values.name}
           isSendable={(value) => value === '' || value.length >= 3}
@@ -65,6 +62,9 @@ export function CountriesScreen() {
         <FilterInput
           resetToken={resetToken}
           label={t('searchCode')}
+          placeholder="EG"
+          delayMs={250}
+          feedback={{ incomplete: () => t('codeIncomplete'), waiting: t('searchQueued') }}
           hint={t('searchCodeHint')}
           value={values.code}
           normalize={(value) => value.trim().toUpperCase()}
@@ -84,8 +84,53 @@ export function CountriesScreen() {
           </Button>
         )}
       </search>
+      {hasFilters && (
+        <div
+          className="filter-chips flex flex-wrap items-center gap-2"
+          aria-label={t('appliedFilters')}
+        >
+          {(['name', 'code'] as const).map((key) =>
+            values[key] ? (
+              <button
+                key={key}
+                type="button"
+                className="filter-chip"
+                aria-label={t('removeFilter', { value: values[key] })}
+                onClick={() => update({ [key]: '' })}
+              >
+                <span dir="auto">
+                  {key === 'name' ? t('columnName') : t('columnCode')}: {values[key]}
+                </span>
+                <CloseIcon width={13} height={13} />
+              </button>
+            ) : null,
+          )}
+        </div>
+      )}
+    </div>
+  );
+
+  return (
+    <div className="catalog-workspace grid gap-6">
+      <div className="catalog-page-heading flex flex-wrap items-end justify-between gap-4">
+        <div className="grid gap-2">
+          <span className="catalog-eyebrow">{t('directory')}</span>
+          <h1 className="text-3xl font-semibold">{t('title')}</h1>
+          <p className="tabular text-sm text-muted" aria-live="polite">
+            {meta ? t('count', { count: meta.total }) : ' '}
+          </p>
+        </div>
+        <Button
+          variant="primary"
+          icon={<PlusIcon width={18} height={18} />}
+          onClick={() => dialog.open({ type: 'create' })}
+        >
+          {t('add')}
+        </Button>
+      </div>
 
       <ListFrame
+        toolbar={toolbar}
         isPending={query.isPending}
         error={query.error}
         meta={meta}
@@ -119,10 +164,10 @@ export function CountriesScreen() {
           {rows.map((country) => (
             <li
               key={country.id}
-              className="flex min-h-14 items-center justify-between gap-3 px-4 py-2"
+              className="catalog-mobile-row flex min-h-16 items-center justify-between gap-3 px-5 py-3"
             >
               <div className="flex min-w-0 flex-wrap items-baseline gap-x-2">
-                <span className="break-words">{country.name}</span>
+                <span className="break-words font-semibold">{country.name}</span>
                 <span dir="ltr" className="font-mono text-xs text-muted">
                   {country.code}
                 </span>
@@ -151,12 +196,14 @@ export function CountriesScreen() {
           </thead>
           <tbody className="divide-y divide-hairline">
             {rows.map((country) => (
-              <tr key={country.id} className="h-14 hover:bg-ground">
-                <th scope="row" className="px-4 text-start font-normal">
+              <tr key={country.id} className="catalog-row h-16">
+                <th scope="row" className="px-5 text-start font-semibold">
                   {country.name}
                 </th>
                 <td className="px-4 font-mono text-muted">
-                  <span dir="ltr">{country.code}</span>
+                  <span dir="ltr" className="country-code">
+                    {country.code}
+                  </span>
                 </td>
                 <td className="px-4">
                   <RowActions

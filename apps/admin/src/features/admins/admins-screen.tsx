@@ -56,20 +56,9 @@ export function AdminsScreen() {
     </Link>
   );
 
-  return (
-    <div className="grid gap-5">
-      <div className="grid gap-0.5">
-        <h1 className="text-2xl font-semibold">{t('title')}</h1>
-        <p className="tabular text-sm text-muted" aria-live="polite">
-          {meta ? t('count', { count: meta.total }) : ' '}
-        </p>
-      </div>
-
-      <p className="max-w-3xl rounded-md border border-hairline bg-sunken px-3 py-2.5 text-sm text-ink">
-        {t('readOnlyNote')}
-      </p>
-
-      <search className="grid grid-cols-1 items-start gap-3 sm:grid-cols-[minmax(0,14rem)_minmax(0,18rem)_minmax(0,11rem)_auto]">
+  const toolbar = (
+    <div className="catalog-toolbar">
+      <search className="catalog-search grid grid-cols-1 items-start gap-3 sm:grid-cols-[minmax(0,14rem)_minmax(0,18rem)_minmax(0,11rem)_auto]">
         <FilterInput
           resetToken={resetToken}
           label={t('searchName')}
@@ -105,8 +94,24 @@ export function AdminsScreen() {
           </Button>
         )}
       </search>
+    </div>
+  );
+
+  return (
+    <div className="grid gap-5">
+      <div className="grid gap-0.5">
+        <h1 className="text-3xl font-semibold">{t('title')}</h1>
+        <p className="tabular text-sm text-muted" aria-live="polite">
+          {meta ? t('count', { count: meta.total }) : ' '}
+        </p>
+      </div>
+
+      <p className="max-w-3xl rounded-md border border-hairline bg-sunken px-3 py-2.5 text-sm text-ink">
+        {t('readOnlyNote')}
+      </p>
 
       <ListFrame
+        toolbar={toolbar}
         isPending={query.isPending}
         error={query.error}
         meta={meta}
