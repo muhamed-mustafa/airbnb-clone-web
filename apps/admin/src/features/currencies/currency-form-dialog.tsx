@@ -94,7 +94,7 @@ export function CurrencyFormDialog({ currency, onClose, returnFocusTo }: Currenc
           autoCapitalize="characters"
           dir="ltr"
           maxLength={3}
-          className="max-w-28 font-mono uppercase"
+          className="font-mono uppercase"
           error={errors.currencyCode?.message}
           {...form.register('currencyCode')}
         />

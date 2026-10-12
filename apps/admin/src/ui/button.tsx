@@ -1,12 +1,14 @@
 import type { ButtonHTMLAttributes, ReactNode } from 'react';
 import { SpinnerIcon } from './icons';
 
-type Variant = 'primary' | 'secondary' | 'ghost' | 'danger';
+type Variant = 'primary' | 'secondary' | 'ghost' | 'danger' | 'edit' | 'delete';
 
 const VARIANTS: Record<Variant, string> = {
   primary:
     'premium-primary bg-accent text-white border-accent hover:bg-accent-strong hover:border-accent-strong',
   secondary: 'premium-secondary bg-surface text-ink border-edge hover:bg-sunken',
+  edit: 'premium-edit',
+  delete: 'premium-delete',
   ghost: 'bg-transparent text-ink border-transparent hover:bg-sunken',
   danger: 'bg-danger text-white border-danger hover:bg-danger-strong hover:border-danger-strong',
 };

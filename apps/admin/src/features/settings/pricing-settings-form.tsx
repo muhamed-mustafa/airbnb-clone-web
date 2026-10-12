@@ -87,7 +87,7 @@ export function PricingSettingsForm({ stored }: { stored: AppSettings | null }) 
         inputMode="decimal"
         autoComplete="off"
         dir="ltr"
-        className="max-w-36 tabular"
+        className="tabular"
         error={errors.vatRate?.message}
         {...form.register('vatRate')}
       />
@@ -97,7 +97,7 @@ export function PricingSettingsForm({ stored }: { stored: AppSettings | null }) 
         inputMode="decimal"
         autoComplete="off"
         dir="ltr"
-        className="max-w-48 tabular"
+        className="tabular"
         error={errors.minPrice?.message}
         {...form.register('minPrice')}
       />

@@ -43,7 +43,7 @@ export function CountriesScreen() {
         </span>
         <span className="text-xs text-muted">{t('liveSearch')}</span>
       </div>
-      <search className="catalog-search grid grid-cols-[minmax(0,1fr)_7rem] items-start gap-3 sm:grid-cols-[minmax(0,24rem)_9rem_auto]">
+      <search className="catalog-search grid grid-cols-1 items-start gap-3 sm:grid-cols-[minmax(0,1fr)_minmax(0,1fr)_auto]">
         <FilterInput
           resetToken={resetToken}
           label={t('searchName')}

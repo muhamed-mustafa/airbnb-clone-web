@@ -146,16 +146,16 @@
 }
 .premium-primary {
   background-image: none;
-  background-color: #24252c;
-  border-color: #24252c;
+  background-color: var(--color-accent);
+  border-color: var(--color-accent);
   box-shadow:
     0 2px 4px #102e2218,
     inset 0 1px 0 #ffffff26;
 }
 .premium-primary:not(:disabled):hover {
   background-image: none;
-  background-color: #383943;
-  border-color: #383943;
+  background-color: var(--color-accent-strong);
+  border-color: var(--color-accent-strong);
   box-shadow: 0 5px 12px #183f3820;
 }
 .premium-control {
@@ -559,10 +559,6 @@
 .premium-secondary {
   border-color: var(--color-hairline);
 }
-.premium-primary:hover:not(:disabled) {
-  background-color: #383943;
-  border-color: #383943;
-}
 .premium-control::placeholder {
   color: #666874;
   opacity: 1;
@@ -761,13 +757,25 @@
 input[type='search']::-webkit-search-cancel-button {
   -webkit-appearance: none;
 }
-.row-edit:hover:not(:disabled) {
-  color: #4c40cc;
-  background: #efecff;
+.premium-edit {
+  color: #0f766e;
+  background: #f0fdfa;
+  border-color: #99d5cc;
 }
-.row-delete:hover:not(:disabled) {
+.premium-edit:hover:not(:disabled) {
+  color: #115e59;
+  background: #ccfbf1;
+  border-color: #5db7a9;
+}
+.premium-delete {
+  color: var(--color-danger);
+  background: #fff5f4;
+  border-color: #f3b9b4;
+}
+.premium-delete:hover:not(:disabled) {
   color: var(--color-danger-strong);
-  background: #fff0ee;
+  background: #ffe4e0;
+  border-color: #e59289;
 }
 .list-refresh {
   border-bottom: 1px solid var(--color-hairline);

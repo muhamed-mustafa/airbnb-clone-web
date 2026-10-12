@@ -94,7 +94,7 @@ export function CountryFormDialog({ country, onClose, returnFocusTo }: CountryFo
           autoCapitalize="characters"
           dir="ltr"
           maxLength={2}
-          className="max-w-24 font-mono uppercase"
+          className="font-mono uppercase"
           error={errors.code?.message}
           {...form.register('code')}
         />

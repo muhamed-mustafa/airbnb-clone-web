@@ -13,9 +13,9 @@ interface RowActionsProps {
 export function RowActions({ name, onEdit, onDelete }: RowActionsProps) {
   const tc = useTranslations('common');
   return (
-    <div className="flex justify-end gap-1">
+    <div className="flex justify-end gap-2">
       <Button
-        variant="ghost"
+        variant="edit"
         className="row-edit px-2.5"
         icon={<PencilIcon width={18} height={18} />}
         aria-label={`${tc('edit')} ${name}`}
@@ -24,8 +24,8 @@ export function RowActions({ name, onEdit, onDelete }: RowActionsProps) {
         <span className="max-sm:sr-only">{tc('edit')}</span>
       </Button>
       <Button
-        variant="ghost"
-        className="row-delete px-2.5 text-danger"
+        variant="delete"
+        className="row-delete px-2.5"
         icon={<TrashIcon width={18} height={18} />}
         aria-label={`${tc('delete')} ${name}`}
         onClick={onDelete}
