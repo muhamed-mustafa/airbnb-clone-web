@@ -40,7 +40,7 @@ export function CurrenciesScreen() {
 
   const toolbar = (
     <div className="catalog-toolbar">
-      <search className="catalog-search grid grid-cols-1 items-start gap-3 sm:grid-cols-[minmax(0,1fr)_minmax(0,1fr)_auto]">
+      <search className="catalog-search grid grid-cols-1 items-start gap-3 sm:grid-cols-[minmax(0,22rem)_10rem_auto]">
         <FilterInput
           resetToken={resetToken}
           label={t('searchName')}

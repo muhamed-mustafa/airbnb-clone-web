@@ -75,15 +75,15 @@ test('country workspace gives live feedback, keeps newest results and exposes in
   await expect(page).toHaveURL(/countries$/);
   const add = page.getByRole('button', { name: 'Add country', exact: true });
   await add.hover();
-  await expect(add).toHaveCSS('background-color', 'rgb(76, 64, 204)');
+  await expect(add).toHaveCSS('background-color', 'rgb(33, 78, 139)');
   const edit = page.getByRole('button', { name: 'Edit Egypt', exact: true });
-  await expect(edit).toHaveCSS('color', 'rgb(15, 118, 110)');
+  await expect(edit).toHaveCSS('color', 'rgb(23, 43, 77)');
   await expect(page.getByRole('button', { name: 'Delete Egypt', exact: true })).toHaveCSS(
     'color',
     'rgb(180, 35, 24)',
   );
   await edit.hover();
-  await expect(edit).toHaveCSS('color', 'rgb(17, 94, 89)');
+  await expect(edit).toHaveCSS('color', 'rgb(33, 78, 139)');
   await edit.click();
   const countryName = page.getByLabel('Country name', { exact: true });
   const countryCode = page.getByLabel('Country code', { exact: true });
