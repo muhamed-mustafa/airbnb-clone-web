@@ -4,18 +4,18 @@ import { useTranslations } from 'next-intl';
 import { AlertDialog as AlertPrimitive, Dialog as DialogPrimitive } from 'radix-ui';
 import { useState, type ReactNode } from 'react';
 import { Button } from './button';
-import { CloseIcon } from './icons';
+import { CloseIcon, TrashIcon } from './icons';
 
 // Phones: a bottom sheet that fits the visual viewport (works with the on-screen keyboard).
 // Larger screens: a centered panel.
 const panelClasses = [
-  'dialog-panel fixed inset-x-0 bottom-0 z-50 flex max-h-[92dvh] flex-col rounded-t-lg bg-surface shadow-xl',
-  'sm:inset-x-auto sm:bottom-auto sm:start-1/2 sm:top-[16vh] sm:w-full sm:max-w-lg sm:rounded-lg',
+  'dialog-panel fixed inset-x-0 bottom-0 z-50 flex max-h-[92dvh] flex-col',
+  'sm:inset-x-auto sm:bottom-auto sm:start-1/2 sm:top-[14vh] sm:w-full sm:max-w-[30rem]',
   'sm:ltr:-translate-x-1/2 sm:rtl:translate-x-1/2',
   'focus:outline-none',
 ].join(' ');
 
-const overlayClasses = 'dialog-overlay fixed inset-0 z-40 bg-ink/35';
+const overlayClasses = 'dialog-overlay fixed inset-0 z-40';
 
 /**
  * Our dialogs open from state, not from a Radix Trigger, so Radix cannot return focus on
@@ -40,6 +40,7 @@ interface DialogProps {
   onOpenChange: (open: boolean) => void;
   title: ReactNode;
   description?: ReactNode;
+  /** @deprecated Decorative heading icons were removed from dialogs; ignored. */
   icon?: ReactNode;
   children: ReactNode;
 }
@@ -49,7 +50,6 @@ export function Dialog({
   onOpenChange,
   title,
   description,
-  icon,
   children,
   returnFocusTo,
 }: DialogProps) {
@@ -74,31 +74,26 @@ export function Dialog({
             }
           }}
         >
-          <div className="dialog-heading flex items-start justify-between gap-4 border-b border-hairline px-7 py-6">
-            <div className="flex items-start gap-3.5">
-              {icon && (
-                <span className="dialog-heading-icon" aria-hidden="true">
-                  {icon}
-                </span>
+          <div className="flex items-start justify-between gap-4 px-5 pb-2 pt-5 sm:px-6">
+            <div className="grid gap-1">
+              <DialogPrimitive.Title className="dialog-title">{title}</DialogPrimitive.Title>
+              {description && (
+                <DialogPrimitive.Description className="text-sm text-muted">
+                  {description}
+                </DialogPrimitive.Description>
               )}
-              <div className="grid gap-1.5">
-                <DialogPrimitive.Title className="text-lg font-semibold">
-                  {title}
-                </DialogPrimitive.Title>
-                {description && (
-                  <DialogPrimitive.Description className="text-sm text-muted">
-                    {description}
-                  </DialogPrimitive.Description>
-                )}
-              </div>
             </div>
             <DialogPrimitive.Close asChild>
-              <Button variant="ghost" className="-me-2 px-2" aria-label={t('close')}>
-                <CloseIcon />
+              <Button
+                variant="ghost"
+                className="icon-only -me-2 -mt-1 text-muted"
+                aria-label={t('close')}
+              >
+                <CloseIcon width={18} height={18} />
               </Button>
             </DialogPrimitive.Close>
           </div>
-          <div className="dialog-body overflow-y-auto px-7 py-6">{children}</div>
+          <div className="overflow-y-auto px-5 pb-5 pt-4 sm:px-6 sm:pb-6">{children}</div>
         </DialogPrimitive.Content>
       </DialogPrimitive.Portal>
     </DialogPrimitive.Root>
@@ -136,13 +131,18 @@ export function ConfirmDialog({
       <AlertPrimitive.Portal>
         <AlertPrimitive.Overlay className={overlayClasses} />
         <AlertPrimitive.Content className={panelClasses} onCloseAutoFocus={returnFocus}>
-          <div className="grid gap-3 px-5 pt-5">
-            <AlertPrimitive.Title className="text-lg font-semibold">{title}</AlertPrimitive.Title>
-            <AlertPrimitive.Description asChild>
-              <div className="grid gap-2 text-sm text-muted">{children}</div>
-            </AlertPrimitive.Description>
+          <div className="flex items-start gap-4 px-5 pt-5 sm:px-6 sm:pt-6">
+            <span className="danger-badge" aria-hidden="true">
+              <TrashIcon width={18} height={18} />
+            </span>
+            <div className="grid gap-2 pt-1">
+              <AlertPrimitive.Title className="dialog-title">{title}</AlertPrimitive.Title>
+              <AlertPrimitive.Description asChild>
+                <div className="grid gap-2 text-sm text-muted">{children}</div>
+              </AlertPrimitive.Description>
+            </div>
           </div>
-          <div className="flex flex-col-reverse gap-2 px-5 py-5 sm:flex-row sm:justify-end">
+          <div className="dialog-actions mx-5 mb-5 mt-5 sm:mx-6 sm:mb-6">
             <AlertPrimitive.Cancel asChild>
               <Button disabled={pending}>{t('cancel')}</Button>
             </AlertPrimitive.Cancel>

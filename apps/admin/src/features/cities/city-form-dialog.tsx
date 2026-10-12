@@ -8,7 +8,6 @@ import type { Country } from '@/features/countries/api';
 import { useApplyServerErrors, useZodErrorMap } from '@/lib/form-errors';
 import { Button } from '@/ui/button';
 import { Dialog } from '@/ui/dialog';
-import { NavigationIcon } from '@/ui/navigation-icon';
 import { TextField } from '@/ui/field';
 import { SearchSelect } from '@/ui/search-select';
 import { FormAlert } from '@/ui/states';
@@ -80,13 +79,12 @@ export function CityFormDialog({
   return (
     <Dialog
       open
-      icon={<NavigationIcon name="cities" />}
       returnFocusTo={returnFocusTo}
       onOpenChange={(open) => !open && !isSubmitting && onClose()}
       title={city ? t('editTitle', { name: city.name }) : t('createTitle')}
       description={t('formDescription')}
     >
-      <form noValidate onSubmit={onSubmit} className="resource-form grid gap-6">
+      <form noValidate onSubmit={onSubmit} className="grid gap-5">
         <FormAlert messages={alert.messages} requestId={alert.requestId} />
         <TextField
           label={t('fieldName')}
@@ -116,7 +114,7 @@ export function CityFormDialog({
             />
           )}
         />
-        <div className="form-actions flex flex-col-reverse gap-3 sm:flex-row sm:justify-end">
+        <div className="dialog-actions">
           <Button onClick={onClose} disabled={isSubmitting}>
             {tc('cancel')}
           </Button>

@@ -11,10 +11,20 @@ export class BffError extends Error {
 export const isBffError = (error: unknown): error is BffError => error instanceof BffError;
 
 let onSessionExpired: (() => void) | undefined;
+let signingOut = false;
 
 /** Registered once by the app providers: clears private caches and goes to /login. */
 export function setSessionExpiredHandler(handler: () => void): void {
   onSessionExpired = handler;
+}
+
+/**
+ * Called when this browser signs out on purpose: requests still in flight (or refetched by
+ * screens that are still mounted) now get 401, which is expected and must not be reported
+ * as an expired session. The page reloads at /login, which resets this flag.
+ */
+export function markSigningOut(): void {
+  signingOut = true;
 }
 
 interface BffRequest {
@@ -50,6 +60,6 @@ export async function bffFetch<T>(path: string, request: BffRequest = {}): Promi
   const error = isBffErrorBody(payload)
     ? payload.error
     : createAppError('unknown', { status: response.status });
-  if (error.kind === 'session_expired') onSessionExpired?.();
+  if (error.kind === 'session_expired' && !signingOut) onSessionExpired?.();
   throw new BffError(error);
 }

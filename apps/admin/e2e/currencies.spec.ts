@@ -7,6 +7,7 @@ import {
   test,
   unique,
   uniqueCurrencyCode,
+  results,
 } from './support/fixtures';
 
 interface Currency {
@@ -61,7 +62,9 @@ test.describe('currencies', () => {
     await dialog.getByRole('button', { name: 'حفظ' }).click();
     await expect(dialog).toBeHidden();
     await expect(page.getByRole('status').filter({ hasText: `تمت إضافة ${name}.` })).toBeVisible();
-    await expect(page.getByText(name, { exact: true }).filter({ visible: true })).toBeVisible();
+    await expect(
+      results(page).getByText(name, { exact: true }).filter({ visible: true }),
+    ).toBeVisible();
 
     // Edit to an existing code: the update path returns the field → message under it.
     await page.getByRole('button', { name: `تعديل ${name}` }).click();
@@ -100,10 +103,10 @@ test.describe('currencies', () => {
     await code.fill(alpha.currencyCode.toLowerCase());
     await expect(page).toHaveURL(new RegExp(`currencyCode=${alpha.currencyCode}`));
     await expect(
-      page.getByText(`Alpha ${tag}`, { exact: true }).filter({ visible: true }),
+      results(page).getByText(`Alpha ${tag}`, { exact: true }).filter({ visible: true }),
     ).toBeVisible();
     await expect(
-      page.getByText(`Beta ${tag}`, { exact: true }).filter({ visible: true }),
+      results(page).getByText(`Beta ${tag}`, { exact: true }).filter({ visible: true }),
     ).toBeHidden();
 
     await page.reload();
@@ -114,7 +117,7 @@ test.describe('currencies', () => {
     await page.getByLabel('بحث بالاسم').fill(`Beta ${tag}`);
     await expect(page).toHaveURL(new RegExp(`name=Beta\\+${tag}`));
     await expect(
-      page.getByText(`Beta ${tag}`, { exact: true }).filter({ visible: true }),
+      results(page).getByText(`Beta ${tag}`, { exact: true }).filter({ visible: true }),
     ).toBeVisible();
   });
 

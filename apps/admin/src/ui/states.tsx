@@ -12,9 +12,9 @@ export function RowsSkeleton({ rows = 6, label }: { rows?: number; label: string
   return (
     <div role="status" aria-label={label} className="divide-y divide-hairline">
       {Array.from({ length: rows }, (_, index) => (
-        <div key={index} className="flex h-14 items-center gap-4 px-4">
-          <span className="h-3 w-40 max-w-[50%] animate-pulse rounded bg-sunken" />
-          <span className="h-3 w-12 animate-pulse rounded bg-sunken" />
+        <div key={index} className="flex h-14 items-center justify-between gap-4 px-5">
+          <span className="skeleton h-3.5 w-44 max-w-[55%]" />
+          <span className="skeleton h-3.5 w-10" />
         </div>
       ))}
     </div>
@@ -31,7 +31,7 @@ export function EmptyState({
   action?: ReactNode;
 }) {
   return (
-    <div className="grid justify-items-start gap-2 px-4 py-10 sm:px-6">
+    <div className="grid justify-items-start gap-1.5 px-5 py-12 sm:px-6">
       <h2 className="text-base font-semibold">{title}</h2>
       <p className="max-w-prose text-sm text-muted">{body}</p>
       {action && <div className="pt-2">{action}</div>}
@@ -92,7 +92,7 @@ export function FormAlert({ messages, requestId }: { messages: string[]; request
   return (
     <div
       role="alert"
-      className="form-error grid gap-2 rounded-md border border-danger/25 bg-[#fff5f4] px-4 py-3 text-sm text-danger"
+      className="form-error grid gap-2 rounded-md border border-danger/20 bg-danger-tint px-4 py-3 text-sm text-danger"
     >
       {messages.map((message) => (
         <p key={message} className="flex items-start gap-2 leading-6">

@@ -25,7 +25,19 @@
     "signingOut": "Signing out…",
     "switchLanguage": "العربية",
     "switchLanguageLabel": "Switch to Arabic",
-    "signedInAs": "Signed in as"
+    "signedInAs": "Signed in as",
+    "profile": "My account",
+    "profileSummary": "Your account details as the system holds them. View only.",
+    "name": "Name",
+    "email": "Email",
+    "role": "Role",
+    "accountId": "Account ID",
+    "copy": "Copy",
+    "copied": "Copied",
+    "copyEmail": "Copy email",
+    "copyId": "Copy account ID",
+    "readOnly": "Changing your name, email or password is not available in the API yet.",
+    "roleUnavailable": "Could not load the role"
   },
   "login": {
     "title": "Admin sign in",
@@ -37,7 +49,8 @@
     "expired": "Your session ended. Sign in again to continue.",
     "signedOut": "You signed out.",
     "showPassword": "Show password",
-    "hidePassword": "Hide password"
+    "hidePassword": "Hide password",
+    "emailPlaceholder": "name@example.com"
   },
   "common": {
     "save": "Save",
@@ -71,7 +84,7 @@
     "searchName": "Search by name",
     "searchNameHint": "At least 3 characters",
     "searchCode": "Code",
-    "searchCodeHint": "2 letters, e.g. EG",
+    "searchCodeHint": "2 letters",
     "columnName": "Name",
     "columnCode": "Code",
     "emptyTitle": "No countries yet",
@@ -93,17 +106,18 @@
     "deleteCitiesUnknown": "Couldn't count its cities. Any cities it has will be deleted too.",
     "deleteConfirm": "Delete country",
     "deleted": "{name} deleted.",
-    "namePlaceholder": "e.g. United Arab Emirates",
+    "namePlaceholder": "e.g. Jordan",
     "formDescription": "Country details are used across your locations.",
-    "codePlaceholder": "AE",
+    "codePlaceholder": "e.g. JO",
     "directory": "Country directory",
     "liveSearch": "Live search",
-    "searchPlaceholder": "Search country names...",
+    "searchPlaceholder": "Search countries",
     "nameIncomplete": "Add {count} more characters to search. Current results are unchanged.",
     "codeIncomplete": "Use a two-letter code, like EG. Current results are unchanged.",
     "searchQueued": "Preparing your search...",
     "appliedFilters": "Applied filters",
-    "removeFilter": "Remove filter {value}"
+    "removeFilter": "Remove filter {value}",
+    "codeSearchPlaceholder": "e.g. EG"
   },
   "cities": {
     "title": "Cities",
@@ -135,7 +149,8 @@
     "deleteConfirm": "Delete city",
     "deleted": "{name} deleted.",
     "namePlaceholder": "e.g. Alexandria",
-    "formDescription": "Add the city name and its country. Both fields are required."
+    "formDescription": "Add the city name and its country. Both fields are required.",
+    "searchPlaceholder": "Search cities"
   },
   "currencies": {
     "title": "Currencies",
@@ -144,7 +159,7 @@
     "searchName": "Search by name",
     "searchNameHint": "At least 3 characters",
     "searchCode": "Code",
-    "searchCodeHint": "3 letters, e.g. EGP",
+    "searchCodeHint": "3 letters",
     "columnName": "Name",
     "columnCode": "Code",
     "emptyTitle": "No currencies yet",
@@ -165,7 +180,9 @@
     "deleted": "{name} deleted.",
     "namePlaceholder": "e.g. Egyptian Pound",
     "formDescription": "Set the name and three-letter code for this currency.",
-    "codePlaceholder": "EGP"
+    "codePlaceholder": "e.g. EGP",
+    "searchPlaceholder": "Search currencies",
+    "codeSearchPlaceholder": "e.g. EGP"
   },
   "pricingSettings": {
     "title": "Pricing settings",
@@ -177,7 +194,9 @@
     "notConfigured": "Pricing settings have not been saved yet. Fill in any field and save it.",
     "storedValues": "Currently saved: VAT rate {vatRate} · Minimum price {minPrice}",
     "minPriceField": "Minimum price",
-    "minPriceHint": "A number of 0 or more, with at most 2 decimals."
+    "minPriceHint": "A number of 0 or more, with at most 2 decimals.",
+    "vatPlaceholder": "e.g. 14",
+    "minPricePlaceholder": "e.g. 250"
   },
   "admins": {
     "title": "Admin team",
@@ -203,7 +222,9 @@
     "accountId": "Account ID",
     "superAdminNote": "“Super admin” is stored on the account but does not change permissions today: all admins have the same permissions.",
     "notFoundTitle": "Admin not found",
-    "notFoundBody": "The account may have been deleted, or the link is wrong."
+    "notFoundBody": "The account may have been deleted, or the link is wrong.",
+    "searchNamePlaceholder": "Search by name",
+    "emailPlaceholder": "name@example.com"
   },
   "validation": {
     "required": "This field is required.",
@@ -312,7 +333,8 @@
     "deleted": "{name} deleted.",
     "namePlaceholder": "e.g. Villa",
     "formDescription": "Create a consistent accommodation type for your catalog.",
-    "codePlaceholder": "villa"
+    "codePlaceholder": "e.g. villa",
+    "searchPlaceholder": "Search accommodation types"
   },
   "design": {
     "workspace": "Your management workspace",
@@ -326,7 +348,29 @@
     "intro": "A clear view of your reference data and direct access to every workspace.",
     "manage": "Manage data",
     "tools": "Administration",
-    "error": "Count unavailable"
+    "error": "Count unavailable",
+    "overview": "Overview",
+    "overviewSummary": "A summary of the data stored right now.",
+    "view": "View",
+    "statsLabel": "Record counts",
+    "citiesByCountry": "Cities by country",
+    "citiesByCountryBody": "Cities registered in each country.",
+    "citiesByCountryTooMany": "You have {count} countries. A complete breakdown needs an aggregate endpoint in the backend, so all countries and cities are not loaded here.",
+    "noCountries": "No countries yet.",
+    "adminsByRole": "Admin team by role",
+    "adminsTotal": "{count, plural, =0 {No admins} one {# admin} other {# admins}}",
+    "pricing": "Pricing settings",
+    "pricingNotSet": "Not saved yet",
+    "vatRate": "VAT rate",
+    "minPrice": "Minimum price",
+    "edit": "Edit",
+    "shortcuts": "Shortcuts",
+    "chartTable": "Chart data",
+    "country": "Country",
+    "cities": "Cities",
+    "showTable": "Show data as a table",
+    "adminsCount": "Count",
+    "citiesChartSummary": "Bar chart of cities in {countries} countries, {cities} cities in total. The numbers are in the table below."
   },
   "sessionMotion": {
     "entered": "Welcome back",
@@ -345,6 +389,8 @@
     "clearSearch": "Clear search",
     "updating": "Updating results...",
     "preparing": "Preparing your search...",
-    "notApplied": "{hint}. Current results are unchanged."
+    "notApplied": "{hint}. Current results are unchanged.",
+    "appliedFilters": "Applied filters",
+    "removeFilter": "Remove filter {value}"
   }
 }

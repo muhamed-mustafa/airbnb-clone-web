@@ -1,5 +1,5 @@
 import type { Page } from '@playwright/test';
-import { admin, expect, seed, signIn, test, unique, uniqueCode } from './support/fixtures';
+import { admin, expect, seed, signIn, test, unique, uniqueCode, results } from './support/fixtures';
 
 // Filter fields apply their value 250 ms after typing stops. These tests act inside that
 // window to prove a pending search never outlives "Clear filters", the page, or another
@@ -50,7 +50,9 @@ test.describe('pending filter searches', () => {
     const url = new URL(page.url());
     expect(url.searchParams.get('name')).toBe(name);
     expect(url.searchParams.get('code')).toBe(code);
-    await expect(page.getByText(name, { exact: true }).filter({ visible: true })).toBeVisible();
+    await expect(
+      results(page).getByText(name, { exact: true }).filter({ visible: true }),
+    ).toBeVisible();
   });
 });
 

@@ -68,7 +68,7 @@ export function PricingSettingsForm({ stored }: { stored: AppSettings | null }) 
   );
 
   return (
-    <form noValidate onSubmit={onSubmit} className="grid gap-5">
+    <form noValidate onSubmit={onSubmit} className="grid gap-5 p-4 sm:p-5">
       <p className="text-sm text-muted" aria-live="polite">
         {stored === null
           ? t('notConfigured')
@@ -81,27 +81,30 @@ export function PricingSettingsForm({ stored }: { stored: AppSettings | null }) 
             })}
       </p>
       <FormAlert messages={alert.messages} requestId={alert.requestId} />
-      <TextField
-        label={t('vatField')}
-        hint={t('vatHint')}
-        inputMode="decimal"
-        autoComplete="off"
-        dir="ltr"
-        className="tabular"
-        error={errors.vatRate?.message}
-        {...form.register('vatRate')}
-      />
-      <TextField
-        label={t('minPriceField')}
-        hint={t('minPriceHint')}
-        inputMode="decimal"
-        autoComplete="off"
-        dir="ltr"
-        className="tabular"
-        error={errors.minPrice?.message}
-        {...form.register('minPrice')}
-      />
-      <div>
+      {/* Numbers stay left-to-right; the placeholders are examples, not defaults. */}
+      <div className="grid items-start gap-5 sm:grid-cols-2">
+        <TextField
+          label={t('vatField')}
+          hint={t('vatHint')}
+          placeholder={t('vatPlaceholder')}
+          inputMode="decimal"
+          autoComplete="off"
+          className="tabular"
+          error={errors.vatRate?.message}
+          {...form.register('vatRate')}
+        />
+        <TextField
+          label={t('minPriceField')}
+          hint={t('minPriceHint')}
+          placeholder={t('minPricePlaceholder')}
+          inputMode="decimal"
+          autoComplete="off"
+          className="tabular"
+          error={errors.minPrice?.message}
+          {...form.register('minPrice')}
+        />
+      </div>
+      <div className="flex border-t border-hairline pt-4">
         <Button type="submit" variant="primary" loading={isSubmitting} loadingLabel={tc('saving')}>
           {tc('save')}
         </Button>

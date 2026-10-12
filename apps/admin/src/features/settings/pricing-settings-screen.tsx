@@ -2,6 +2,8 @@
 
 import { useTranslations } from 'next-intl';
 import { isBffError } from '@/lib/bff-client';
+import { Page } from '@/ui/page';
+import { PageHeader } from '@/ui/page-header';
 import { ErrorPanel, RowsSkeleton } from '@/ui/states';
 import { useAppSettings } from './api';
 import { PricingSettingsForm } from './pricing-settings-form';
@@ -16,17 +18,10 @@ export function PricingSettingsScreen() {
   const settings = useAppSettings();
 
   return (
-    <div className="grid max-w-2xl gap-5">
-      <div className="grid gap-1">
-        <h1 className="text-2xl font-semibold">{t('title')}</h1>
-        <p className="text-sm text-muted">{t('intro')}</p>
-      </div>
-
-      <p className="rounded-md border border-hairline bg-sunken px-3 py-2.5 text-sm text-ink">
-        {t('storedOnly')}
-      </p>
-
-      <section className="grid gap-4 rounded-lg border border-hairline bg-surface p-4 sm:p-5">
+    <Page width="details">
+      <PageHeader title={t('title')} summary={t('intro')} />
+      <p className="info-note">{t('storedOnly')}</p>
+      <section className="ui-panel">
         {settings.isPending ? (
           <RowsSkeleton rows={2} label={tc('loading')} />
         ) : settings.isError ? (
@@ -42,6 +37,6 @@ export function PricingSettingsScreen() {
           <PricingSettingsForm stored={settings.data ?? null} />
         )}
       </section>
-    </div>
+    </Page>
   );
 }

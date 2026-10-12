@@ -88,6 +88,12 @@ test.describe('accessibility', () => {
     await page.getByRole('link', { name: /^عرض / }).filter({ visible: true }).first().click();
     await expect(page.getByText('معرّف الحساب')).toBeVisible();
     await expectNoAxeViolations(page, 'admin detail');
+
+    await page.goto('/account');
+    await expect(page.getByRole('heading', { name: 'حسابي', level: 1 })).toBeVisible();
+    await expect(page.getByText('معرّف الحساب')).toBeVisible();
+    await expectNoAxeViolations(page, 'my account');
+    await expectNoHorizontalScroll(page);
   });
 
   test('keyboard only: add a country and get focus back where it started', async ({

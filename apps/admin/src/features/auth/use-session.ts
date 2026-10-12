@@ -4,7 +4,7 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { useState } from 'react';
 import { finishSessionScene } from '@/ui/session-transition';
 import { animatePageExit } from '@/lib/page-exit';
-import { bffFetch } from '@/lib/bff-client';
+import { bffFetch, markSigningOut } from '@/lib/bff-client';
 import type { SessionStatus } from './session-status';
 
 export const sessionKey = ['session'] as const;
@@ -22,7 +22,10 @@ export function useSignOut() {
   const queryClient = useQueryClient();
   const [complete, setComplete] = useState(false);
   const mutation = useMutation({
-    onMutate: () => setComplete(false),
+    onMutate: () => {
+      markSigningOut();
+      setComplete(false);
+    },
     mutationFn: () => bffFetch<void>('/bff/session', { method: 'DELETE' }),
     onSettled: async () => {
       setComplete(true);

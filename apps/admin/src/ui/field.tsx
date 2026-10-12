@@ -7,12 +7,8 @@ import {
 } from 'react';
 import { AlertIcon } from './icons';
 
-export const controlClasses = [
-  'premium-control block w-full min-h-11 rounded-md border border-edge bg-surface px-3 text-base text-ink',
-  'pointer-coarse:min-h-11 placeholder:text-muted',
-  'aria-invalid:border-danger aria-invalid:bg-[#fffafa] aria-invalid:focus-visible:outline-danger',
-  'disabled:bg-sunken disabled:text-muted',
-].join(' ');
+/** Every text input, select and select trigger shares this one control style (globals.css). */
+export const controlClasses = 'ui-control';
 
 interface FieldFrameProps {
   id: string;
@@ -34,24 +30,20 @@ export function FieldFrame({
   reserveMessageSpace,
 }: FieldFrameProps) {
   return (
-    <div className={`field-frame grid content-start gap-2 ${className}`}>
-      <label htmlFor={id} className="text-sm font-semibold text-ink">
+    <div className={`field-frame grid content-start gap-1.5 ${className}`}>
+      <label htmlFor={id} className="field-label">
         {label}
       </label>
       {children}
       {(reserveMessageSpace || hint || error) && (
         <div className={reserveMessageSpace ? 'min-h-5' : undefined}>
           {hint && !error && (
-            <p id={`${id}-hint`} className="text-xs text-muted">
+            <p id={`${id}-hint`} className="field-hint">
               {hint}
             </p>
           )}
           {error && (
-            <p
-              id={`${id}-error`}
-              aria-live="polite"
-              className="field-error flex items-start gap-1.5 text-xs leading-5 text-danger"
-            >
+            <p id={`${id}-error`} aria-live="polite" className="field-error">
               <AlertIcon width={15} height={15} className="mt-0.5 shrink-0" />
               <span>{error}</span>
             </p>
@@ -100,13 +92,13 @@ export function TextField({
       <div className="relative" dir={input.dir}>
         <input
           id={id}
-          className={`${controlClasses} ${endAdornment ? 'has-end-adornment pe-14' : ''} ${startAdornment ? 'has-start-adornment ps-11' : ''} ${className}`}
+          className={`${controlClasses} ${endAdornment ? 'has-end-adornment' : ''} ${startAdornment ? 'has-start-adornment' : ''} ${className}`}
           aria-invalid={error ? true : undefined}
           aria-describedby={describedBy(id, hint, error)}
           {...input}
         />
         {startAdornment && (
-          <span className="pointer-events-none absolute inset-y-0 start-3.5 flex items-center text-muted">
+          <span className="pointer-events-none absolute inset-y-0 start-3 flex items-center text-muted">
             {startAdornment}
           </span>
         )}
@@ -142,7 +134,7 @@ export function SelectField({
       <div className="relative">
         <select
           id={id}
-          className={`${controlClasses} native-select pe-11 ${className}`}
+          className={`${controlClasses} native-select ${className}`}
           aria-invalid={error ? true : undefined}
           aria-describedby={describedBy(id, hint, error)}
           {...select}

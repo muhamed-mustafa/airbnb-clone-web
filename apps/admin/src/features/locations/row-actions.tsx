@@ -10,27 +10,31 @@ interface RowActionsProps {
   onDelete: () => void;
 }
 
+/**
+ * Edit and delete stay distinguishable by text, icon and color on every screen size; both
+ * stay quiet until hovered so the row's data reads first.
+ */
 export function RowActions({ name, onEdit, onDelete }: RowActionsProps) {
   const tc = useTranslations('common');
   return (
-    <div className="flex justify-end gap-2">
+    <div className="flex shrink-0 justify-end gap-1">
       <Button
         variant="edit"
-        className="row-edit px-2.5"
-        icon={<PencilIcon width={18} height={18} />}
+        size="sm"
+        icon={<PencilIcon width={16} height={16} />}
         aria-label={`${tc('edit')} ${name}`}
         onClick={onEdit}
       >
-        <span className="max-sm:sr-only">{tc('edit')}</span>
+        {tc('edit')}
       </Button>
       <Button
         variant="delete"
-        className="row-delete px-2.5"
-        icon={<TrashIcon width={18} height={18} />}
+        size="sm"
+        icon={<TrashIcon width={16} height={16} />}
         aria-label={`${tc('delete')} ${name}`}
         onClick={onDelete}
       >
-        <span className="max-sm:sr-only">{tc('delete')}</span>
+        {tc('delete')}
       </Button>
     </div>
   );

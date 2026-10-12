@@ -25,7 +25,19 @@
     "signingOut": "جارٍ تسجيل الخروج…",
     "switchLanguage": "English",
     "switchLanguageLabel": "التبديل إلى الإنجليزية",
-    "signedInAs": "مسجّل باسم"
+    "signedInAs": "مسجّل باسم",
+    "profile": "حسابي",
+    "profileSummary": "بيانات حسابك كما يعرضها النظام. للعرض فقط.",
+    "name": "الاسم",
+    "email": "البريد الإلكتروني",
+    "role": "الدور",
+    "accountId": "معرّف الحساب",
+    "copy": "نسخ",
+    "copied": "تم النسخ",
+    "copyEmail": "نسخ البريد الإلكتروني",
+    "copyId": "نسخ معرّف الحساب",
+    "readOnly": "تعديل الاسم أو البريد أو كلمة المرور غير متاح حاليًا في الواجهة البرمجية.",
+    "roleUnavailable": "تعذّر تحميل الدور"
   },
   "login": {
     "title": "تسجيل دخول الإدارة",
@@ -37,7 +49,8 @@
     "expired": "انتهت الجلسة. سجّل الدخول مرة أخرى للمتابعة.",
     "signedOut": "تم تسجيل الخروج.",
     "showPassword": "إظهار كلمة المرور",
-    "hidePassword": "إخفاء كلمة المرور"
+    "hidePassword": "إخفاء كلمة المرور",
+    "emailPlaceholder": "name@example.com"
   },
   "common": {
     "save": "حفظ",
@@ -71,7 +84,7 @@
     "searchName": "بحث بالاسم",
     "searchNameHint": "3 أحرف على الأقل",
     "searchCode": "الكود",
-    "searchCodeHint": "حرفان، مثل EG",
+    "searchCodeHint": "حرفان",
     "columnName": "الاسم",
     "columnCode": "الكود",
     "emptyTitle": "لا توجد دول بعد",
@@ -93,17 +106,18 @@
     "deleteCitiesUnknown": "تعذّر حساب المدن التابعة. أي مدن تابعة لها ستُحذف أيضًا.",
     "deleteConfirm": "حذف الدولة",
     "deleted": "تم حذف {name}.",
-    "namePlaceholder": "مثال: الإمارات العربية المتحدة",
+    "namePlaceholder": "مثال: الأردن",
     "formDescription": "بيانات الدولة تُستخدم في تنظيم المواقع.",
-    "codePlaceholder": "AE",
+    "codePlaceholder": "مثال: JO",
     "directory": "دليل الدول",
     "liveSearch": "بحث مباشر",
-    "searchPlaceholder": "ابحث عن اسم دولة...",
+    "searchPlaceholder": "ابحث في الدول",
     "nameIncomplete": "{count, plural, one {اكتب حرفًا إضافيًا لبدء البحث.} two {اكتب حرفين إضافيين لبدء البحث.} other {اكتب # أحرف إضافية لبدء البحث.}} النتائج الحالية لم تتغير.",
     "codeIncomplete": "اكتب رمزًا من حرفين، مثل EG. النتائج الحالية لم تتغير.",
     "searchQueued": "جارٍ تجهيز البحث...",
     "appliedFilters": "الفلاتر المطبّقة",
-    "removeFilter": "إزالة الفلتر {value}"
+    "removeFilter": "إزالة الفلتر {value}",
+    "codeSearchPlaceholder": "مثال: EG"
   },
   "cities": {
     "title": "المدن",
@@ -135,7 +149,8 @@
     "deleteConfirm": "حذف المدينة",
     "deleted": "تم حذف {name}.",
     "namePlaceholder": "مثال: الإسكندرية",
-    "formDescription": "أضف اسم المدينة والدولة التابعة لها. الحقلان مطلوبان."
+    "formDescription": "أضف اسم المدينة والدولة التابعة لها. الحقلان مطلوبان.",
+    "searchPlaceholder": "ابحث في المدن"
   },
   "currencies": {
     "title": "العملات",
@@ -144,7 +159,7 @@
     "searchName": "بحث بالاسم",
     "searchNameHint": "3 أحرف على الأقل",
     "searchCode": "الكود",
-    "searchCodeHint": "3 أحرف، مثل EGP",
+    "searchCodeHint": "3 حروف",
     "columnName": "الاسم",
     "columnCode": "الكود",
     "emptyTitle": "لا توجد عملات بعد",
@@ -165,7 +180,9 @@
     "deleted": "تم حذف {name}.",
     "namePlaceholder": "مثال: الجنيه المصري",
     "formDescription": "حدّد اسم العملة ورمزها المكوّن من ثلاثة حروف.",
-    "codePlaceholder": "EGP"
+    "codePlaceholder": "مثال: EGP",
+    "searchPlaceholder": "ابحث في العملات",
+    "codeSearchPlaceholder": "مثال: EGP"
   },
   "pricingSettings": {
     "title": "إعدادات التسعير",
@@ -177,7 +194,9 @@
     "notConfigured": "لم تُحفظ إعدادات التسعير بعد. يمكنك ملء أي حقل وحفظه.",
     "storedValues": "المحفوظ حاليًا: نسبة الضريبة {vatRate} · الحد الأدنى للسعر {minPrice}",
     "minPriceField": "الحد الأدنى للسعر",
-    "minPriceHint": "رقم غير سالب، بمنزلتين عشريتين كحد أقصى."
+    "minPriceHint": "رقم غير سالب، بمنزلتين عشريتين كحد أقصى.",
+    "vatPlaceholder": "مثال: 14",
+    "minPricePlaceholder": "مثال: 250"
   },
   "admins": {
     "title": "فريق الإدارة",
@@ -203,7 +222,9 @@
     "accountId": "معرّف الحساب",
     "superAdminNote": "صفة «مشرف رئيسي» مخزّنة في الحساب، ولا تغيّر الصلاحيات حاليًا: كل المشرفين لهم نفس الصلاحيات.",
     "notFoundTitle": "المشرف غير موجود",
-    "notFoundBody": "قد يكون الحساب محذوفًا أو الرابط غير صحيح."
+    "notFoundBody": "قد يكون الحساب محذوفًا أو الرابط غير صحيح.",
+    "searchNamePlaceholder": "ابحث باسم المشرف",
+    "emailPlaceholder": "name@example.com"
   },
   "validation": {
     "required": "هذا الحقل مطلوب.",
@@ -312,7 +333,8 @@
     "deleteConfirm": "حذف نوع الإقامة",
     "namePlaceholder": "مثال: فيلا",
     "formDescription": "أضف نوع إقامة واضحًا لتنظيم الكتالوج.",
-    "codePlaceholder": "villa"
+    "codePlaceholder": "مثال: villa",
+    "searchPlaceholder": "ابحث في أنواع الإقامة"
   },
   "design": {
     "workspace": "مساحة الإدارة الخاصة بك",
@@ -326,7 +348,29 @@
     "intro": "نظرة على بياناتك، ووصول مباشر لكل ما تديره.",
     "manage": "إدارة البيانات",
     "tools": "أدوات الإدارة",
-    "error": "تعذر تحميل العدد"
+    "error": "تعذر تحميل العدد",
+    "overview": "نظرة عامة",
+    "overviewSummary": "ملخص من البيانات المحفوظة الآن.",
+    "view": "عرض",
+    "statsLabel": "أعداد البيانات",
+    "citiesByCountry": "المدن حسب الدولة",
+    "citiesByCountryBody": "عدد المدن المسجلة لكل دولة.",
+    "citiesByCountryTooMany": "لديك {count} دولة. عرض التوزيع الكامل يحتاج طلبًا تجميعيًا من الباك إند، حتى لا تُحمَّل كل الدول والمدن.",
+    "noCountries": "لا توجد دول بعد.",
+    "adminsByRole": "فريق الإدارة حسب الدور",
+    "adminsTotal": "{count, plural, =0 {لا يوجد مشرفون} one {مشرف واحد} two {مشرفان} few {# مشرفين} many {# مشرفًا} other {# مشرف}}",
+    "pricing": "إعدادات التسعير",
+    "pricingNotSet": "لم تُحفظ بعد",
+    "vatRate": "نسبة الضريبة",
+    "minPrice": "الحد الأدنى للسعر",
+    "edit": "تعديل",
+    "shortcuts": "اختصارات",
+    "chartTable": "بيانات الرسم",
+    "country": "الدولة",
+    "cities": "المدن",
+    "showTable": "عرض البيانات كجدول",
+    "adminsCount": "العدد",
+    "citiesChartSummary": "رسم أعمدة لعدد المدن في {countries} دولة، بإجمالي {cities} مدينة. الأرقام في الجدول التالي."
   },
   "sessionMotion": {
     "entered": "أهلًا بعودتك",
@@ -345,6 +389,8 @@
     "clearSearch": "مسح البحث",
     "updating": "جارٍ تحديث النتائج...",
     "preparing": "جارٍ تجهيز البحث...",
-    "notApplied": "{hint}. النتائج الحالية لم تتغير."
+    "notApplied": "{hint}. النتائج الحالية لم تتغير.",
+    "appliedFilters": "الفلاتر المطبّقة",
+    "removeFilter": "إزالة الفلتر {value}"
   }
 }

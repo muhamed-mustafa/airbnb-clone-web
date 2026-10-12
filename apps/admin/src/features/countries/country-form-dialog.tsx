@@ -7,7 +7,6 @@ import { useForm } from 'react-hook-form';
 import { useApplyServerErrors, useZodErrorMap } from '@/lib/form-errors';
 import { Button } from '@/ui/button';
 import { Dialog } from '@/ui/dialog';
-import { NavigationIcon } from '@/ui/navigation-icon';
 import { TextField } from '@/ui/field';
 import { FormAlert } from '@/ui/states';
 import { useToast } from '@/ui/toast';
@@ -70,13 +69,12 @@ export function CountryFormDialog({ country, onClose, returnFocusTo }: CountryFo
   return (
     <Dialog
       open
-      icon={<NavigationIcon name="countries" />}
       returnFocusTo={returnFocusTo}
       onOpenChange={(open) => !open && !isSubmitting && onClose()}
       description={t('formDescription')}
       title={country ? t('editTitle', { name: country.name }) : t('createTitle')}
     >
-      <form noValidate onSubmit={onSubmit} className="resource-form grid gap-6">
+      <form noValidate onSubmit={onSubmit} className="grid gap-5">
         <FormAlert messages={alert.messages} requestId={alert.requestId} />
         <TextField
           label={t('fieldName')}
@@ -88,17 +86,16 @@ export function CountryFormDialog({ country, onClose, returnFocusTo }: CountryFo
         />
         <TextField
           label={t('fieldCode')}
-          placeholder={t('codePlaceholder')}
           hint={t('fieldCodeHint')}
           autoComplete="off"
           autoCapitalize="characters"
-          dir="ltr"
+          placeholder={t('codePlaceholder')}
           maxLength={2}
-          className="font-mono uppercase"
+          className="font-mono uppercase placeholder:font-sans placeholder:normal-case"
           error={errors.code?.message}
           {...form.register('code')}
         />
-        <div className="form-actions flex flex-col-reverse gap-3 sm:flex-row sm:justify-end">
+        <div className="dialog-actions">
           <Button onClick={onClose} disabled={isSubmitting}>
             {tc('cancel')}
           </Button>

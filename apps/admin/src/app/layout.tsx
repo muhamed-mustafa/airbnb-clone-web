@@ -34,7 +34,8 @@ export const viewport: Viewport = {
 };
 
 export default async function RootLayout({ children }: { children: ReactNode }) {
-  const locale = readLocale((await cookies()).get(LOCALE_COOKIE)?.value);
+  const jar = await cookies();
+  const locale = readLocale(jar.get(LOCALE_COOKIE)?.value);
   return (
     <html lang={locale} dir={directionOf(locale)} className={plexArabic.variable}>
       <body>

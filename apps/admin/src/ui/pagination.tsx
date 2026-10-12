@@ -17,9 +17,10 @@ export function Pagination({
   return (
     <nav
       aria-label={t('label')}
-      className="flex items-center justify-between gap-3 border-t border-hairline px-4 py-3"
+      className="flex items-center justify-between gap-3 border-t border-hairline px-4 py-3 sm:px-5"
     >
       <Button
+        size="sm"
         disabled={!meta.hasPreviousPage}
         onClick={() => onPage(meta.page - 1)}
         icon={<ChevronNextIcon className="-scale-x-100 rtl:scale-x-100" width={18} height={18} />}
@@ -29,7 +30,7 @@ export function Pagination({
       <p className="tabular text-sm text-muted" aria-live="polite">
         {t('status', { page: meta.page, totalPages: meta.totalPages })}
       </p>
-      <Button disabled={!meta.hasNextPage} onClick={() => onPage(meta.page + 1)}>
+      <Button size="sm" disabled={!meta.hasNextPage} onClick={() => onPage(meta.page + 1)}>
         {t('next')}
         <ChevronNextIcon className="rtl:-scale-x-100" width={18} height={18} />
       </Button>

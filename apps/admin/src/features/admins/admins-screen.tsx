@@ -3,33 +3,31 @@
 import Link from 'next/link';
 import { useTranslations } from 'next-intl';
 import { useSession } from '@/features/auth/use-session';
+import { AppliedFilters } from '@/features/locations/applied-filters';
 import { FilterInput } from '@/features/locations/filter-input';
 import { ListFrame } from '@/features/locations/list-frame';
 import { useListParams } from '@/features/locations/use-list-params';
-import { Button } from '@/ui/button';
+import { EmailText } from '@/ui/email-text';
 import { SelectField } from '@/ui/field';
+import { ChevronNextIcon } from '@/ui/icons';
+import { ListRow } from '@/ui/list-row';
+import { Page } from '@/ui/page';
+import { PageHeader } from '@/ui/page-header';
 import { EmptyState } from '@/ui/states';
 import { useAdmins, type Admin } from './api';
+import { RoleBadge } from './role-badge';
 import { isSendableEmail, isSendableName, normalizeEmailFilter } from './admin-filters';
 
 const FILTER_KEYS = ['name', 'email', 'isSuperAdmin'] as const;
 
-function RoleBadge({ admin }: { admin: Admin }) {
-  const t = useTranslations('admins');
-  return admin.isSuperAdmin ? (
-    <span className="justify-self-start rounded-full bg-accent-tint px-2 py-0.5 text-xs font-semibold text-accent">
-      {t('superAdmin')}
-    </span>
-  ) : (
-    <span className="text-xs text-muted">{t('admin')}</span>
-  );
-}
-
 function YouMark({ admin, currentId }: { admin: Admin; currentId?: string }) {
   const t = useTranslations('admins');
-  return admin.id === currentId ? <span className="text-xs text-muted"> ({t('you')})</span> : null;
+  return admin.id === currentId ? (
+    <span className="text-xs font-normal text-muted"> ({t('you')})</span>
+  ) : null;
 }
 
+/** Read-only: the API has no create, update or deactivate for admin accounts. */
 export function AdminsScreen() {
   const t = useTranslations('admins');
   const tc = useTranslations('common');
@@ -49,19 +47,23 @@ export function AdminsScreen() {
   const detailLink = (admin: Admin) => (
     <Link
       href={`/team/admins/${admin.id}`}
-      className="inline-flex min-h-10 items-center rounded-md px-2.5 text-sm font-semibold text-accent hover:bg-sunken pointer-coarse:min-h-11"
+      className="ui-button btn-ghost size-sm text-accent"
       aria-label={`${t('view')} ${admin.name}`}
     >
       {t('view')}
+      <ChevronNextIcon width={16} height={16} className="rtl:-scale-x-100" />
     </Link>
   );
 
+  const roleLabel = (value: string) => (value === 'true' ? t('superAdmin') : t('admin'));
+
   const toolbar = (
-    <div className="catalog-toolbar">
-      <search className="catalog-search grid grid-cols-1 items-start gap-3 sm:grid-cols-[minmax(0,14rem)_minmax(0,18rem)_minmax(0,11rem)_auto]">
+    <div className="list-toolbar grid gap-3">
+      <search className="grid grid-cols-1 items-start gap-3 sm:grid-cols-[minmax(0,14rem)_minmax(0,18rem)_minmax(0,11rem)]">
         <FilterInput
           resetToken={resetToken}
           label={t('searchName')}
+          placeholder={t('searchNamePlaceholder')}
           hint={t('searchNameHint')}
           value={values.name}
           isSendable={isSendableName}
@@ -71,6 +73,7 @@ export function AdminsScreen() {
         <FilterInput
           resetToken={resetToken}
           label={t('searchEmail')}
+          placeholder={t('emailPlaceholder')}
           hint={t('searchEmailHint')}
           value={values.email}
           normalize={normalizeEmailFilter}
@@ -88,27 +91,25 @@ export function AdminsScreen() {
           <option value="true">{t('superAdmin')}</option>
           <option value="false">{t('admin')}</option>
         </SelectField>
-        {hasFilters && (
-          <Button variant="ghost" className="justify-self-start sm:mt-7" onClick={clear}>
-            {tc('clearFilters')}
-          </Button>
-        )}
       </search>
+      <AppliedFilters
+        filters={FILTER_KEYS.filter((key) => values[key]).map((key) => ({
+          key,
+          label:
+            key === 'name' ? t('columnName') : key === 'email' ? t('columnEmail') : t('columnRole'),
+          value: key === 'isSuperAdmin' ? roleLabel(values[key]) : values[key],
+        }))}
+        onRemove={(key) => update({ [key]: '' })}
+        onClear={clear}
+      />
     </div>
   );
 
   return (
-    <div className="grid gap-5">
-      <div className="grid gap-0.5">
-        <h1 className="text-3xl font-semibold">{t('title')}</h1>
-        <p className="tabular text-sm text-muted" aria-live="polite">
-          {meta ? t('count', { count: meta.total }) : ' '}
-        </p>
-      </div>
+    <Page>
+      <PageHeader title={t('title')} summary={meta ? t('count', { count: meta.total }) : ' '} />
 
-      <p className="max-w-3xl rounded-md border border-hairline bg-sunken px-3 py-2.5 text-sm text-ink">
-        {t('readOnlyNote')}
-      </p>
+      <p className="info-note">{t('readOnlyNote')}</p>
 
       <ListFrame
         toolbar={toolbar}
@@ -120,64 +121,64 @@ export function AdminsScreen() {
         isRefreshing={query.isPlaceholderData}
         onRetry={() => void query.refetch()}
         onPage={(next) => update({ page: next })}
-        empty={<EmptyState title={t('noResultsTitle')} body={t('noResultsBody')} />}
+        empty={
+          hasFilters ? (
+            <EmptyState title={t('noResultsTitle')} body={t('noResultsBody')} />
+          ) : (
+            <EmptyState title={t('noResultsTitle')} body={t('noResultsBody')} />
+          )
+        }
       >
-        <ul className="divide-y divide-hairline md:hidden">
+        <ul className="md:hidden">
           {rows.map((admin) => (
-            <li
-              key={admin.id}
-              className="flex min-h-16 items-center justify-between gap-3 px-4 py-2"
-            >
-              <div className="grid min-w-0 gap-0.5">
-                <span className="break-words">
-                  {admin.name}
-                  <YouMark admin={admin} currentId={currentId} />
-                </span>
-                <span className="break-all text-xs text-muted">
-                  <bdi dir="ltr">{admin.email}</bdi>
-                </span>
+            <ListRow key={admin.id} actions={detailLink(admin)}>
+              <span className="font-semibold">
+                {admin.name}
+                <YouMark admin={admin} currentId={currentId} />
+              </span>
+              <span className="text-xs text-muted">
+                <EmailText email={admin.email} />
+              </span>
+              <span>
                 <RoleBadge admin={admin} />
-              </div>
-              {detailLink(admin)}
-            </li>
+              </span>
+            </ListRow>
           ))}
         </ul>
-        <table className="hidden w-full text-sm md:table">
-          <thead className="bg-sunken text-xs text-muted">
+        <table className="data-table hidden md:table">
+          <thead>
             <tr>
-              <th scope="col" className="px-4 py-2.5 text-start font-semibold">
+              <th scope="col" className="w-[30%]">
                 {t('columnName')}
               </th>
-              <th scope="col" className="px-4 py-2.5 text-start font-semibold">
-                {t('columnEmail')}
-              </th>
-              <th scope="col" className="px-4 py-2.5 text-start font-semibold">
+              <th scope="col">{t('columnEmail')}</th>
+              <th scope="col" className="w-40">
                 {t('columnRole')}
               </th>
-              <th scope="col" className="w-28 px-4 py-2.5 text-end font-semibold">
+              <th scope="col" className="w-px">
                 <span className="sr-only">{tc('actions')}</span>
               </th>
             </tr>
           </thead>
-          <tbody className="divide-y divide-hairline">
+          <tbody>
             {rows.map((admin) => (
-              <tr key={admin.id} className="h-14 hover:bg-ground">
-                <th scope="row" className="px-4 text-start font-normal">
+              <tr key={admin.id}>
+                <th scope="row" className="font-semibold break-words">
                   {admin.name}
                   <YouMark admin={admin} currentId={currentId} />
                 </th>
-                <td className="px-4 text-muted">
-                  <bdi dir="ltr">{admin.email}</bdi>
+                <td className="text-muted">
+                  <EmailText email={admin.email} />
                 </td>
-                <td className="px-4">
+                <td>
                   <RoleBadge admin={admin} />
                 </td>
-                <td className="px-4 text-end">{detailLink(admin)}</td>
+                <td className="whitespace-nowrap">{detailLink(admin)}</td>
               </tr>
             ))}
           </tbody>
         </table>
       </ListFrame>
-    </div>
+    </Page>
   );
 }

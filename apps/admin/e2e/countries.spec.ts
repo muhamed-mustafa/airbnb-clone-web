@@ -6,6 +6,7 @@ import {
   test,
   unique,
   uniqueCode,
+  results,
 } from './support/fixtures';
 
 interface Country {
@@ -54,7 +55,9 @@ test.describe('countries', () => {
     await dialog.getByRole('button', { name: 'حفظ' }).click();
     await expect(dialog).toBeHidden();
     await expect(page.getByRole('status').filter({ hasText: `تمت إضافة ${name}.` })).toBeVisible();
-    await expect(page.getByText(name, { exact: true }).filter({ visible: true })).toBeVisible();
+    await expect(
+      results(page).getByText(name, { exact: true }).filter({ visible: true }),
+    ).toBeVisible();
 
     // Edit to an existing code: the backend returns the field (update path), shown under it.
     await page.getByRole('button', { name: `تعديل ${name}` }).click();
@@ -89,16 +92,16 @@ test.describe('countries', () => {
     await search.fill(`Alpha ${tag}`);
     await expect(page).toHaveURL(new RegExp(`name=Alpha\\+${tag}`));
     await expect(
-      page.getByText(`Alpha ${tag}`, { exact: true }).filter({ visible: true }),
+      results(page).getByText(`Alpha ${tag}`, { exact: true }).filter({ visible: true }),
     ).toBeVisible();
     await expect(
-      page.getByText(`Beta ${tag}`, { exact: true }).filter({ visible: true }),
+      results(page).getByText(`Beta ${tag}`, { exact: true }).filter({ visible: true }),
     ).toBeHidden();
 
     await page.reload();
     await expect(page.getByLabel('بحث بالاسم')).toHaveValue(`Alpha ${tag}`);
     await expect(
-      page.getByText(`Beta ${tag}`, { exact: true }).filter({ visible: true }),
+      results(page).getByText(`Beta ${tag}`, { exact: true }).filter({ visible: true }),
     ).toBeHidden();
 
     await page.getByRole('button', { name: 'مسح الفلاتر' }).click();

@@ -6,6 +6,7 @@ import Link from 'next/link';
 import { useTranslations } from 'next-intl';
 import { useMemo, useState } from 'react';
 import { useCountryOptions } from '@/features/countries/api';
+import { AppliedFilters } from '@/features/locations/applied-filters';
 import { FilterInput } from '@/features/locations/filter-input';
 import { ListFrame } from '@/features/locations/list-frame';
 import { RowActions } from '@/features/locations/row-actions';
@@ -16,6 +17,9 @@ import { Button, buttonClasses } from '@/ui/button';
 import { ConfirmDialog } from '@/ui/dialog';
 import { SearchSelect } from '@/ui/search-select';
 import { PlusIcon } from '@/ui/icons';
+import { ListRow } from '@/ui/list-row';
+import { Page } from '@/ui/page';
+import { PageHeader } from '@/ui/page-header';
 import { EmptyState, FormAlert } from '@/ui/states';
 import { useToast } from '@/ui/toast';
 import { useDialog } from '@/ui/use-dialog';
@@ -95,9 +99,20 @@ export function CitiesScreen() {
   const countryName = (id: string) =>
     countryNames.get(id) ?? (countries.isPending ? '…' : t('unknownCountry'));
 
+  const addButton = (
+    <Button
+      variant="primary"
+      icon={<PlusIcon width={18} height={18} />}
+      disabled={!countries.isSuccess || noCountries}
+      onClick={() => dialog.open({ type: 'create' })}
+    >
+      {t('add')}
+    </Button>
+  );
+
   const toolbar = (
-    <div className="catalog-toolbar">
-      <search className="catalog-search grid grid-cols-1 items-start gap-3 sm:grid-cols-[minmax(0,16rem)_minmax(0,16rem)_auto]">
+    <div className="list-toolbar grid gap-3">
+      <search className="grid grid-cols-1 items-start gap-3 sm:grid-cols-[minmax(0,15rem)_minmax(0,18rem)]">
         <SearchSelect
           label={t('filterCountry')}
           placeholder={t('allCountries')}
@@ -116,39 +131,34 @@ export function CitiesScreen() {
         <FilterInput
           resetToken={resetToken}
           label={t('searchName')}
+          placeholder={t('searchPlaceholder')}
           hint={t('searchNameHint')}
           value={values.name}
           isSendable={(value) => value === '' || value.length >= 3}
           onCommit={(name) => update({ name })}
           maxLength={50}
         />
-        {hasFilters && (
-          <Button variant="ghost" className="justify-self-start sm:mt-7" onClick={clear}>
-            {tc('clearFilters')}
-          </Button>
-        )}
       </search>
+      <AppliedFilters
+        filters={[
+          ...(values.country
+            ? [{ key: 'country', label: t('filterCountry'), value: countryName(values.country) }]
+            : []),
+          ...(values.name ? [{ key: 'name', label: t('columnName'), value: values.name }] : []),
+        ]}
+        onRemove={(key) => update({ [key]: '' })}
+        onClear={clear}
+      />
     </div>
   );
 
   return (
-    <div className="grid gap-5">
-      <div className="flex flex-wrap items-end justify-between gap-3">
-        <div className="grid gap-0.5">
-          <h1 className="text-3xl font-semibold">{t('title')}</h1>
-          <p className="tabular text-sm text-muted" aria-live="polite">
-            {meta ? t('count', { count: meta.total }) : ' '}
-          </p>
-        </div>
-        <Button
-          variant="primary"
-          icon={<PlusIcon width={18} height={18} />}
-          disabled={!countries.isSuccess || noCountries}
-          onClick={() => dialog.open({ type: 'create' })}
-        >
-          {t('add')}
-        </Button>
-      </div>
+    <Page width="list-wide">
+      <PageHeader
+        title={t('title')}
+        summary={meta ? t('count', { count: meta.total }) : ' '}
+        action={addButton}
+      />
 
       <ListFrame
         toolbar={toolbar}
@@ -178,46 +188,43 @@ export function CitiesScreen() {
           )
         }
       >
-        <ul className="divide-y divide-hairline md:hidden">
+        <ul className="md:hidden">
           {rows.map((city) => (
-            <li
+            <ListRow
               key={city.id}
-              className="flex min-h-14 items-center justify-between gap-3 px-4 py-2"
+              actions={
+                <RowActions
+                  name={city.name}
+                  onEdit={() => dialog.open({ type: 'edit', city })}
+                  onDelete={() => dialog.open({ type: 'delete', city })}
+                />
+              }
             >
-              <div className="grid min-w-0">
-                <span className="break-words">{city.name}</span>
-                <span className="text-xs text-muted break-words">{countryName(city.country)}</span>
-              </div>
-              <RowActions
-                name={city.name}
-                onEdit={() => dialog.open({ type: 'edit', city })}
-                onDelete={() => dialog.open({ type: 'delete', city })}
-              />
-            </li>
+              <span className="font-semibold">{city.name}</span>
+              <span className="text-xs text-muted">{countryName(city.country)}</span>
+            </ListRow>
           ))}
         </ul>
-        <table className="hidden w-full text-sm md:table">
-          <thead className="bg-sunken text-xs text-muted">
+        <table className="data-table hidden md:table">
+          <thead>
             <tr>
-              <th scope="col" className="px-4 py-2.5 text-start font-semibold">
-                {t('columnName')}
-              </th>
-              <th scope="col" className="px-4 py-2.5 text-start font-semibold">
+              <th scope="col">{t('columnName')}</th>
+              <th scope="col" className="w-[38%]">
                 {t('columnCountry')}
               </th>
-              <th scope="col" className="w-48 px-4 py-2.5 text-end font-semibold">
+              <th scope="col" className="w-px">
                 <span className="sr-only">{tc('actions')}</span>
               </th>
             </tr>
           </thead>
-          <tbody className="divide-y divide-hairline">
+          <tbody>
             {rows.map((city) => (
-              <tr key={city.id} className="h-14 hover:bg-ground">
-                <th scope="row" className="px-4 text-start font-normal">
+              <tr key={city.id}>
+                <th scope="row" className="font-semibold break-words">
                   {city.name}
                 </th>
-                <td className="px-4 text-muted">{countryName(city.country)}</td>
-                <td className="px-4">
+                <td className="text-muted break-words">{countryName(city.country)}</td>
+                <td className="whitespace-nowrap">
                   <RowActions
                     name={city.name}
                     onEdit={() => dialog.open({ type: 'edit', city })}
@@ -246,6 +253,6 @@ export function CitiesScreen() {
           returnFocusTo={dialog.opener}
         />
       )}
-    </div>
+    </Page>
   );
 }

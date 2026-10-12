@@ -94,6 +94,7 @@ export function LoginForm({ next }: { next: string }) {
       <TextField
         label={t('email')}
         type="email"
+        placeholder={t('emailPlaceholder')}
         autoComplete="username"
         inputMode="email"
         dir="ltr"
@@ -107,7 +108,7 @@ export function LoginForm({ next }: { next: string }) {
         endAdornment={
           <button
             type="button"
-            className="password-toggle grid h-11 w-11 place-items-center rounded-md text-muted hover:bg-accent-tint hover:text-accent"
+            className="password-toggle grid h-9 w-9 place-items-center rounded-md text-muted hover:bg-sunken hover:text-ink pointer-coarse:h-11 pointer-coarse:w-11"
             aria-label={t(showPassword ? 'hidePassword' : 'showPassword')}
             title={t(showPassword ? 'hidePassword' : 'showPassword')}
             aria-pressed={showPassword}
@@ -143,7 +144,7 @@ export function LoginForm({ next }: { next: string }) {
         variant="primary"
         loading={isSubmitting}
         loadingLabel={t('submitting')}
-        className="mt-2 w-full"
+        className="mt-1 w-full"
       >
         {t('submit')}
       </Button>

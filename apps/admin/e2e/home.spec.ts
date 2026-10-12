@@ -1,11 +1,28 @@
 import AxeBuilder from '@axe-core/playwright';
 import { test, expect, setLocale, admin, expectNoHorizontalScroll } from './support/fixtures';
 
-test('brand seal scenes accompany a real sign in and sign out; overview shows live counts', async ({
+test('sign in and sign out show real progress and confirmation; overview shows live counts', async ({
   page,
 }, info) => {
   await setLocale(page, 'en');
   await page.emulateMedia({ reducedMotion: 'no-preference' });
+  // The confirmation is shown only for the frames before navigation (no added wait), which
+  // polling can miss; an in-page observer reports every time it appears.
+  const confirmations: { action: string; mark: boolean }[] = [];
+  await page.exposeFunction('__sessionConfirmed', (action: string, mark: boolean) => {
+    confirmations.push({ action, mark });
+  });
+  await page.addInitScript(() => {
+    const seen = new WeakSet<Element>();
+    new MutationObserver(() => {
+      const story = document.querySelector('.session-story[data-complete="true"]');
+      if (!story || seen.has(story)) return;
+      seen.add(story);
+      const report = (window as unknown as Record<string, (a: string, m: boolean) => void>)
+        .__sessionConfirmed;
+      report?.(story.getAttribute('data-action') ?? '', !!story.querySelector('.session-mark svg'));
+    }).observe(document, { subtree: true, childList: true, attributes: true });
+  });
   await page.goto('/login');
   await page.getByLabel('Email').fill(admin().email);
   await page.getByLabel('Password', { exact: true }).fill(admin().password);
@@ -13,29 +30,21 @@ test('brand seal scenes accompany a real sign in and sign out; overview shows li
   await expect(page.getByLabel('Password', { exact: true })).toHaveAttribute('type', 'text');
   await page.getByRole('button', { name: 'Hide password' }).click();
   await page.getByRole('button', { name: 'Sign in', exact: true }).click();
-  const entry = page.locator('.session-story[data-action="enter"][data-complete="true"]');
-  await expect(entry).toBeVisible();
-  await expect(entry.locator('.session-emblem')).toHaveCSS('animation-name', 'seal-settle');
-  await expect(entry.locator('.session-confirm')).toHaveCSS('animation-name', 'seal-check');
-  const start = await entry.locator('.session-emblem').boundingBox();
-  expect(start).not.toBeNull();
-  await expect
-    .poll(async () => (await entry.locator('.session-emblem').boundingBox())?.width ?? start!.width)
-    .not.toBe(start!.width);
-  await page.screenshot({ path: `../../docs/phase-1/screens/${info.project.name}-seal-entry.png` });
+  // Confirmation appears only after the request succeeded: a check mark, then navigation.
   await expect(page).toHaveURL(/\/$/);
-  await expect(page.getByRole('heading', { name: 'Your workspace, at a glance' })).toBeVisible();
-  for (const api of ['countries', 'cities', 'unit-categories', 'currencies']) {
+  expect(confirmations).toEqual([{ action: 'enter', mark: true }]);
+  await expect(page.getByRole('heading', { name: 'Overview', level: 1 })).toBeVisible();
+  const order = ['countries', 'cities', 'currencies', 'unit-categories', 'admins'];
+  for (const api of order) {
     const response = await page.request.get(`/bff/api/${api}?page=1&limit=1`);
     expect(response.ok()).toBe(true);
     const body = await response.json();
     expect(body.meta.total).toBeGreaterThanOrEqual(0);
-    const index = ['countries', 'cities', 'unit-categories', 'currencies'].indexOf(api);
-    await expect(page.locator('article.dashboard-card').nth(index).locator('p')).toHaveText(
-      new Intl.NumberFormat('en').format(body.meta.total),
-    );
+    await expect(
+      page.locator('.stat-tile').nth(order.indexOf(api)).locator('.stat-value'),
+    ).toHaveText(new Intl.NumberFormat('en').format(body.meta.total));
   }
-  await expect(page.locator('.dashboard-card [aria-busy="true"]')).toHaveCount(0);
+  await expect(page.locator('.stat-value[aria-busy="true"]')).toHaveCount(0);
   await expectNoHorizontalScroll(page);
   await page.screenshot({
     path: `../../docs/phase-1/screens/${info.project.name}-overview-en.png`,
@@ -49,7 +58,7 @@ test('brand seal scenes accompany a real sign in and sign out; overview shows li
   await setLocale(page, 'ar');
   await page.reload();
   await expect(page.locator('html')).toHaveAttribute('dir', 'rtl');
-  await expect(page.locator('.dashboard-card [aria-busy="true"]')).toHaveCount(0);
+  await expect(page.locator('.stat-value[aria-busy="true"]')).toHaveCount(0);
   await page.screenshot({
     path: `../../docs/phase-1/screens/${info.project.name}-overview-ar.png`,
     fullPage: true,
@@ -59,19 +68,11 @@ test('brand seal scenes accompany a real sign in and sign out; overview shows li
   await page.reload();
   if (info.project.name === 'mobile') await page.getByRole('button', { name: 'Open menu' }).click();
   await page.getByRole('button', { name: 'Sign out', exact: true }).click();
-  const exit = page.locator('.session-story[data-action="exit"][data-complete="true"]');
-  await expect(exit).toBeVisible();
-  await expect(exit.locator('.session-emblem')).toHaveCSS('animation-name', 'seal-settle');
-  await expect(exit.locator('.session-lock')).toHaveCSS('animation-name', 'seal-reveal');
-  const exitStart = await exit.locator('.session-emblem').boundingBox();
-  expect(exitStart).not.toBeNull();
-  await expect
-    .poll(
-      async () => (await exit.locator('.session-emblem').boundingBox())?.width ?? exitStart!.width,
-    )
-    .not.toBe(exitStart!.width);
-  await page.screenshot({ path: `../../docs/phase-1/screens/${info.project.name}-seal-exit.png` });
   await expect(page).toHaveURL(/\/login$/);
+  expect(confirmations).toEqual([
+    { action: 'enter', mark: true },
+    { action: 'exit', mark: true },
+  ]);
 });
 
 test('overview count errors show retry, never a fabricated zero', async ({ page }) => {

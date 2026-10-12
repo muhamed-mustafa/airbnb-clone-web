@@ -93,3 +93,17 @@ export const SpinnerIcon = (props: IconProps) => (
     <path d="M21 12a9 9 0 1 1-6.2-8.6" />
   </svg>
 );
+
+export const UserIcon = (props: IconProps) => (
+  <svg {...base(props)}>
+    <circle cx="12" cy="8" r="4" />
+    <path d="M4.5 20a7.5 7.5 0 0 1 15 0" />
+  </svg>
+);
+
+export const CopyIcon = (props: IconProps) => (
+  <svg {...base(props)}>
+    <rect x="9" y="9" width="11" height="11" rx="2" />
+    <path d="M15 9V6a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v7a2 2 0 0 0 2 2h3" />
+  </svg>
+);

@@ -49,14 +49,11 @@ export function ListFrame({
   else content = children;
 
   return (
-    <section
-      aria-busy={isPending || isRefreshing}
-      className="premium-panel relative overflow-hidden rounded-lg border border-hairline bg-surface"
-    >
+    <section aria-busy={isPending || isRefreshing} className="ui-panel relative">
       {toolbar}
       {isRefreshing && (
         <div
-          className="list-refresh flex items-center gap-2 px-5 py-2 text-xs text-accent"
+          className="list-refresh flex items-center gap-2 px-5 py-1.5 text-xs font-semibold text-accent-strong"
           role="status"
         >
           <span className="refresh-dot" aria-hidden="true" />

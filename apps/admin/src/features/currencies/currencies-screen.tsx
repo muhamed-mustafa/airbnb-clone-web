@@ -2,12 +2,16 @@
 
 import dynamic from 'next/dynamic';
 import { useTranslations } from 'next-intl';
+import { AppliedFilters } from '@/features/locations/applied-filters';
 import { FilterInput } from '@/features/locations/filter-input';
 import { ListFrame } from '@/features/locations/list-frame';
 import { RowActions } from '@/features/locations/row-actions';
 import { useListParams } from '@/features/locations/use-list-params';
 import { Button } from '@/ui/button';
 import { PlusIcon } from '@/ui/icons';
+import { ListRow } from '@/ui/list-row';
+import { Page } from '@/ui/page';
+import { PageHeader } from '@/ui/page-header';
 import { EmptyState } from '@/ui/states';
 import { useDialog } from '@/ui/use-dialog';
 import { useCurrencies, type Currency } from './api';
@@ -38,12 +42,23 @@ export function CurrenciesScreen() {
   const meta = query.data?.meta;
   const rows = query.data?.data ?? [];
 
+  const addButton = (
+    <Button
+      variant="primary"
+      icon={<PlusIcon width={18} height={18} />}
+      onClick={() => dialog.open({ type: 'create' })}
+    >
+      {t('add')}
+    </Button>
+  );
+
   const toolbar = (
-    <div className="catalog-toolbar">
-      <search className="catalog-search grid grid-cols-1 items-start gap-3 sm:grid-cols-[minmax(0,22rem)_10rem_auto]">
+    <div className="list-toolbar grid gap-3">
+      <search className="grid grid-cols-[minmax(0,1fr)_7.5rem] items-start gap-3 sm:grid-cols-[minmax(0,20rem)_9rem]">
         <FilterInput
           resetToken={resetToken}
           label={t('searchName')}
+          placeholder={t('searchPlaceholder')}
           hint={t('searchNameHint')}
           value={values.name}
           isSendable={(value) => value === '' || value.length >= 3}
@@ -53,45 +68,35 @@ export function CurrenciesScreen() {
         <FilterInput
           resetToken={resetToken}
           label={t('searchCode')}
+          placeholder={t('codeSearchPlaceholder')}
           hint={t('searchCodeHint')}
           value={values.currencyCode}
           normalize={(value) => value.trim().toUpperCase()}
           isSendable={(value) => value === '' || /^[A-Z]{3}$/.test(value)}
           onCommit={(currencyCode) => update({ currencyCode })}
           maxLength={3}
-          dir="ltr"
-          className="font-mono uppercase"
+          className="font-mono uppercase placeholder:font-sans placeholder:normal-case"
         />
-        {hasFilters && (
-          <Button
-            variant="ghost"
-            className="col-span-full justify-self-start sm:col-span-1 sm:mt-7"
-            onClick={clear}
-          >
-            {tc('clearFilters')}
-          </Button>
-        )}
       </search>
+      <AppliedFilters
+        filters={FILTER_KEYS.filter((key) => values[key]).map((key) => ({
+          key,
+          label: key === 'name' ? t('columnName') : t('columnCode'),
+          value: values[key],
+        }))}
+        onRemove={(key) => update({ [key]: '' })}
+        onClear={clear}
+      />
     </div>
   );
 
   return (
-    <div className="grid gap-5">
-      <div className="flex flex-wrap items-end justify-between gap-3">
-        <div className="grid gap-0.5">
-          <h1 className="text-3xl font-semibold">{t('title')}</h1>
-          <p className="tabular text-sm text-muted" aria-live="polite">
-            {meta ? t('count', { count: meta.total }) : ' '}
-          </p>
-        </div>
-        <Button
-          variant="primary"
-          icon={<PlusIcon width={18} height={18} />}
-          onClick={() => dialog.open({ type: 'create' })}
-        >
-          {t('add')}
-        </Button>
-      </div>
+    <Page width="list">
+      <PageHeader
+        title={t('title')}
+        summary={meta ? t('count', { count: meta.total }) : ' '}
+        action={addButton}
+      />
 
       <ListFrame
         toolbar={toolbar}
@@ -107,66 +112,55 @@ export function CurrenciesScreen() {
           hasFilters ? (
             <EmptyState title={t('noResultsTitle')} body={t('noResultsBody')} />
           ) : (
-            <EmptyState
-              title={t('emptyTitle')}
-              body={t('emptyBody')}
-              action={
-                <Button
-                  variant="primary"
-                  icon={<PlusIcon width={18} height={18} />}
-                  onClick={() => dialog.open({ type: 'create' })}
-                >
-                  {t('add')}
-                </Button>
-              }
-            />
+            <EmptyState title={t('emptyTitle')} body={t('emptyBody')} />
           )
         }
       >
-        <ul className="divide-y divide-hairline md:hidden">
+        <ul className="md:hidden">
           {rows.map((currency) => (
-            <li
+            <ListRow
               key={currency.id}
-              className="flex min-h-14 items-center justify-between gap-3 px-4 py-2"
+              actions={
+                <RowActions
+                  name={currency.name}
+                  onEdit={() => dialog.open({ type: 'edit', currency })}
+                  onDelete={() => dialog.open({ type: 'delete', currency })}
+                />
+              }
             >
-              <div className="flex min-w-0 flex-wrap items-baseline gap-x-2">
-                <span className="break-words">{currency.name}</span>
-                <span dir="ltr" className="font-mono text-xs text-muted">
+              <span className="flex items-center gap-2.5">
+                <span dir="ltr" className="code-chip shrink-0">
                   {currency.currencyCode}
                 </span>
-              </div>
-              <RowActions
-                name={currency.name}
-                onEdit={() => dialog.open({ type: 'edit', currency })}
-                onDelete={() => dialog.open({ type: 'delete', currency })}
-              />
-            </li>
+                <span className="min-w-0 font-semibold">{currency.name}</span>
+              </span>
+            </ListRow>
           ))}
         </ul>
-        <table className="hidden w-full text-sm md:table">
-          <thead className="bg-sunken text-xs text-muted">
+        <table className="data-table hidden md:table">
+          <thead>
             <tr>
-              <th scope="col" className="px-4 py-2.5 text-start font-semibold">
-                {t('columnName')}
-              </th>
-              <th scope="col" className="w-28 px-4 py-2.5 text-start font-semibold">
+              <th scope="col" className="w-24">
                 {t('columnCode')}
               </th>
-              <th scope="col" className="w-48 px-4 py-2.5 text-end font-semibold">
+              <th scope="col">{t('columnName')}</th>
+              <th scope="col" className="w-px">
                 <span className="sr-only">{tc('actions')}</span>
               </th>
             </tr>
           </thead>
-          <tbody className="divide-y divide-hairline">
+          <tbody>
             {rows.map((currency) => (
-              <tr key={currency.id} className="h-14 hover:bg-ground">
-                <th scope="row" className="px-4 text-start font-normal">
+              <tr key={currency.id}>
+                <td>
+                  <span dir="ltr" className="code-chip">
+                    {currency.currencyCode}
+                  </span>
+                </td>
+                <th scope="row" className="font-semibold break-words">
                   {currency.name}
                 </th>
-                <td className="px-4 font-mono text-muted">
-                  <span dir="ltr">{currency.currencyCode}</span>
-                </td>
-                <td className="px-4">
+                <td className="whitespace-nowrap">
                   <RowActions
                     name={currency.name}
                     onEdit={() => dialog.open({ type: 'edit', currency })}
@@ -193,6 +187,6 @@ export function CurrenciesScreen() {
           returnFocusTo={dialog.opener}
         />
       )}
-    </div>
+    </Page>
   );
 }

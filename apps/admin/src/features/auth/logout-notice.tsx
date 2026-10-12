@@ -16,10 +16,7 @@ export function LogoutNotice({ message }: { message: string }) {
   }, []);
 
   return (
-    <p
-      role="status"
-      className="route-enter rounded-md border border-hairline bg-accent-tint px-3 py-2.5 text-sm text-ink"
-    >
+    <p role="status" className="auth-notice">
       {message}
     </p>
   );

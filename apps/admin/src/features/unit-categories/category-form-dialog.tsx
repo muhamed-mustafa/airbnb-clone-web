@@ -7,7 +7,6 @@ import { useForm } from 'react-hook-form';
 import { useApplyServerErrors, useZodErrorMap } from '@/lib/form-errors';
 import { Button } from '@/ui/button';
 import { Dialog } from '@/ui/dialog';
-import { NavigationIcon } from '@/ui/navigation-icon';
 import { TextField } from '@/ui/field';
 import { FormAlert } from '@/ui/states';
 import { useToast } from '@/ui/toast';
@@ -74,13 +73,12 @@ export function UnitCategoryFormDialog({
   return (
     <Dialog
       open
-      icon={<NavigationIcon name="unitCategories" />}
       returnFocusTo={returnFocusTo}
       onOpenChange={(open) => !open && !isSubmitting && onClose()}
       description={t('formDescription')}
       title={category ? t('editTitle', { name: category.name }) : t('createTitle')}
     >
-      <form noValidate onSubmit={onSubmit} className="resource-form grid gap-6">
+      <form noValidate onSubmit={onSubmit} className="grid gap-5">
         <FormAlert messages={alert.messages} requestId={alert.requestId} />
         <TextField
           label={t('fieldName')}
@@ -95,13 +93,12 @@ export function UnitCategoryFormDialog({
           placeholder={t('codePlaceholder')}
           hint={t('fieldCodeHint')}
           autoComplete="off"
-          dir="ltr"
           maxLength={100}
-          className="font-mono"
+          className="font-mono placeholder:font-sans"
           error={errors.icon?.message}
           {...form.register('icon')}
         />
-        <div className="form-actions flex flex-col-reverse gap-3 sm:flex-row sm:justify-end">
+        <div className="dialog-actions">
           <Button onClick={onClose} disabled={isSubmitting}>
             {tc('cancel')}
           </Button>

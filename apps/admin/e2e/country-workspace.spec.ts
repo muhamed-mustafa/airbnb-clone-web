@@ -73,17 +73,19 @@ test('country workspace gives live feedback, keeps newest results and exposes in
   await expect(name).toBeFocused();
   await expect(visible('Egypt')).toBeVisible();
   await expect(page).toHaveURL(/countries$/);
+  // Hover colours only where a pointer hovers; a tap on a touch screen must not leave one.
+  const canHover = await page.evaluate(() => matchMedia('(hover: hover)').matches);
   const add = page.getByRole('button', { name: 'Add country', exact: true });
   await add.hover();
-  await expect(add).toHaveCSS('background-color', 'rgb(33, 78, 139)');
+  await expect(add).toHaveCSS('background-color', canHover ? 'rgb(43, 52, 69)' : 'rgb(17, 24, 39)');
   const edit = page.getByRole('button', { name: 'Edit Egypt', exact: true });
-  await expect(edit).toHaveCSS('color', 'rgb(23, 43, 77)');
+  await expect(edit).toHaveCSS('color', 'rgb(17, 24, 39)');
   await expect(page.getByRole('button', { name: 'Delete Egypt', exact: true })).toHaveCSS(
     'color',
     'rgb(180, 35, 24)',
   );
   await edit.hover();
-  await expect(edit).toHaveCSS('color', 'rgb(33, 78, 139)');
+  await expect(edit).toHaveCSS('color', canHover ? 'rgb(28, 69, 171)' : 'rgb(17, 24, 39)');
   await edit.click();
   const countryName = page.getByLabel('Country name', { exact: true });
   const countryCode = page.getByLabel('Country code', { exact: true });

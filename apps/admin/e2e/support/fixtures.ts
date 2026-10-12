@@ -67,6 +67,12 @@ export async function seed<T>(path: string, body: unknown): Promise<T> {
   return ((await response.json()) as { data: T }).data;
 }
 
+/**
+ * The list's results (table on desktop, list on mobile), without the applied-filter chips
+ * that repeat a filter's value above them.
+ */
+export const results = (page: Page) => page.locator('section[aria-busy]').locator('table, ul');
+
 export async function expectNoHorizontalScroll(page: Page) {
   const overflow = await page.evaluate(
     () => document.documentElement.scrollWidth - document.documentElement.clientWidth,

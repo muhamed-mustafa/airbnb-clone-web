@@ -2,12 +2,16 @@
 
 import dynamic from 'next/dynamic';
 import { useTranslations } from 'next-intl';
+import { AppliedFilters } from '@/features/locations/applied-filters';
 import { FilterInput } from '@/features/locations/filter-input';
 import { ListFrame } from '@/features/locations/list-frame';
 import { RowActions } from '@/features/locations/row-actions';
 import { useListParams } from '@/features/locations/use-list-params';
 import { Button } from '@/ui/button';
 import { PlusIcon } from '@/ui/icons';
+import { ListRow } from '@/ui/list-row';
+import { Page } from '@/ui/page';
+import { PageHeader } from '@/ui/page-header';
 import { EmptyState } from '@/ui/states';
 import { useDialog } from '@/ui/use-dialog';
 import { useUnitCategories, type UnitCategory } from './api';
@@ -38,48 +42,45 @@ export function UnitCategoriesScreen() {
   const meta = query.data?.meta;
   const rows = query.data?.data ?? [];
 
+  const addButton = (
+    <Button
+      variant="primary"
+      icon={<PlusIcon width={18} height={18} />}
+      onClick={() => dialog.open({ type: 'create' })}
+    >
+      {t('add')}
+    </Button>
+  );
+
   const toolbar = (
-    <div className="catalog-toolbar">
-      <search className="catalog-search grid grid-cols-1 items-start gap-3 sm:grid-cols-[minmax(0,20rem)_auto]">
+    <div className="list-toolbar grid gap-3">
+      <search className="grid grid-cols-1 items-start gap-3 sm:grid-cols-[minmax(0,20rem)]">
         <FilterInput
           resetToken={resetToken}
           label={t('searchName')}
+          placeholder={t('searchPlaceholder')}
           hint={t('searchNameHint')}
           value={values.name}
           isSendable={(value) => value === '' || value.length >= 3}
           onCommit={(name) => update({ name })}
           maxLength={50}
         />
-        {hasFilters && (
-          <Button
-            variant="ghost"
-            className="col-span-full justify-self-start sm:col-span-1 sm:mt-7"
-            onClick={clear}
-          >
-            {tc('clearFilters')}
-          </Button>
-        )}
       </search>
+      <AppliedFilters
+        filters={values.name ? [{ key: 'name', label: t('columnName'), value: values.name }] : []}
+        onRemove={() => update({ name: '' })}
+        onClear={clear}
+      />
     </div>
   );
 
   return (
-    <div className="grid gap-5">
-      <div className="flex flex-wrap items-end justify-between gap-3">
-        <div className="grid gap-0.5">
-          <h1 className="text-3xl font-semibold">{t('title')}</h1>
-          <p className="tabular text-sm text-muted" aria-live="polite">
-            {meta ? t('count', { count: meta.total }) : ' '}
-          </p>
-        </div>
-        <Button
-          variant="primary"
-          icon={<PlusIcon width={18} height={18} />}
-          onClick={() => dialog.open({ type: 'create' })}
-        >
-          {t('add')}
-        </Button>
-      </div>
+    <Page width="list">
+      <PageHeader
+        title={t('title')}
+        summary={meta ? t('count', { count: meta.total }) : ' '}
+        action={addButton}
+      />
 
       <ListFrame
         toolbar={toolbar}
@@ -95,66 +96,53 @@ export function UnitCategoriesScreen() {
           hasFilters ? (
             <EmptyState title={t('noResultsTitle')} body={t('noResultsBody')} />
           ) : (
-            <EmptyState
-              title={t('emptyTitle')}
-              body={t('emptyBody')}
-              action={
-                <Button
-                  variant="primary"
-                  icon={<PlusIcon width={18} height={18} />}
-                  onClick={() => dialog.open({ type: 'create' })}
-                >
-                  {t('add')}
-                </Button>
-              }
-            />
+            <EmptyState title={t('emptyTitle')} body={t('emptyBody')} />
           )
         }
       >
-        <ul className="divide-y divide-hairline md:hidden">
+        <ul className="md:hidden">
           {rows.map((category) => (
-            <li
+            <ListRow
               key={category.id}
-              className="flex min-h-14 items-center justify-between gap-3 px-4 py-2"
+              actions={
+                <RowActions
+                  name={category.name}
+                  onEdit={() => dialog.open({ type: 'edit', category })}
+                  onDelete={() => dialog.open({ type: 'delete', category })}
+                />
+              }
             >
-              <div className="flex min-w-0 flex-wrap items-baseline gap-x-2">
-                <span className="break-words">{category.name}</span>
-                <span dir="ltr" className="break-all font-mono text-xs text-muted">
-                  {category.icon || '—'}
+              <span className="font-semibold">{category.name}</span>
+              {category.icon && (
+                <span dir="ltr" className="font-mono text-xs text-muted">
+                  {category.icon}
                 </span>
-              </div>
-              <RowActions
-                name={category.name}
-                onEdit={() => dialog.open({ type: 'edit', category })}
-                onDelete={() => dialog.open({ type: 'delete', category })}
-              />
-            </li>
+              )}
+            </ListRow>
           ))}
         </ul>
-        <table className="hidden w-full text-sm md:table">
-          <thead className="bg-sunken text-xs text-muted">
+        <table className="data-table hidden md:table">
+          <thead>
             <tr>
-              <th scope="col" className="px-4 py-2.5 text-start font-semibold">
-                {t('columnName')}
-              </th>
-              <th scope="col" className="px-4 py-2.5 text-start font-semibold">
+              <th scope="col">{t('columnName')}</th>
+              <th scope="col" className="w-[36%]">
                 {t('columnCode')}
               </th>
-              <th scope="col" className="w-48 px-4 py-2.5 text-end font-semibold">
+              <th scope="col" className="w-px">
                 <span className="sr-only">{tc('actions')}</span>
               </th>
             </tr>
           </thead>
-          <tbody className="divide-y divide-hairline">
+          <tbody>
             {rows.map((category) => (
-              <tr key={category.id} className="h-14 hover:bg-ground">
-                <th scope="row" className="px-4 text-start font-normal">
+              <tr key={category.id}>
+                <th scope="row" className="font-semibold break-words">
                   {category.name}
                 </th>
-                <td className="max-w-48 break-all px-4 font-mono text-muted">
+                <td className="font-mono text-muted [overflow-wrap:anywhere]">
                   <span dir="ltr">{category.icon || '—'}</span>
                 </td>
-                <td className="px-4">
+                <td className="whitespace-nowrap">
                   <RowActions
                     name={category.name}
                     onEdit={() => dialog.open({ type: 'edit', category })}
@@ -181,6 +169,6 @@ export function UnitCategoriesScreen() {
           returnFocusTo={dialog.opener}
         />
       )}
-    </div>
+    </Page>
   );
 }

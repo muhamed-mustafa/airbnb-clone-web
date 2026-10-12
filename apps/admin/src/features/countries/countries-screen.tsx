@@ -2,12 +2,16 @@
 
 import dynamic from 'next/dynamic';
 import { useTranslations } from 'next-intl';
+import { AppliedFilters } from '@/features/locations/applied-filters';
 import { FilterInput } from '@/features/locations/filter-input';
 import { ListFrame } from '@/features/locations/list-frame';
 import { RowActions } from '@/features/locations/row-actions';
 import { useListParams } from '@/features/locations/use-list-params';
 import { Button } from '@/ui/button';
-import { CloseIcon, GlobeIcon, PlusIcon } from '@/ui/icons';
+import { PlusIcon } from '@/ui/icons';
+import { ListRow } from '@/ui/list-row';
+import { Page } from '@/ui/page';
+import { PageHeader } from '@/ui/page-header';
 import { EmptyState } from '@/ui/states';
 import { useDialog } from '@/ui/use-dialog';
 import { useCountries, type Country } from './api';
@@ -34,16 +38,19 @@ export function CountriesScreen() {
   const meta = query.data?.meta;
   const rows = query.data?.data ?? [];
 
+  const addButton = (
+    <Button
+      variant="primary"
+      icon={<PlusIcon width={18} height={18} />}
+      onClick={() => dialog.open({ type: 'create' })}
+    >
+      {t('add')}
+    </Button>
+  );
+
   const toolbar = (
-    <div className="catalog-toolbar">
-      <div className="catalog-toolbar-heading flex items-center justify-between gap-3">
-        <span className="flex items-center gap-2 text-sm font-semibold">
-          <GlobeIcon width={17} height={17} />
-          {t('directory')}
-        </span>
-        <span className="text-xs text-muted">{t('liveSearch')}</span>
-      </div>
-      <search className="catalog-search grid grid-cols-1 items-start gap-3 sm:grid-cols-[minmax(0,22rem)_10rem_auto]">
+    <div className="list-toolbar grid gap-3">
+      <search className="grid grid-cols-[minmax(0,1fr)_7.5rem] items-start gap-3 sm:grid-cols-[minmax(0,20rem)_9rem]">
         <FilterInput
           resetToken={resetToken}
           label={t('searchName')}
@@ -62,7 +69,7 @@ export function CountriesScreen() {
         <FilterInput
           resetToken={resetToken}
           label={t('searchCode')}
-          placeholder="EG"
+          placeholder={t('codeSearchPlaceholder')}
           delayMs={250}
           feedback={{ incomplete: () => t('codeIncomplete'), waiting: t('searchQueued') }}
           hint={t('searchCodeHint')}
@@ -71,63 +78,28 @@ export function CountriesScreen() {
           isSendable={(value) => value === '' || /^[A-Z]{2}$/.test(value)}
           onCommit={(code) => update({ code })}
           maxLength={2}
-          dir="ltr"
-          className="font-mono uppercase"
+          className="font-mono uppercase placeholder:font-sans placeholder:normal-case"
         />
-        {hasFilters && (
-          <Button
-            variant="ghost"
-            className="col-span-full justify-self-start sm:col-span-1 sm:mt-7"
-            onClick={clear}
-          >
-            {tc('clearFilters')}
-          </Button>
-        )}
       </search>
-      {hasFilters && (
-        <div
-          className="filter-chips flex flex-wrap items-center gap-2"
-          aria-label={t('appliedFilters')}
-        >
-          {(['name', 'code'] as const).map((key) =>
-            values[key] ? (
-              <button
-                key={key}
-                type="button"
-                className="filter-chip"
-                aria-label={t('removeFilter', { value: values[key] })}
-                onClick={() => update({ [key]: '' })}
-              >
-                <span dir="auto">
-                  {key === 'name' ? t('columnName') : t('columnCode')}: {values[key]}
-                </span>
-                <CloseIcon width={13} height={13} />
-              </button>
-            ) : null,
-          )}
-        </div>
-      )}
+      <AppliedFilters
+        filters={FILTER_KEYS.filter((key) => values[key]).map((key) => ({
+          key,
+          label: key === 'name' ? t('columnName') : t('columnCode'),
+          value: values[key],
+        }))}
+        onRemove={(key) => update({ [key]: '' })}
+        onClear={clear}
+      />
     </div>
   );
 
   return (
-    <div className="catalog-workspace grid gap-6">
-      <div className="catalog-page-heading flex flex-wrap items-end justify-between gap-4">
-        <div className="grid gap-2">
-          <span className="catalog-eyebrow">{t('directory')}</span>
-          <h1 className="text-3xl font-semibold">{t('title')}</h1>
-          <p className="tabular text-sm text-muted" aria-live="polite">
-            {meta ? t('count', { count: meta.total }) : ' '}
-          </p>
-        </div>
-        <Button
-          variant="primary"
-          icon={<PlusIcon width={18} height={18} />}
-          onClick={() => dialog.open({ type: 'create' })}
-        >
-          {t('add')}
-        </Button>
-      </div>
+    <Page width="list">
+      <PageHeader
+        title={t('title')}
+        summary={meta ? t('count', { count: meta.total }) : ' '}
+        action={addButton}
+      />
 
       <ListFrame
         toolbar={toolbar}
@@ -143,69 +115,58 @@ export function CountriesScreen() {
           hasFilters ? (
             <EmptyState title={t('noResultsTitle')} body={t('noResultsBody')} />
           ) : (
-            <EmptyState
-              title={t('emptyTitle')}
-              body={t('emptyBody')}
-              action={
-                <Button
-                  variant="primary"
-                  icon={<PlusIcon width={18} height={18} />}
-                  onClick={() => dialog.open({ type: 'create' })}
-                >
-                  {t('add')}
-                </Button>
-              }
-            />
+            <EmptyState title={t('emptyTitle')} body={t('emptyBody')} />
           )
         }
       >
-        {/* Phones: one compact row per country. Wider screens: a table. */}
-        <ul className="divide-y divide-hairline md:hidden">
+        {/* Phones: one row per country. Wider screens: a table. */}
+        <ul className="md:hidden">
           {rows.map((country) => (
-            <li
+            <ListRow
               key={country.id}
-              className="catalog-mobile-row flex min-h-16 items-center justify-between gap-3 px-5 py-3"
+              actions={
+                <RowActions
+                  name={country.name}
+                  onEdit={() => dialog.open({ type: 'edit', country })}
+                  onDelete={() => dialog.open({ type: 'delete', country })}
+                />
+              }
             >
-              <div className="flex min-w-0 flex-wrap items-baseline gap-x-2">
-                <span className="break-words font-semibold">{country.name}</span>
-                <span dir="ltr" className="font-mono text-xs text-muted">
+              <span className="flex items-center gap-2.5">
+                <span dir="ltr" className="code-chip shrink-0">
                   {country.code}
                 </span>
-              </div>
-              <RowActions
-                name={country.name}
-                onEdit={() => dialog.open({ type: 'edit', country })}
-                onDelete={() => dialog.open({ type: 'delete', country })}
-              />
-            </li>
+                <span className="min-w-0 font-semibold">{country.name}</span>
+              </span>
+            </ListRow>
           ))}
         </ul>
-        <table className="hidden w-full text-sm md:table">
-          <thead className="bg-sunken text-xs text-muted">
+        <table className="data-table hidden md:table">
+          <thead>
+            {/* Code is short and identifies the row: a narrow first column beside the name,
+                so the two never drift apart on wide screens. Actions keep a fixed width. */}
             <tr>
-              <th scope="col" className="px-4 py-2.5 text-start font-semibold">
-                {t('columnName')}
-              </th>
-              <th scope="col" className="w-28 px-4 py-2.5 text-start font-semibold">
+              <th scope="col" className="w-24">
                 {t('columnCode')}
               </th>
-              <th scope="col" className="w-48 px-4 py-2.5 text-end font-semibold">
+              <th scope="col">{t('columnName')}</th>
+              <th scope="col" className="w-px">
                 <span className="sr-only">{tc('actions')}</span>
               </th>
             </tr>
           </thead>
-          <tbody className="divide-y divide-hairline">
+          <tbody>
             {rows.map((country) => (
-              <tr key={country.id} className="catalog-row h-16">
-                <th scope="row" className="px-5 text-start font-semibold">
-                  {country.name}
-                </th>
-                <td className="px-4 font-mono text-muted">
-                  <span dir="ltr" className="country-code">
+              <tr key={country.id}>
+                <td>
+                  <span dir="ltr" className="code-chip">
                     {country.code}
                   </span>
                 </td>
-                <td className="px-4">
+                <th scope="row" className="font-semibold break-words">
+                  {country.name}
+                </th>
+                <td className="whitespace-nowrap">
                   <RowActions
                     name={country.name}
                     onEdit={() => dialog.open({ type: 'edit', country })}
@@ -235,6 +196,6 @@ export function CountriesScreen() {
           returnFocusTo={dialog.opener}
         />
       )}
-    </div>
+    </Page>
   );
 }
