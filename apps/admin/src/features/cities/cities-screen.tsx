@@ -153,7 +153,7 @@ export function CitiesScreen() {
   );
 
   return (
-    <Page width="list-wide">
+    <Page width="wide">
       <PageHeader
         title={t('title')}
         summary={meta ? t('count', { count: meta.total }) : ' '}
@@ -205,14 +205,18 @@ export function CitiesScreen() {
             </ListRow>
           ))}
         </ul>
-        <table className="data-table hidden md:table">
+        <table className="data-table data-table-fixed hidden md:table">
+          {/* Two text columns of similar length share the width evenly; actions follow. */}
+          <colgroup>
+            <col className="w-[30%]" />
+            <col className="w-[30%]" />
+            <col />
+          </colgroup>
           <thead>
             <tr>
               <th scope="col">{t('columnName')}</th>
-              <th scope="col" className="w-[38%]">
-                {t('columnCountry')}
-              </th>
-              <th scope="col" className="w-px">
+              <th scope="col">{t('columnCountry')}</th>
+              <th scope="col">
                 <span className="sr-only">{tc('actions')}</span>
               </th>
             </tr>
@@ -226,6 +230,7 @@ export function CitiesScreen() {
                 <td className="text-muted break-words">{countryName(city.country)}</td>
                 <td className="whitespace-nowrap">
                   <RowActions
+                    align="start"
                     name={city.name}
                     onEdit={() => dialog.open({ type: 'edit', city })}
                     onDelete={() => dialog.open({ type: 'delete', city })}

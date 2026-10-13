@@ -94,7 +94,7 @@ export function CountriesScreen() {
   );
 
   return (
-    <Page width="list">
+    <Page width="wide">
       <PageHeader
         title={t('title')}
         summary={meta ? t('count', { count: meta.total }) : ' '}
@@ -141,16 +141,20 @@ export function CountriesScreen() {
             </ListRow>
           ))}
         </ul>
-        <table className="data-table hidden md:table">
+        <table className="data-table data-table-fixed hidden md:table">
+          {/* Explicit proportions instead of a narrow page: the code is fixed, the name gets
+              a bounded share, and the actions start right after it, so data and its actions
+              stay together at any width. */}
+          <colgroup>
+            <col className="w-32" />
+            <col className="w-[40%]" />
+            <col />
+          </colgroup>
           <thead>
-            {/* Code is short and identifies the row: a narrow first column beside the name,
-                so the two never drift apart on wide screens. Actions keep a fixed width. */}
             <tr>
-              <th scope="col" className="w-24">
-                {t('columnCode')}
-              </th>
+              <th scope="col">{t('columnCode')}</th>
               <th scope="col">{t('columnName')}</th>
-              <th scope="col" className="w-px">
+              <th scope="col">
                 <span className="sr-only">{tc('actions')}</span>
               </th>
             </tr>
@@ -168,6 +172,7 @@ export function CountriesScreen() {
                 </th>
                 <td className="whitespace-nowrap">
                   <RowActions
+                    align="start"
                     name={country.name}
                     onEdit={() => dialog.open({ type: 'edit', country })}
                     onDelete={() => dialog.open({ type: 'delete', country })}

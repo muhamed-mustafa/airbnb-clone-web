@@ -75,7 +75,7 @@ export function UnitCategoriesScreen() {
   );
 
   return (
-    <Page width="list">
+    <Page width="wide">
       <PageHeader
         title={t('title')}
         summary={meta ? t('count', { count: meta.total }) : ' '}
@@ -121,14 +121,18 @@ export function UnitCategoriesScreen() {
             </ListRow>
           ))}
         </ul>
-        <table className="data-table hidden md:table">
+        <table className="data-table data-table-fixed hidden md:table">
+          {/* Short type names and a short, optional icon key; actions follow the key. */}
+          <colgroup>
+            <col className="w-[30%]" />
+            <col className="w-44" />
+            <col />
+          </colgroup>
           <thead>
             <tr>
               <th scope="col">{t('columnName')}</th>
-              <th scope="col" className="w-[36%]">
-                {t('columnCode')}
-              </th>
-              <th scope="col" className="w-px">
+              <th scope="col">{t('columnCode')}</th>
+              <th scope="col">
                 <span className="sr-only">{tc('actions')}</span>
               </th>
             </tr>
@@ -144,6 +148,7 @@ export function UnitCategoriesScreen() {
                 </td>
                 <td className="whitespace-nowrap">
                   <RowActions
+                    align="start"
                     name={category.name}
                     onEdit={() => dialog.open({ type: 'edit', category })}
                     onDelete={() => dialog.open({ type: 'delete', category })}

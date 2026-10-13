@@ -66,46 +66,46 @@
  * sidebar that recedes; small radii, flat surfaces, quick motion.
  */
 :root {
-  --d-ground: #f4f5f7;
+  --d-ground: #f8fafc;
   --d-surface: #ffffff;
-  --d-sunken: #f3f4f6;
-  --d-row-hover: #f7f8fa;
-  --d-ink: #111827;
-  --d-muted: #4b5563;
-  --d-hairline: #e5e7eb;
-  --d-divider: #d1d5db;
-  --d-edge: #7d848f;
-  --d-edge-strong: #4b5563;
-  --d-accent: #2457d6;
-  --d-accent-strong: #1c45ab;
-  --d-accent-tint: #eef3ff;
+  --d-sunken: #f1f5f9;
+  --d-row-hover: #f8fafc;
+  --d-ink: #0f172a;
+  --d-muted: #475569;
+  --d-hairline: #e2e8f0;
+  --d-divider: #cbd5e1;
+  --d-edge: #8190a5;
+  --d-edge-strong: #475569;
+  --d-accent: #2f54c6;
+  --d-accent-strong: #23439f;
+  --d-accent-tint: #eef2fc;
   --d-danger: #b42318;
   --d-danger-strong: #8f1c13;
   --d-danger-tint: #fef1ef;
 
-  /* Primary: graphite fill; lighter on hover, darker and inset when pressed. */
-  --primary-bg: #111827;
-  --primary-hover: #2b3445;
-  --primary-active: #05080d;
+  /* Primary: the one accent blue; darker on hover, darker and inset when pressed. */
+  --primary-bg: #2f54c6;
+  --primary-hover: #26479f;
+  --primary-active: #1d3884;
   --primary-fg: #ffffff;
   /* Secondary: a visible outline and a white fill, so it reads as a button at rest. */
-  --secondary-border: #b9bfc8;
-  --secondary-border-hover: #8b929d;
-  --pressed-inset: inset 0 1px 2px rgb(17 24 39 / 0.18);
+  --secondary-border: #cbd5e1;
+  --secondary-border-hover: #94a3b8;
+  --pressed-inset: inset 0 1px 2px rgb(15 23 42 / 0.2);
 
-  --d-nav: #f9fafb;
-  --d-nav-text: #374151;
-  --d-nav-muted: #6b7280;
-  --nav-hover: #eceef2;
-  --nav-active-bg: #ffffff;
-  --nav-active-text: #111827;
-  --nav-active-ring: inset 0 0 0 1px #d1d5db, 0 1px 2px rgb(17 24 39 / 0.06);
-  --nav-active-mark: #2457d6;
-  --nav-active-icon: #2457d6;
-  --nav-border: #e5e7eb;
-  --nav-focus: #2457d6;
-  --table-head-bg: #f9fafb;
-  --placeholder: #6b7280;
+  --d-nav: #ffffff;
+  --d-nav-text: #334155;
+  --d-nav-muted: #64748b;
+  --nav-hover: #f1f5f9;
+  --nav-active-bg: #eef2fc;
+  --nav-active-text: #23439f;
+  --nav-active-ring: none;
+  --nav-active-mark: #2f54c6;
+  --nav-active-icon: #2f54c6;
+  --nav-border: #e2e8f0;
+  --nav-focus: #2f54c6;
+  --table-head-bg: #f8fafc;
+  --placeholder: #64748b;
 
   --d-radius-sm: 4px;
   --d-radius-md: 6px;
@@ -125,10 +125,10 @@
   --duration-fast: 100ms;
   --duration-base: 140ms;
   --duration-slow: 180ms;
-  --focus-ring: 0 0 0 3px rgb(36 87 214 / 0.25);
+  --focus-ring: 0 0 0 3px rgb(47 84 198 / 0.25);
   --focus-ring-danger: 0 0 0 3px rgb(180 35 24 / 0.2);
-  --chart-1: #2457d6;
-  --chart-2: #9aa4b5;
+  --chart-1: #4867c8;
+  --chart-2: #cbd5e1;
 }
 
 @layer base {
@@ -361,7 +361,7 @@
     justify-content: center;
     gap: 8px;
     min-height: var(--control-h);
-    padding-inline: 14px;
+    padding-inline: 16px;
     border: 1px solid transparent;
     border-radius: var(--radius-md);
     font-size: var(--text-sm);
@@ -514,11 +514,24 @@
   .page-body[data-width='details'] {
     max-width: 40rem;
   }
-  .page-body[data-width='list'] {
-    max-width: 46rem;
+  /* On compact pages the note shares the edges of the panel beneath it. */
+  .page-body[data-width='details'] .info-note {
+    max-width: none;
   }
-  .page-body[data-width='list-wide'] {
-    max-width: 54rem;
+
+  /* The workspace beside the sidebar: it uses the available width up to a comfortable
+     maximum, with gutters that grow with the screen; never a narrow centred column. */
+  .workspace {
+    width: 100%;
+    max-width: 92rem;
+    margin-inline: auto;
+    padding-block: 24px;
+    padding-inline: clamp(16px, 3vw, 48px);
+  }
+  @media (min-width: 1024px) {
+    .workspace {
+      padding-block: 32px;
+    }
   }
 
   /* Phone list row: information first; actions wrap below when the text needs the room. */
@@ -599,6 +612,10 @@
     font-weight: 600;
     text-align: start;
     white-space: nowrap;
+  }
+  /* Column widths come from the table's <colgroup>, not from cell content. */
+  .data-table-fixed {
+    table-layout: fixed;
   }
   .data-table .num {
     text-align: end;
@@ -744,7 +761,7 @@
     outline-color: var(--nav-focus);
   }
   .sidebar-title {
-    color: var(--nav-active-text);
+    color: var(--color-ink);
   }
   .brand-mark {
     display: inline-grid;
@@ -756,9 +773,9 @@
     background: var(--color-ink);
     color: #ffffff;
   }
+  /* The mark is identity, not an action: navy, so blue stays reserved for interaction. */
   .app-sidebar .brand-mark {
-    background: var(--primary-bg);
-    color: var(--primary-fg);
+    background: var(--color-ink);
   }
   .nav-group-label {
     padding-inline: 12px;

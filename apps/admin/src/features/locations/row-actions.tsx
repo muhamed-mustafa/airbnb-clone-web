@@ -8,16 +8,18 @@ interface RowActionsProps {
   name: string;
   onEdit: () => void;
   onDelete: () => void;
+  /** `start` in a table column that follows the data; `end` at the end of a phone row. */
+  align?: 'start' | 'end';
 }
 
 /**
  * Edit and delete stay distinguishable by text, icon and color on every screen size; both
  * stay quiet until hovered so the row's data reads first.
  */
-export function RowActions({ name, onEdit, onDelete }: RowActionsProps) {
+export function RowActions({ name, onEdit, onDelete, align = 'end' }: RowActionsProps) {
   const tc = useTranslations('common');
   return (
-    <div className="flex shrink-0 justify-end gap-1">
+    <div className={`flex shrink-0 gap-1 ${align === 'start' ? 'justify-start' : 'justify-end'}`}>
       <Button
         variant="edit"
         size="sm"

@@ -91,7 +91,7 @@ export function CurrenciesScreen() {
   );
 
   return (
-    <Page width="list">
+    <Page width="wide">
       <PageHeader
         title={t('title')}
         summary={meta ? t('count', { count: meta.total }) : ' '}
@@ -137,14 +137,18 @@ export function CurrenciesScreen() {
             </ListRow>
           ))}
         </ul>
-        <table className="data-table hidden md:table">
+        <table className="data-table data-table-fixed hidden md:table">
+          {/* A three-letter code and a short currency name; actions follow the name. */}
+          <colgroup>
+            <col className="w-28" />
+            <col className="w-[32%]" />
+            <col />
+          </colgroup>
           <thead>
             <tr>
-              <th scope="col" className="w-24">
-                {t('columnCode')}
-              </th>
+              <th scope="col">{t('columnCode')}</th>
               <th scope="col">{t('columnName')}</th>
-              <th scope="col" className="w-px">
+              <th scope="col">
                 <span className="sr-only">{tc('actions')}</span>
               </th>
             </tr>
@@ -162,6 +166,7 @@ export function CurrenciesScreen() {
                 </th>
                 <td className="whitespace-nowrap">
                   <RowActions
+                    align="start"
                     name={currency.name}
                     onEdit={() => dialog.open({ type: 'edit', currency })}
                     onDelete={() => dialog.open({ type: 'delete', currency })}

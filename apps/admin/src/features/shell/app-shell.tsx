@@ -232,11 +232,7 @@ export function AppShell({ children }: { children: ReactNode }) {
           </DialogPrimitive.Root>
         </header>
         <OfflineBanner />
-        <main
-          id="main"
-          tabIndex={-1}
-          className="mx-auto w-full max-w-6xl px-4 py-6 focus:outline-none sm:px-6 lg:px-8 lg:py-8"
-        >
+        <main id="main" tabIndex={-1} className="workspace focus:outline-none">
           <div key={pathname} className="route-enter">
             {children}
           </div>

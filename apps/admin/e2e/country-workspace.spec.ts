@@ -77,15 +77,18 @@ test('country workspace gives live feedback, keeps newest results and exposes in
   const canHover = await page.evaluate(() => matchMedia('(hover: hover)').matches);
   const add = page.getByRole('button', { name: 'Add country', exact: true });
   await add.hover();
-  await expect(add).toHaveCSS('background-color', canHover ? 'rgb(43, 52, 69)' : 'rgb(17, 24, 39)');
+  await expect(add).toHaveCSS(
+    'background-color',
+    canHover ? 'rgb(38, 71, 159)' : 'rgb(47, 84, 198)',
+  );
   const edit = page.getByRole('button', { name: 'Edit Egypt', exact: true });
-  await expect(edit).toHaveCSS('color', 'rgb(17, 24, 39)');
+  await expect(edit).toHaveCSS('color', 'rgb(15, 23, 42)');
   await expect(page.getByRole('button', { name: 'Delete Egypt', exact: true })).toHaveCSS(
     'color',
     'rgb(180, 35, 24)',
   );
   await edit.hover();
-  await expect(edit).toHaveCSS('color', canHover ? 'rgb(28, 69, 171)' : 'rgb(17, 24, 39)');
+  await expect(edit).toHaveCSS('color', canHover ? 'rgb(35, 67, 159)' : 'rgb(15, 23, 42)');
   await edit.click();
   const countryName = page.getByLabel('Country name', { exact: true });
   const countryCode = page.getByLabel('Country code', { exact: true });

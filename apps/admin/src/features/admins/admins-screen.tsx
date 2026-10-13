@@ -145,17 +145,21 @@ export function AdminsScreen() {
             </ListRow>
           ))}
         </ul>
-        <table className="data-table hidden md:table">
+        <table className="data-table data-table-fixed hidden md:table">
+          {/* Emails are the longest values; names can be long in Arabic; the role is a
+              short badge. The view link follows the role. */}
+          <colgroup>
+            <col className="w-[24%]" />
+            <col className="w-[34%]" />
+            <col className="w-40" />
+            <col />
+          </colgroup>
           <thead>
             <tr>
-              <th scope="col" className="w-[30%]">
-                {t('columnName')}
-              </th>
+              <th scope="col">{t('columnName')}</th>
               <th scope="col">{t('columnEmail')}</th>
-              <th scope="col" className="w-40">
-                {t('columnRole')}
-              </th>
-              <th scope="col" className="w-px">
+              <th scope="col">{t('columnRole')}</th>
+              <th scope="col">
                 <span className="sr-only">{tc('actions')}</span>
               </th>
             </tr>

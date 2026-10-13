@@ -1,4 +1,14 @@
-import { expect, results, seed, signIn, test, unique, uniqueCode } from './support/fixtures';
+import {
+  expect,
+  results,
+  seed,
+  setLocale,
+  signIn,
+  test,
+  unique,
+  uniqueCode,
+  uniqueCurrencyCode,
+} from './support/fixtures';
 
 // Responsive details of the list layout that a render alone does not prove.
 test.describe('list layout', () => {
@@ -34,22 +44,56 @@ test.describe('list layout', () => {
     expect(l.main.width).toBeGreaterThan(rowBox.width * 0.8);
   });
 
-  test('desktop lists use a width that keeps data close to its actions', async ({ page }, info) => {
+  test('details pages and forms stay compact', async ({ page }, info) => {
     test.skip(info.project.name !== 'desktop', 'Desktop layout only.');
-    const widths: Record<string, number> = {
-      '/locations/countries': 46,
-      '/catalog/currencies': 46,
-      '/catalog/unit-categories': 46,
-      '/locations/cities': 54,
-      '/settings/pricing': 40,
-      '/account': 40,
-    };
-    for (const [path, rem] of Object.entries(widths)) {
+    await page.setViewportSize({ width: 1920, height: 1000 });
+    for (const path of ['/settings/pricing', '/account']) {
       await page.goto(path);
       const body = page.locator('.page-body');
       await expect(body).toBeVisible();
-      const box = (await body.boundingBox())!;
-      expect(box.width, path).toBeLessThanOrEqual(rem * 16);
+      expect((await body.boundingBox())!.width, path).toBeLessThanOrEqual(40 * 16);
+    }
+  });
+
+  test('wide screens: lists use the workspace and actions follow their data', async ({
+    page,
+  }, info) => {
+    test.skip(info.project.name !== 'desktop', 'Desktop layout only.');
+    await setLocale(page, 'en');
+    const country = await seed<{ id: string }>('/countries', {
+      name: unique('Wide land'),
+      code: uniqueCode(),
+    });
+    await seed('/cities', { name: unique('Wide city'), country: country.id });
+    await seed('/currencies', { name: unique('Wide coin'), currencyCode: uniqueCurrencyCode() });
+    await seed('/unit-categories', { name: unique('Wide type') });
+    await page.setViewportSize({ width: 1920, height: 1000 });
+    // Each list: the control in the last column starts right after the column before it
+    // (cell padding only), however wide the table is.
+    const lists: [string, RegExp][] = [
+      ['/locations/countries', /^Edit /],
+      ['/locations/cities', /^Edit /],
+      ['/catalog/currencies', /^Edit /],
+      ['/catalog/unit-categories', /^Edit /],
+      ['/team/admins', /^View /],
+    ];
+    for (const [path, control] of lists) {
+      await page.goto(path);
+      const body = (await page.locator('.page-body').boundingBox())!;
+      // Not a narrow centred column: the list takes most of the area beside the sidebar.
+      expect(body.width, path).toBeGreaterThan(1300);
+      const table = page.locator('table.data-table');
+      expect((await table.boundingBox())!.width, path).toBeCloseTo(body.width, -1);
+      const row = table.locator('tbody tr').first();
+      const cells = row.locator(':scope > th, :scope > td');
+      const count = await cells.count();
+      const before = (await cells.nth(count - 2).boundingBox())!;
+      const action = (await row
+        .getByRole(path.includes('admins') ? 'link' : 'button', {
+          name: control,
+        })
+        .boundingBox())!;
+      expect(action.x - (before.x + before.width), path).toBeLessThanOrEqual(40);
     }
   });
 

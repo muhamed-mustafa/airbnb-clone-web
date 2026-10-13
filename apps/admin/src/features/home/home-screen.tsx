@@ -354,7 +354,9 @@ export function HomeScreen() {
           <StatTile key={stat.key} stat={stat} />
         ))}
       </section>
-      <div className="grid gap-[var(--panel-gap)] lg:grid-cols-[minmax(0,1.55fr)_minmax(0,1fr)]">
+      {/* Each card keeps its own height: the chart is as tall as its data, never stretched
+          to match the cards beside it. */}
+      <div className="grid items-start gap-[var(--panel-gap)] lg:grid-cols-[minmax(0,1.55fr)_minmax(0,1fr)]">
         <CitiesByCountry />
         <div className="grid content-start gap-[var(--panel-gap)]">
           <AdminsByRole />
