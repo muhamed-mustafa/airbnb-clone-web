@@ -4,11 +4,10 @@ import Link from 'next/link';
 import { useFormatter, useTranslations } from 'next-intl';
 import type { ReactNode } from 'react';
 import { useAppSettings } from '@/features/settings/api';
-import { Button } from '@/ui/button';
+import { Button, buttonClasses } from '@/ui/button';
 import { ChevronNextIcon } from '@/ui/icons';
 import { NavigationIcon } from '@/ui/navigation-icon';
 import { Page } from '@/ui/page';
-import { PageHeader } from '@/ui/page-header';
 import { useCityBreakdown, useTotal } from './api';
 
 const STATS = [
@@ -40,7 +39,7 @@ function StatTile({ stat }: { stat: (typeof STATS)[number] }) {
   const format = useFormatter();
   const total = useTotal(stat.api);
   return (
-    <article className="stat-tile">
+    <article className="stat-tile" data-stat={stat.key}>
       <span className="flex items-center justify-between gap-2 text-sm text-muted">
         <h2 className="font-normal">{t(`nav.${stat.key}`)}</h2>
         <NavigationIcon name={stat.key} />
@@ -347,15 +346,32 @@ function PricingSummary() {
 export function HomeScreen() {
   const t = useTranslations('home');
   return (
-    <Page>
-      <PageHeader title={t('overview')} summary={t('overviewSummary')} />
-      <section aria-label={t('statsLabel')} className="stat-grid">
+    <Page width="dashboard">
+      <header className="dashboard-masthead">
+        <div className="dashboard-masthead-copy">
+          <p className="dashboard-eyebrow">{t('tools')}</p>
+          <h1>{t('title')}</h1>
+          <p>{t('intro')}</p>
+        </div>
+        <Link
+          href="/locations/countries"
+          className={buttonClasses('primary', 'dashboard-masthead-action')}
+        >
+          <ChevronNextIcon width={16} height={16} className="rtl:-scale-x-100" />
+          {t('manage')}
+        </Link>
+      </header>
+      <section className="dashboard-overview-label" aria-labelledby="overview-title">
+        <div>
+          <h2 id="overview-title">{t('overview')}</h2>
+          <p>{t('overviewSummary')}</p>
+        </div>
+      </section>
+      <section aria-label={t('statsLabel')} className="stat-grid dashboard-stat-grid">
         {STATS.map((stat) => (
           <StatTile key={stat.key} stat={stat} />
         ))}
       </section>
-      {/* Each card keeps its own height: the chart is as tall as its data, never stretched
-          to match the cards beside it. */}
       <div className="grid items-start gap-[var(--panel-gap)] lg:grid-cols-[minmax(0,1.55fr)_minmax(0,1fr)]">
         <CitiesByCountry />
         <div className="grid content-start gap-[var(--panel-gap)]">

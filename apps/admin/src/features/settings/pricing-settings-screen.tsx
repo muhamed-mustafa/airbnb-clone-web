@@ -18,7 +18,7 @@ export function PricingSettingsScreen() {
   const settings = useAppSettings();
 
   return (
-    <Page width="details">
+    <Page width="form">
       <PageHeader title={t('title')} summary={t('intro')} />
       <p className="info-note">{t('storedOnly')}</p>
       <section className="ui-panel">

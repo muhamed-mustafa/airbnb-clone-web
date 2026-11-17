@@ -73,6 +73,15 @@ export async function seed<T>(path: string, body: unknown): Promise<T> {
  */
 export const results = (page: Page) => page.locator('section[aria-busy]').locator('table, ul');
 
+/** Opens the account panel from the sidebar (or from the open drawer on phones). */
+export async function openAccountMenu(page: Page) {
+  await page
+    .getByRole('button', { name: /^(Account menu|قائمة الحساب)/ })
+    .filter({ visible: true })
+    .click();
+  await expect(page.getByRole('dialog', { name: /^(Account|الحساب)$/ })).toBeVisible();
+}
+
 export async function expectNoHorizontalScroll(page: Page) {
   const overflow = await page.evaluate(
     () => document.documentElement.scrollWidth - document.documentElement.clientWidth,

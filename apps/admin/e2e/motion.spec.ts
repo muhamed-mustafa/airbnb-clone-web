@@ -1,4 +1,11 @@
-import { expect, test, signIn, setLocale, expectNoHorizontalScroll } from './support/fixtures';
+import {
+  expect,
+  test,
+  signIn,
+  setLocale,
+  expectNoHorizontalScroll,
+  openAccountMenu,
+} from './support/fixtures';
 
 test('reduced motion covers login, route entry and sign-out without blocking navigation', async ({
   page,
@@ -28,6 +35,7 @@ test('reduced motion covers login, route entry and sign-out without blocking nav
     await route.fulfill({ response });
   });
   if (info.project.name === 'mobile') await page.getByRole('button', { name: 'Open menu' }).click();
+  await openAccountMenu(page);
   await page.getByRole('button', { name: 'Sign out' }).click();
   const overlay = page.locator('.session-overlay');
   await expect(overlay).toBeVisible();

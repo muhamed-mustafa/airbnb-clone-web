@@ -1,14 +1,14 @@
 import type { ReactNode } from 'react';
 
 /**
- * Page body inside the workspace:
- * - `wide` (default): the full workspace width, for dashboards and lists. Lists keep data
- *   and actions together through their own column proportions, not a narrower page;
- * - `details` (about 40rem): label/value pages and short forms, which read best compact.
+ * Page body inside the workspace, centred, with a maximum width chosen by the kind of page:
+ * - `dashboard` (about 76rem): several cards side by side;
+ * - `table` (about 68rem): lists; their columns keep data and actions together;
+ * - `form` (about 40rem): forms and label/value pages, which read best compact.
  */
-export type PageWidth = 'details' | 'wide';
+export type PageWidth = 'dashboard' | 'table' | 'form';
 
-export function Page({ width = 'wide', children }: { width?: PageWidth; children: ReactNode }) {
+export function Page({ width, children }: { width: PageWidth; children: ReactNode }) {
   return (
     <div className="page-body" data-width={width}>
       {children}

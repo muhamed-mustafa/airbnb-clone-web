@@ -1,5 +1,12 @@
 import AxeBuilder from '@axe-core/playwright';
-import { test, expect, setLocale, admin, expectNoHorizontalScroll } from './support/fixtures';
+import {
+  test,
+  expect,
+  setLocale,
+  admin,
+  expectNoHorizontalScroll,
+  openAccountMenu,
+} from './support/fixtures';
 
 test('sign in and sign out show real progress and confirmation; overview shows live counts', async ({
   page,
@@ -67,6 +74,7 @@ test('sign in and sign out show real progress and confirmation; overview shows l
   await setLocale(page, 'en');
   await page.reload();
   if (info.project.name === 'mobile') await page.getByRole('button', { name: 'Open menu' }).click();
+  await openAccountMenu(page);
   await page.getByRole('button', { name: 'Sign out', exact: true }).click();
   await expect(page).toHaveURL(/\/login$/);
   expect(confirmations).toEqual([

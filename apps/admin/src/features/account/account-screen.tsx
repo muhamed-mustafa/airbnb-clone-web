@@ -26,7 +26,7 @@ export function AccountScreen() {
   const subject = session.data?.subject;
 
   return (
-    <Page width="details">
+    <Page width="form">
       <PageHeader title={t('profile')} summary={t('profileSummary')} />
       {!subject ? (
         <div className="ui-panel grid gap-3 p-5" role="status" aria-label={t('profile')}>

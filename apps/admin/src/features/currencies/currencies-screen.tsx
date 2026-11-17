@@ -91,7 +91,7 @@ export function CurrenciesScreen() {
   );
 
   return (
-    <Page width="wide">
+    <Page width="table">
       <PageHeader
         title={t('title')}
         summary={meta ? t('count', { count: meta.total }) : ' '}

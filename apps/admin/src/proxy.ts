@@ -4,7 +4,7 @@ import { readSession } from '@/server/session';
 import { safeNextPath } from '@/lib/safe-next-path';
 
 /**
- * Page guard: send visitors without a readable admin session to /login.
+ * Page guard: keep the recovery and login screens public; protect all admin workspace pages.
  * This is navigation only. Authorization happens in the BFF and, finally, in the backend.
  */
 export async function proxy(request: NextRequest) {
@@ -12,9 +12,10 @@ export async function proxy(request: NextRequest) {
   const signedIn = session !== undefined && !getRefreshCoordinator().isRevoked(session.sid);
   const { pathname, search } = request.nextUrl;
 
-  if (pathname === '/login') {
+  if (pathname === '/login' || pathname === '/forgot-password') {
     if (!signedIn) return NextResponse.next();
-    const next = safeNextPath(request.nextUrl.searchParams.get('next'));
+    const next =
+      pathname === '/login' ? safeNextPath(request.nextUrl.searchParams.get('next')) : '/';
     return NextResponse.redirect(new URL(next, request.url));
   }
 
