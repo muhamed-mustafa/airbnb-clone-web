@@ -5,6 +5,8 @@ import { NextIntlClientProvider } from 'next-intl';
 import { getTranslations } from 'next-intl/server';
 import type { ReactNode } from 'react';
 import { directionOf, LOCALE_COOKIE, readLocale } from '@/i18n/locale';
+import { readTheme, THEME_COOKIE, themeAttribute } from '@/theme/theme';
+import { ThemeProvider } from '@/theme/theme-provider';
 import { Providers } from './providers';
 import './globals.css';
 
@@ -30,17 +32,32 @@ export async function generateMetadata(): Promise<Metadata> {
 export const viewport: Viewport = {
   width: 'device-width',
   initialScale: 1,
-  themeColor: '#f5f8f8',
+  // The browser chrome follows the page ground in each scheme.
+  themeColor: [
+    { media: '(prefers-color-scheme: light)', color: '#f8fafc' },
+    { media: '(prefers-color-scheme: dark)', color: '#0d1219' },
+  ],
+  colorScheme: 'light dark',
 };
 
 export default async function RootLayout({ children }: { children: ReactNode }) {
   const jar = await cookies();
   const locale = readLocale(jar.get(LOCALE_COOKIE)?.value);
+  // An explicit theme is rendered by the server, so the first paint is already right; with
+  // no choice, CSS follows the system (and its later changes). No script, no flash.
+  const theme = readTheme(jar.get(THEME_COOKIE)?.value);
   return (
-    <html lang={locale} dir={directionOf(locale)} className={plexArabic.variable}>
+    <html
+      lang={locale}
+      dir={directionOf(locale)}
+      data-theme={themeAttribute(theme)}
+      className={plexArabic.variable}
+    >
       <body>
         <NextIntlClientProvider>
-          <Providers>{children}</Providers>
+          <ThemeProvider initialTheme={theme}>
+            <Providers>{children}</Providers>
+          </ThemeProvider>
         </NextIntlClientProvider>
       </body>
     </html>

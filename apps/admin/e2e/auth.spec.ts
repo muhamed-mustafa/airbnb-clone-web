@@ -1,6 +1,14 @@
 import AxeBuilder from '@axe-core/playwright';
 import { E2E_BACKEND_URL } from './support/constants';
-import { admin, expect, setLocale, signIn, test, unique } from './support/fixtures';
+import {
+  admin,
+  expect,
+  setLocale,
+  signIn,
+  test,
+  unique,
+  openAccountMenu,
+} from './support/fixtures';
 
 test.describe('admin sign in', () => {
   test('sends signed-out visitors to login and back to where they were going', async ({ page }) => {
@@ -80,6 +88,7 @@ test.describe('admin sign in', () => {
     expect(before?.httpOnly).toBe(true);
     expect(before?.sameSite).toBe('Lax');
 
+    await openAccountMenu(page);
     await page.getByRole('button', { name: 'تسجيل الخروج' }).click();
     await expect(page).toHaveURL(/\/login$/);
     await expect(page.getByRole('main').getByRole('status')).toContainText('تم تسجيل الخروج.');

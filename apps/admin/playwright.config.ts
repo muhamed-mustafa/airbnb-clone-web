@@ -41,14 +41,20 @@ export default defineConfig({
   ],
   webServer: {
     // E2E_SKIP_BUILD=1 reuses an existing production build, e.g. for repeated stability runs.
-    command: `${process.env.E2E_SKIP_BUILD ? '' : 'pnpm exec next build && '}pnpm exec next start --port ${new URL(ADMIN_URL).port}`,
+    // E2E_DEV=1 runs `next dev` instead, to see development-only diagnostics such as hydration
+    // warnings. Next locks .next/dev, so use it where no other `next dev` runs (a separate
+    // checkout), never against someone's running development server.
+    command: process.env.E2E_DEV
+      ? `pnpm exec next dev --port ${new URL(ADMIN_URL).port}`
+      : `${process.env.E2E_SKIP_BUILD ? '' : 'pnpm exec next build && '}pnpm exec next start --port ${new URL(ADMIN_URL).port}`,
     url: `${ADMIN_URL}/login`,
     reuseExistingServer: false,
     timeout: 240_000,
     env: {
-      NODE_ENV: 'production',
+      NODE_ENV: process.env.E2E_DEV ? 'development' : 'production',
       NEXT_TELEMETRY_DISABLED: '1',
-      API_BASE_URL: E2E_BACKEND_URL,
+      // E2E_UPSTREAM routes the BFF through a timing proxy (performance diagnosis only).
+      API_BASE_URL: process.env.E2E_UPSTREAM ?? E2E_BACKEND_URL,
       APP_ORIGIN: ADMIN_URL,
       SESSION_SECRET: randomBytes(32).toString('base64url'),
       REFRESH_SKEW_SECONDS: '30',

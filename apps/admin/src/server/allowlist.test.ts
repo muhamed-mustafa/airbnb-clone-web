@@ -67,6 +67,23 @@ describe('resolveUpstream', () => {
     });
     expect(resolve('GET', `admins/${ID}`)?.responseFields).toEqual(list?.responseFields);
   });
+
+  it('allows admin unit list and detail reads with only supported filters', () => {
+    const list = resolve('GET', 'units/admin', 'title=sea&isActive=false&minPrice=10&sort=x');
+    expect(list?.path).toBe('/units/admin');
+    expect(list?.query.toString()).toBe('title=sea&minPrice=10&isActive=false');
+    expect(resolve('GET', `units/admin/${ID}`)?.path).toBe(`/units/admin/${ID}`);
+    expect(resolve('POST', 'units/admin')).toBeUndefined();
+    expect(resolve('GET', 'units/admin/not-an-id')).toBeUndefined();
+  });
+
+  it('allows the admin booking list filters and text search only', () => {
+    const list = resolve('GET', 'bookings/admin', 'status=PENDING&search=Mohamed&sort=createdAt');
+    expect(list?.path).toBe('/bookings/admin');
+    expect(list?.query.toString()).toBe('status=PENDING&search=Mohamed');
+    expect(resolve('POST', 'bookings/admin')).toBeUndefined();
+    expect(resolve('GET', `bookings/admin/${ID}`)).toBeUndefined();
+  });
 });
 
 describe('projectResponse', () => {

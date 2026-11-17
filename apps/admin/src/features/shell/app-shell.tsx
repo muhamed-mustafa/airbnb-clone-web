@@ -5,17 +5,22 @@ import { usePathname } from 'next/navigation';
 import { useTranslations } from 'next-intl';
 import { Dialog as DialogPrimitive } from 'radix-ui';
 import { useState, useSyncExternalStore, type ReactNode } from 'react';
-import { useSession, useSignOut } from '@/features/auth/use-session';
 import { BrandMark } from '@/ui/brand';
-import { EmailText } from '@/ui/email-text';
-import { SessionTransition } from '@/ui/session-transition';
 import { NavigationIcon } from '@/ui/navigation-icon';
 import { Button } from '@/ui/button';
-import { CloseIcon, MenuIcon, SignOutIcon, SpinnerIcon, UserIcon } from '@/ui/icons';
-import { LocaleSwitch } from './locale-switch';
+import { CloseIcon, MenuIcon } from '@/ui/icons';
+import { AccountMenu } from './account-menu';
+import { ThemeSwitch } from '@/theme/theme-switch';
 
 const NAV_GROUPS = [
   { key: 'overview', items: [{ href: '/', key: 'home' }] },
+  {
+    key: 'operations',
+    items: [
+      { href: '/catalog/units', key: 'units' },
+      { href: '/bookings', key: 'bookings' },
+    ],
+  },
   {
     key: 'locations',
     items: [
@@ -40,7 +45,31 @@ const NAV_GROUPS = [
   },
 ] as const;
 
-function Navigation({ onNavigate }: { onNavigate?: () => void }) {
+const SIDEBAR_PREFERENCE = 'stays-admin-sidebar';
+const SIDEBAR_CHANGE_EVENT = 'stays-admin-sidebar-change';
+
+function subscribeSidebarPreference(callback: () => void) {
+  window.addEventListener('storage', callback);
+  window.addEventListener(SIDEBAR_CHANGE_EVENT, callback);
+  return () => {
+    window.removeEventListener('storage', callback);
+    window.removeEventListener(SIDEBAR_CHANGE_EVENT, callback);
+  };
+}
+
+function getSidebarCollapsed() {
+  return window.localStorage.getItem(SIDEBAR_PREFERENCE) === 'collapsed';
+}
+
+const getServerSidebarCollapsed = () => false;
+
+function Navigation({
+  onNavigate,
+  collapsed = false,
+}: {
+  onNavigate?: () => void;
+  collapsed?: boolean;
+}) {
   const t = useTranslations('nav');
   const pathname = usePathname();
   return (
@@ -52,8 +81,8 @@ function Navigation({ onNavigate }: { onNavigate?: () => void }) {
           <div
             key={group.key}
             role="group"
-            aria-labelledby={labelled ? `nav-${group.key}` : undefined}
-            aria-label={labelled ? undefined : t(group.key)}
+            aria-labelledby={labelled && !collapsed ? `nav-${group.key}` : undefined}
+            aria-label={t(group.key)}
             className="grid gap-0.5"
           >
             {labelled && (
@@ -69,10 +98,12 @@ function Navigation({ onNavigate }: { onNavigate?: () => void }) {
                   href={item.href}
                   onClick={onNavigate}
                   aria-current={current ? 'page' : undefined}
+                  aria-label={t(item.key)}
+                  title={collapsed ? t(item.key) : undefined}
                   className="nav-item"
                 >
                   <NavigationIcon name={item.key} />
-                  {t(item.key)}
+                  <span className="nav-item-label">{t(item.key)}</span>
                 </Link>
               );
             })}
@@ -83,55 +114,18 @@ function Navigation({ onNavigate }: { onNavigate?: () => void }) {
   );
 }
 
-function Account({ onNavigate }: { onNavigate?: () => void }) {
-  const t = useTranslations('account');
-  const { data } = useSession();
-  const signOut = useSignOut();
-  const pathname = usePathname();
-  const subject = data?.subject;
+/** The foot of the sidebar (and of the phone drawer): the theme control, then the account. */
+function SidebarUtilities({
+  onNavigate,
+  collapsed = false,
+}: {
+  onNavigate?: () => void;
+  collapsed?: boolean;
+}) {
   return (
-    <div className="grid shrink-0 gap-0.5 border-t border-[var(--nav-border)] pt-3">
-      {subject && (
-        // The full email is always readable: it wraps instead of being cut.
-        <div className="grid gap-0.5 px-3 pb-2 text-sm">
-          <span className="sr-only">{t('signedInAs')}</span>
-          <span className="sidebar-title break-words font-semibold">
-            {subject.name ?? subject.email ?? '—'}
-          </span>
-          {subject.name && subject.email && (
-            <span className="text-xs leading-5 text-nav-muted">
-              <EmailText email={subject.email} />
-            </span>
-          )}
-        </div>
-      )}
-      <Link
-        href="/account"
-        onClick={onNavigate}
-        aria-current={pathname === '/account' ? 'page' : undefined}
-        className="nav-item"
-      >
-        <UserIcon width={18} height={18} />
-        {t('profile')}
-      </Link>
-      <LocaleSwitch appearance="nav" />
-      <button
-        type="button"
-        className="nav-button"
-        disabled={signOut.isPending}
-        aria-busy={signOut.isPending || undefined}
-        onClick={() => signOut.mutate()}
-      >
-        {signOut.isPending ? (
-          <SpinnerIcon width={18} height={18} />
-        ) : (
-          <SignOutIcon width={18} height={18} className="rtl:-scale-x-100" />
-        )}
-        {signOut.isPending ? t('signingOut') : t('signOut')}
-      </button>
-      {signOut.isPending && (
-        <SessionTransition complete={signOut.complete} label={t('signingOut')} />
-      )}
+    <div className="sidebar-utilities">
+      <ThemeSwitch compact={collapsed} />
+      <AccountMenu onNavigate={onNavigate} />
     </div>
   );
 }
@@ -163,13 +157,22 @@ function OfflineBanner() {
 export function AppShell({ children }: { children: ReactNode }) {
   const t = useTranslations();
   const [menuOpen, setMenuOpen] = useState(false);
+  const sidebarCollapsed = useSyncExternalStore(
+    subscribeSidebarPreference,
+    getSidebarCollapsed,
+    getServerSidebarCollapsed,
+  );
   const pathname = usePathname();
+  const toggleSidebar = () => {
+    window.localStorage.setItem(SIDEBAR_PREFERENCE, sidebarCollapsed ? 'expanded' : 'collapsed');
+    window.dispatchEvent(new Event(SIDEBAR_CHANGE_EVENT));
+  };
   const active = NAV_GROUPS.flatMap((group) => [...group.items]).find((item) =>
     item.href === '/' ? pathname === '/' : pathname.startsWith(item.href),
   );
 
   return (
-    <div className="min-h-dvh lg:grid lg:grid-cols-[16rem_1fr]">
+    <div className="admin-shell min-h-dvh lg:grid" data-sidebar-collapsed={sidebarCollapsed}>
       <a
         href="#main"
         className="sr-only focus:not-sr-only focus:fixed focus:start-4 focus:top-4 focus:z-50 focus:rounded-md focus:bg-surface focus:px-4 focus:py-2"
@@ -177,15 +180,44 @@ export function AppShell({ children }: { children: ReactNode }) {
         {t('app.skipToContent')}
       </a>
 
-      <aside className="app-sidebar sticky top-0 hidden h-dvh flex-col justify-between gap-4 overflow-hidden p-3 lg:flex">
-        <div className="flex min-h-0 flex-1 flex-col gap-6">
-          <div className="flex items-center gap-3 px-2 pt-2">
-            <BrandMark />
-            <p className="sidebar-title text-base font-semibold">{t('app.title')}</p>
+      <aside className="app-sidebar desktop-sidebar sticky top-0 hidden h-dvh flex-col justify-between gap-4 overflow-hidden p-3 lg:flex">
+        {/* The navigation scrolls on short screens; the utility area below never clips. */}
+        <div className="flex min-h-0 flex-1 flex-col gap-6 overflow-y-auto">
+          <div className="sidebar-brand-row flex items-center justify-between gap-2 px-2 pt-2">
+            <div className="flex min-w-0 items-center gap-3">
+              <BrandMark />
+              <p className="sidebar-title text-base font-semibold">{t('app.title')}</p>
+            </div>
+            <button
+              type="button"
+              className="sidebar-collapse-button hidden lg:grid"
+              aria-label={t(sidebarCollapsed ? 'nav.expandSidebar' : 'nav.collapseSidebar')}
+              title={t(sidebarCollapsed ? 'nav.expandSidebar' : 'nav.collapseSidebar')}
+              aria-expanded={!sidebarCollapsed}
+              aria-controls="admin-sidebar-navigation"
+              onClick={toggleSidebar}
+            >
+              <svg
+                aria-hidden="true"
+                width="18"
+                height="18"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="1.7"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              >
+                <rect x="3" y="4" width="18" height="16" rx="2" />
+                <path d="M9 4v16m3-11 3 3-3 3" />
+              </svg>
+            </button>
           </div>
-          <Navigation />
+          <div id="admin-sidebar-navigation" className="sidebar-navigation">
+            <Navigation collapsed={sidebarCollapsed} />
+          </div>
         </div>
-        <Account />
+        <SidebarUtilities collapsed={sidebarCollapsed} />
       </aside>
 
       <div className="min-w-0">
@@ -226,7 +258,7 @@ export function AppShell({ children }: { children: ReactNode }) {
                   </div>
                   <Navigation onNavigate={() => setMenuOpen(false)} />
                 </div>
-                <Account onNavigate={() => setMenuOpen(false)} />
+                <SidebarUtilities onNavigate={() => setMenuOpen(false)} />
               </DialogPrimitive.Content>
             </DialogPrimitive.Portal>
           </DialogPrimitive.Root>

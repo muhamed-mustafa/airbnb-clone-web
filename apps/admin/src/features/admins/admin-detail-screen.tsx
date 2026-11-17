@@ -23,7 +23,7 @@ export function AdminDetailScreen({ id }: { id: string }) {
 
   if (admin.isPending) {
     return (
-      <Page width="details">
+      <Page width="form">
         {back}
         <div className="ui-panel">
           <RowsSkeleton rows={3} label={tc('loading')} />
@@ -37,7 +37,7 @@ export function AdminDetailScreen({ id }: { id: string }) {
       ? admin.error.appError
       : { kind: 'unknown' as const, formErrors: [], fieldErrors: {} };
     return (
-      <Page width="details">
+      <Page width="form">
         {back}
         <div className="ui-panel">
           {appError.kind === 'not_found' ? (
@@ -52,7 +52,7 @@ export function AdminDetailScreen({ id }: { id: string }) {
 
   const data = admin.data;
   return (
-    <Page width="details">
+    <Page width="form">
       {back}
       <PageHeader
         title={

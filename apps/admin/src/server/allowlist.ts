@@ -12,7 +12,16 @@
 type Method = 'GET' | 'POST' | 'PATCH' | 'DELETE';
 
 interface Rule {
-  resource: 'countries' | 'cities' | 'currencies' | 'app-settings' | 'admins' | 'unit-categories';
+  /** Backend path prefix, including fixed subpaths such as `units/admin`. */
+  resource:
+    | 'countries'
+    | 'cities'
+    | 'currencies'
+    | 'app-settings'
+    | 'admins'
+    | 'unit-categories'
+    | 'units/admin'
+    | 'bookings/admin';
   withId: boolean;
   methods: readonly Method[];
   query: readonly string[];
@@ -73,6 +82,45 @@ const RULES: readonly Rule[] = [
     responseFields: ADMIN_FIELDS,
   },
   { resource: 'admins', withId: true, methods: ['GET'], query: [], responseFields: ADMIN_FIELDS },
+  {
+    resource: 'units/admin',
+    withId: false,
+    methods: ['GET'],
+    query: [
+      'page',
+      'limit',
+      'title',
+      'unitCategory',
+      'country',
+      'city',
+      'minPrice',
+      'maxPrice',
+      'roomsCount',
+      'availability',
+      'adultsCount',
+      'kidsCount',
+      'hasInternetService',
+      'hasKitchen',
+      'hasPrivateGarage',
+      'isActive',
+    ],
+  },
+  { resource: 'units/admin', withId: true, methods: ['GET'], query: [] },
+  {
+    resource: 'bookings/admin',
+    withId: false,
+    methods: ['GET'],
+    query: [
+      'page',
+      'limit',
+      'status',
+      'search',
+      'checkInFrom',
+      'checkInTo',
+      'createdFrom',
+      'createdTo',
+    ],
+  },
 ];
 
 const MONGO_ID = /^[a-f0-9]{24}$/i;
@@ -88,17 +136,19 @@ export function resolveUpstream(
   segments: readonly string[],
   search: URLSearchParams,
 ): UpstreamTarget | undefined {
-  const [resource, id, ...rest] = segments;
-  if (rest.length > 0) return undefined;
-  if (id !== undefined && !MONGO_ID.test(id)) return undefined;
-
-  const rule = RULES.find(
-    (candidate) =>
-      candidate.resource === resource &&
-      candidate.withId === (id !== undefined) &&
-      candidate.methods.includes(method.toUpperCase() as Method),
-  );
+  const rule = RULES.find((candidate) => {
+    const prefix = candidate.resource.split('/');
+    const expectedLength = prefix.length + Number(candidate.withId);
+    return (
+      segments.length === expectedLength &&
+      prefix.every((part, index) => segments[index] === part) &&
+      candidate.methods.includes(method.toUpperCase() as Method) &&
+      (!candidate.withId || MONGO_ID.test(segments[prefix.length] ?? ''))
+    );
+  });
   if (!rule) return undefined;
+
+  const id = rule.withId ? segments[rule.resource.split('/').length] : undefined;
 
   const query = new URLSearchParams();
   for (const name of rule.query) {

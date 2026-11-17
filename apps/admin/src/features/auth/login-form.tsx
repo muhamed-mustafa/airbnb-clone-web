@@ -4,6 +4,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { zLoginAdminDtoWritable } from '@stays/api-contract/schemas';
 import type { AppError } from '@stays/api-contract';
 import { useLocale, useTranslations } from 'next-intl';
+import Link from 'next/link';
 import { useEffect, useRef, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import type * as z from 'zod/mini';
@@ -83,7 +84,7 @@ export function LoginForm({ next }: { next: string }) {
   );
 
   return (
-    <form noValidate onSubmit={onSubmit} className="grid gap-4">
+    <form noValidate onSubmit={onSubmit} className="login-form grid">
       {isSubmitting && (
         <SessionTransition action="enter" complete={complete} label={t('submitting')} />
       )}
@@ -94,17 +95,50 @@ export function LoginForm({ next }: { next: string }) {
       <TextField
         label={t('email')}
         type="email"
+        startAdornment={
+          <svg
+            aria-hidden="true"
+            width="17"
+            height="17"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="1.7"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+          >
+            <rect x="3" y="5" width="18" height="14" rx="2" />
+            <path d="m3 7 9 6 9-6" />
+          </svg>
+        }
         placeholder={t('emailPlaceholder')}
         autoComplete="username"
         inputMode="email"
         dir="ltr"
-        reserveMessageSpace
+        frameClassName="login-field login-field-email"
         error={fieldMessage('email')}
         {...form.register('email')}
       />
       <TextField
         label={t('password')}
         type={showPassword ? 'text' : 'password'}
+        placeholder={t('passwordPlaceholder')}
+        startAdornment={
+          <svg
+            aria-hidden="true"
+            width="17"
+            height="17"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="1.7"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+          >
+            <rect x="4" y="10" width="16" height="11" rx="2" />
+            <path d="M8 10V7a4 4 0 1 1 8 0v3" />
+          </svg>
+        }
         endAdornment={
           <button
             type="button"
@@ -134,11 +168,14 @@ export function LoginForm({ next }: { next: string }) {
         autoComplete="current-password"
         spellCheck={false}
         autoCapitalize="none"
-        reserveMessageSpace
+        frameClassName="login-field login-field-password"
         dir="ltr"
         error={fieldMessage('password')}
         {...form.register('password')}
       />
+      <div className="login-actions">
+        <Link href="/forgot-password">{t('forgotPassword')}</Link>
+      </div>
       <Button
         type="submit"
         variant="primary"

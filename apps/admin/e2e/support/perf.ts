@@ -66,6 +66,19 @@ export async function measure(page: Page, path: string) {
     const vitals = (
       window as unknown as { __vitals: { lcp?: number; lcpElement: string; cls: number } }
     ).__vitals;
+    // Each data request, in ms from navigation start: when it was issued, how long it
+    // waited before being sent (queueing/connection), how long the server took to answer
+    // (includes network round trip + BFF + backend), and the download.
+    const requests = data.map((entry) => ({
+      path: new URL(entry.name).pathname + new URL(entry.name).search,
+      start: Math.round(entry.startTime),
+      queued: Math.round(Math.max(0, entry.requestStart - entry.startTime)),
+      server: Math.round(Math.max(0, entry.responseStart - entry.requestStart)),
+      download: Math.round(Math.max(0, entry.responseEnd - entry.responseStart)),
+      end: Math.round(entry.responseEnd),
+      epochStart: Math.round(performance.timeOrigin + entry.startTime),
+    }));
+    const scripts = js.map((entry) => Math.round(entry.responseEnd));
     const end = (entries: PerformanceResourceTiming[]) =>
       entries.length ? Math.round(Math.max(...entries.map((entry) => entry.responseEnd))) : null;
     return {
@@ -78,6 +91,8 @@ export async function measure(page: Page, path: string) {
       dataRequests: data.length,
       lcpMs: vitals.lcp === undefined ? null : Math.round(vitals.lcp),
       lcpElement: vitals.lcpElement,
+      lastScriptMs: scripts.length ? Math.max(...scripts) : null,
+      requests,
       cls: Number(vitals.cls.toFixed(3)),
     };
   });

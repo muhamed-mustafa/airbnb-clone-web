@@ -1,4 +1,4 @@
-import { admin, expect, setLocale, signIn, test } from './support/fixtures';
+import { admin, expect, setLocale, signIn, test, openAccountMenu } from './support/fixtures';
 
 // Sign out → sign in again → the session expires. Late answers to the previous session's
 // requests must not turn an intentional sign-out into "your session ended", and must not
@@ -47,6 +47,7 @@ test('sign-out ignores late 401s from the old session; a later real expiry still
   await expect(page.locator('.stat-tile .stat-value').first()).toHaveText(/\d/);
   await expect(page.locator('.stat-value[aria-busy="true"]')).toHaveCount(0);
   signingOut = true;
+  await openAccountMenu(page);
   await page.getByRole('button', { name: 'Sign out', exact: true }).click();
   await expect(page.getByText('You signed out.')).toBeVisible();
   expect(late, 'late requests from the old session were answered').toBeGreaterThan(0);

@@ -1,5 +1,7 @@
 const paths: Record<string, string> = {
   home: 'M3 3h7v7H3zM14 3h7v7h-7zM3 14h7v7H3zM14 14h7v7h-7z',
+  units: 'M3 10.5 12 3l9 7.5M5 9v12h14V9M9 21v-7h6v7',
+  bookings: 'M7 3v4m10-4v4M4 9h16M5 5h14a1 1 0 0 1 1 1v14H4V6a1 1 0 0 1 1-1Zm3 8h3m-3 4h3',
   countries: 'M3 5h18v14H3z M8 5v14M16 5v14M3 12h18',
   cities: 'M3 21h18M5 21V9h6v12M11 21V3h8v18M8 12v2M14 7h2M14 11h2M14 15h2',
   currencies: 'M12 3v18M16 7H10a3 3 0 0 0 0 6h4a3 3 0 0 1 0 6H7',

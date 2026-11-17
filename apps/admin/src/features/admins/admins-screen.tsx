@@ -106,7 +106,7 @@ export function AdminsScreen() {
   );
 
   return (
-    <Page>
+    <Page width="table">
       <PageHeader title={t('title')} summary={meta ? t('count', { count: meta.total }) : ' '} />
 
       <p className="info-note">{t('readOnlyNote')}</p>
